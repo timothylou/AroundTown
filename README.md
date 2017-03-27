@@ -1,8 +1,12 @@
-## Welcome to GitHub Pages
+## Welcome to AroundTown -- A Princeton COS333 Project
 
-You can use the [editor on GitHub](https://github.com/timothylou/AroundTown/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+Project Members:    
+* Hrishikesh Khandeparkar         hrk@princeton.edu
+* Timothy Lou                     tlou@princeton.edu
+* Karen Zhang (leader)            kz7@princeton.edu
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Advisor:
+* Gautam Sharma                   gsharma@princeton.edu
 
 ### Markdown
 
@@ -10,10 +14,10 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 
 ```markdown
 Syntax highlighted code block
-
 # Header 1
 ## Header 2
 ### Header 3
+# adfadf 
 
 - Bulleted
 - List
