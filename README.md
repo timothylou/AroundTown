@@ -8,6 +8,9 @@ Project Members:
 Advisor:
 * Gautam Sharma                   gsharma@princeton.edu
 
+[Design Document (click me)](DesignDocument.pdf)
+
+
 ### Markdown
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
