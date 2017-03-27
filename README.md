@@ -11,34 +11,50 @@ Advisor:
 [Design Document (click me)](DesignDocument.pdf)
 
 
-### Markdown
+### Timeline
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Below is the timeline for our project (last updated 3.27.17)
 
 ```markdown
-Syntax highlighted code block
-# Header 1
-## Header 2
-### Header 3
-# adfadf 
+March 19 - 25
+- Get familiarized with React Native, JavaScript 
+- Learn the features of the react-native-maps and react-native-push-notifications API. Toy around with implementing basic apps created using these packages.
 
-- Bulleted
-- List
+Mar 26 - 31
+- Project website		
+- App displays a map
+- App handles basic map interactions (moving, zooming)
 
-1. Numbered
-2. List
+Apr 1 - 8				
+- Create a standard API for backend interactions
+- Create a standard API for selecting a subset of users for push notifications.
+- App can track location of user
+- Be able to place/display “pins” on locations on a map
+- Start implementing backend (store pin info)
 
-**Bold** and _Italic_ and `Code` text
+Apr 9 - 15				
+- Refine backend API for unforeseen issues
+- Finish implementing backend (store pin info)	
+- App can send information to user (SMS or push notifs)
 
-[Link](url) and ![Image](src)
+Apr 16 - 22 Prototype		
+- Minimum viable product complete
+- Users can place pins and receive notifications
+- Start working on location specific notifications for subsets of users
+
+Apr 23 - 30 Alpha test		
+- Add pin categories and filters
+- Users can comment/give feedback to existing pins
+- Implement user location updates
+
+May 1 - 7 Beta test			
+- Implement location-specific notifications
+- Add “home base” notification capabilities
+- No more adding features after the end of this week
+
+May 8 - 12 Demo days		
+- Debug and look for ways to clean up
+
+May 14 Submission
+
 ```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/timothylou/AroundTown/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
