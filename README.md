@@ -18,7 +18,8 @@ Below is the timeline for our project (last updated 3.27.17)
 ```markdown
 March 19 - 25
 - Get familiarized with React Native, JavaScript 
-- Learn the features of the react-native-maps and react-native-push-notifications API. Toy around with implementing basic apps created using these packages.
+- Learn the features of the react-native-maps and react-native-push-notifications API. 
+- Toy around with implementing basic apps created using these packages.
 
 Mar 26 - 31
 - Project website		
