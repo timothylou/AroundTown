@@ -1,4 +1,4 @@
-import SocketServer
+import socketserver
 import SimpleHTTPServer
 import json
 import sys
@@ -139,6 +139,6 @@ def main():
             else:
                 class_temp = deepcopy(course)
                 courses.append(class_temp)
-    SocketServer.ForkingTCPServer(('', port), Reply).serve_forever()
+    socketserver.ForkingTCPServer(('', port), Reply).serve_forever()
 
 main()
