@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/com.facebook.fbui.textlayoutbuilder/staticlayout-proxy/1.0/f162442a19fff13995fbd51ba414d9ee05579080/staticlayout-proxy-1.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="f162442a19fff13995fbd51ba414d9ee05579080">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/staticlayout-proxy-1.0_75fa01fb5ecda2ff31367fc8a397635a34efa3b1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fbcore/1.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="2668e49e4e31c7d451b76a36009b902bf44e0d70">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-fbcore-1.0.1_88b4802f2c495d2045a193d79b1dd1e514fb70ce.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline/1.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="d9c4402c3057225d80cbbbec52154e7a25b0ebdf">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-imagepipeline-1.0.1_7dc54bf13a542352196c09c1b900d24c5204af54.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.soloader/soloader/0.1.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="8f615bca00639150c9eb6175d4b5471193f70794">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.soloader-soloader-0.1.0_81d0deea5b3ded905b6b8b3d13b9c610e1463ddc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/10.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="25438f55fc6d906a0e72f30b21487541430ede43">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-base-10.0.1_21a84c8f769bc81c57277eeb9d29b98f76680134.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.fresco/fresco/1.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="cf836a435a496eb22ff2aa69aa1e619462549f81">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-fresco-1.0.1_1957d2c6e1efbdb3f2d1ecf24e4dae0b8611a6d8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/10.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="756f6297eef79784f5e356dcd4f39865028b2bd0">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-basement-10.0.1_b028bc14949884867c95f8256386e533945ee692.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/24.0.0/jars/libs/internal_impl-24.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="fcaf463e10e69c1923ccf1edeba3b4196d239e00">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/internal_impl-24.0.0_035afe6db956ac0fc446a87d4c2657da9b61d974.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.0.1_7f70ad86d44d725710628b547deaaee1bcdc98ac.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="6975da39a7040257bd51d21a231b76c915872d38">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/javax.inject-1_3f99b937556c7cc3c913750d9673f14a60102f0e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/24.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="2f7e6e2dad1bccaf68a8820820adc6c0d5b96d37">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-24.0.0_f5a2346f2d2291b50122d245ec2f6720d9ac9ab9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/ATown/react-native-maps/unspecified/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="dfe415137a847f99a59cee27485aea5dedd9b09c">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/ATown-react-native-maps-unspecified_5c25678966edca2c554cc87884832516c3f42b16.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.43.2/jars/libs/infer-annotations-1.5.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="dcac634e137395f79693ec760f081a86eb2bd84e">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/infer-annotations-1.5_91750eb4a07edfa637f87ac37a5ad91da37cdf11.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.9.0/f824591a0016efbaeddb8300bee54832a1398cfa/okio-1.9.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="f824591a0016efbaeddb8300bee54832a1398cfa">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/okio-1.9.0_f0a43b64ceef8a4fe09576a444f94ba8deb5cc25.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/24.0.0/support-annotations-24.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="2943c74db6d4346ab8c6531adac91fa05c137c40">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/support-annotations-24.0.0_f2bf07f2f82873a19284865ee9b212c3f8d6ad91.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/10.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="27777b3cad3c20b1acab19f6e37fe3e03371bf6e">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-maps-10.0.1_e74f3b6854f505c077c723d84a803537bd970f43.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.4.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-23.4.0_801a3485cc01eab64d1c2250f33475c46da9a79c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp-urlconnection/3.4.1/63994437f62bc861bc20c605d12962f7246116d1/okhttp-urlconnection-3.4.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="63994437f62bc861bc20c605d12962f7246116d1">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/okhttp-urlconnection-3.4.1_8ce41986761020508791837b1b18d061c7acc1f8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.4.1/c7c4f9e35c2fd5900da24f9872e3971801f08ce0/okhttp-3.4.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="c7c4f9e35c2fd5900da24f9872e3971801f08ce0">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/okhttp-3.4.1_4f6a9a8ca29455486cf3facc470b4dd833a4a849.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.fresco/drawee/1.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="5a61f17cd72e20aa4323cbf5f909b7c609619275">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-drawee-1.0.1_0151a72dcd91bc6c54f0afc4c0012cee7f936f3f.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-okhttp3/1.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="ba9b39366b723ccff6359d1117332968e98a4aca">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-imagepipeline-okhttp3-1.0.1_bf46c0a0143a0e83317ff60d94a943a74651f6aa.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.fbui.textlayoutbuilder/textlayoutbuilder/1.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="f90b593491e4044903f0bbf68dc3fa2790b151b9">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.fbui.textlayoutbuilder-textlayoutbuilder-1.0.0_c71236fb3a5b462ba4ecb64420f6114ab536f824.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/1.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="050f688115ea65a0292d8483a6ffe6bcdab1e2ef">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.fresco-imagepipeline-base-1.0.1_ee61da57afacf35a8b801a9e44d8d770ac40117d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.facebook.react/react-native/0.43.2/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="dd7e9e4044d541b253c526294b9f4985029d846c">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.facebook.react-react-native-0.43.2_2017150d96dae05368df94d0c2cb71c5db2eecaf.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/ATown/android/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/10.0.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="6addaba208e21c6da776d0ca75b6b23a6ccd5499">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-tasks-10.0.1_f2a6405946d65754263aafc9ee66fe013b6067c8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.0/5871fb60dc68d67da54a663c3fd636a10a532948/jsr305-3.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="5871fb60dc68d67da54a663c3fd636a10a532948">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/jsr305-3.0.0_d4e2eb8c65ab660e8965a4542c3374665511756a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-tasks/1.4.0/d85884acf6810a3bbbecb587f239005cbc846dc4/bolts-tasks-1.4.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="d85884acf6810a3bbbecb587f239005cbc846dc4">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/bolts-tasks-1.4.0_5a42b95329bdc3d4d3e38ecdec26a59d43ff297c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Hrishikesh/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp-ws/3.4.1/8ace66ef7002d98f633377c9e67daeeb196d8c3b/okhttp-ws-3.4.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.1"
+        sha1="8ace66ef7002d98f633377c9e67daeeb196d8c3b">
+        <dex dex="/Users/Hrishikesh/ATown/android/app/build/intermediates/pre-dexed/debug/okhttp-ws-3.4.1_1d94ff5c9f761824fba9070af51fcc871486f978.jar" />
+    </item>
+
+</items>
