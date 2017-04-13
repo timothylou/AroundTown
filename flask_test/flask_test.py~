@@ -72,10 +72,7 @@ def postnewevent():
     netid = eventdict['netid']
     stime = eventdict['stime']
     dur = eventdict['dur']
-    if not app.config['DB_INIT']:
-        dbinit()
-    eventid = dbu.DBAddEvent(app.config['DB_CONN'], app.config['DB_CUR'], lon, lat, title, desc, cat, oid, netid, stime, dur)
-    return "%s" % (eventid)
+    
 
 @app.route('/get/', methods=['GET'])
 def getcall():
