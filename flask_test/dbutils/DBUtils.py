@@ -68,11 +68,20 @@ def DBSetEventStatus(conn, cur, eid, newstatus):
     conn.commit()
 
 def DBGetAllActiveEvents(conn, cur):
-    select_q = '''SELECT eventid, latitude, longitude, title, description, category, ownerid, netid, starttime, duration FROM events WHERE status = 1'''
+    attribsToReturn = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration']
+    select_q = 'SELECT ' + ', '.join(attribsToReturn) + ' FROM events WHERE status = 1' 
+    #select_q = '''SELECT eventid, latitude, longitude, title, description, category, ownerid, netid, starttime, duration FROM events WHERE status = 1'''
     print select_q
     cur.execute(select_q)
-    res = cur.fetchall()
+    rows = cur.fetchall()
+    res = []
+    for ev in rows:
+        curreventdict = {}
+        for i in range(len(attribsToReturn)):
+            curreventdict[attribsToReturn[i]] = ev[i]
+        res.append(curreventdict)
     print res
+    return res
     
     
 def DBClose(conn):

@@ -62,13 +62,17 @@ r = requests.post('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/neweven
 eventid = r.text
 print eventid
 
-payload3 = {'uid': 'uiduiduiduid', 'desired': 'lname'}
+payload3 = {'uid': 'uiduiduid2', 'desired': 'lastname'}
 r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/userinfo/', params = payload3)
 print r.url
 print r.text
 
 payload4 = {'uid': 'uiduiduiduid', 'desired': 'notvalidfield'}
 r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/userinfo/', params = payload4)
+print r.url
+print r.text
+
+r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive/')
 print r.url
 print r.text
 

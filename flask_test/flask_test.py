@@ -12,7 +12,7 @@ app.config['DB_CONN'] = None
 app.config['DB_CUR']  = None
 app.config['DB_INIT'] = False
 app.config['DB_USERS_REQD_FIELDS'] = ['uid', 'fname', 'lname', 'cyear', 'netid', 'email']
-app.config['DB_EVENTS_REQD_FIELDS'] = ['lat', 'lon', 'title', 'desc', 'cat', 'oid', 'netid', 'stime', 'dur']
+app.config['DB_EVENTS_REQD_FIELDS'] = ['latitude', 'longitude', 'title', 'description', 'cat', 'oid', 'netid', 'stime', 'dur']
 
 def dbinit():
     if not app.config['DB_INIT']:
@@ -72,10 +72,10 @@ def postnewevent():
     for attrib in app.config['DB_EVENTS_REQD_FIELDS']:
         if attrib not in eventdict:
             return 'ERROR: no %s value received' % (attrib)
-    lat = eventdict['lat']
-    lon = eventdict['lon']
+    lat = eventdict['latitude']
+    lon = eventdict['longitude']
     title = eventdict['title']
-    desc = eventdict['desc']
+    desc = eventdict['description']
     cat = eventdict['cat']
     oid = eventdict['oid']
     netid = eventdict['netid']
@@ -115,6 +115,13 @@ def getuserinfo():
     #    return dbu.DBGetUserCyear(app.config['DB_CONN'], app.config['DB_CUR'], int(firstitem))
     #return "%s not a valid field" % desiredfield
 
+@app.route('/get/allactive/', methods=['GET'])
+def getallactiveevents():
+    if not app.config['DB_INIT']:
+        dbinit()
+    eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
+    eventlstjson = json.dumps(eventlst)
+    return eventlstjson
 
 @app.route('/user/<username>')
 def varcall(username):

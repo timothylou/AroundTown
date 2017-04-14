@@ -61,6 +61,21 @@ eventdict = {'lat': 0.0, 'lon': 1.1, 'title': 'birthday party', 'desc': 'its lit
 r = requests.post('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', data=json.dumps(eventdict))
 eventid = r.text
 print eventid
+print
+
+print "Check posting event info"
+eventdict = {'lat': 2.2, 'lon': 3.3, 'title': 'free food', 'desc': 'its lit', 'cat': 9, 'oid': 'uiduiduiduid', 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
+r = requests.post('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', data=json.dumps(eventdict))
+eventid = r.text
+print eventid
+print "Check posting event info"
+print
+
+eventdict = {'lat': 4.4, 'lon': 5.5, 'title': 'free showing', 'desc': 'its lit', 'cat': 9, 'oid': 'uiduiduiduid', 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
+r = requests.post('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', data=json.dumps(eventdict))
+eventid = r.text
+print eventid
+print
 
 payload3 = {'uid': 'uiduiduid2', 'desired': 'lastname'}
 r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/userinfo/', params = payload3)
@@ -69,6 +84,10 @@ print r.text
 
 payload4 = {'uid': 'uiduiduiduid', 'desired': 'notvalidfield'}
 r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/userinfo/', params = payload4)
+print r.url
+print r.text
+
+r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive/')
 print r.url
 print r.text
 

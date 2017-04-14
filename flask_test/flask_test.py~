@@ -94,7 +94,7 @@ def getcall():
 
 @app.route('/get/userinfo/', methods=['GET'])
 def getuserinfo():
-    uid = request.args.get('userid','')
+    uid = request.args.get('uid','')
     if uid == '':
         return "ERROR: no userid provided"
     desiredfield = request.args.get('desired','')
@@ -115,6 +115,13 @@ def getuserinfo():
     #    return dbu.DBGetUserCyear(app.config['DB_CONN'], app.config['DB_CUR'], int(firstitem))
     #return "%s not a valid field" % desiredfield
 
+@app.route('/get/allactive/', methods=['GET'])
+def getallactiveevents():
+    if not app.config['DB_INIT']:
+        dbinit()
+    eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
+    eventlstjson = json.dumps(eventlst)
+    return eventlstjson
 
 @app.route('/user/<username>')
 def varcall(username):
