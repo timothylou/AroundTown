@@ -1,0 +1,56 @@
+----------------------------------------
+ClickButton.js
+----------------------------------------
+Props:
+  Content
+  - buttonText
+
+  Functions
+  - onPress
+
+  Style
+  - buttonUnderlayColor
+  - buttonStyle
+  - buttonTextStyle
+
+Structure:
+  View
+    TouchableHighlight -->  buttonUnderlayColor,
+                            onPress,
+                            buttonStyle
+      View
+        Text -->  buttonTextStyle,
+                  buttonText
+
+
+----------------------------------------
+TitleBar.js
+----------------------------------------
+Props:
+  Content
+  - title
+
+  Functionality
+  - loading
+Structure:
+
+----------------------------------------
+Style.js
+----------------------------------------
+
+rootContainer:
+mapContainer:
+map:
+checkBoxContainer:
+genericText:
+displayContainer:
+inputContainer:
+inputButton:
+inputButton:
+inputButtonText:
+inputRow:
+
+
+----------------------------------------
+Default
+----------------------------------------
