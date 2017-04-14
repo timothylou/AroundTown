@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.config['DB_CONN'] = None
 app.config['DB_CUR']  = None
 app.config['DB_INIT'] = False
-app.config['DB_USERS_REQD_FIELDS'] = ['fname', 'lname', 'cyear', 'netid']
+app.config['DB_USERS_REQD_FIELDS'] = ['uid', 'fname', 'lname', 'cyear', 'netid', 'email']
 app.config['DB_EVENTS_REQD_FIELDS'] = ['lat', 'lon', 'title', 'desc', 'cat', 'oid', 'netid', 'stime', 'dur']
 
 def dbinit():
@@ -40,25 +40,34 @@ def postcall():
 
 @app.route('/post/newuser/', methods=['POST'])
 def postnewuser():
-    postedjson = request.get_json()
-    print request.url
+    postedjson = request.data
+    #postedjson = request.get_json()
+    #print postedjson
+    #print request.url
+    #print request
+    #print request.get_json()
+    #print request.data
+    #usrdict = json.loads(postedjson)
     usrdict = json.loads(postedjson)
     for attrib in app.config['DB_USERS_REQD_FIELDS']:
         if attrib not in usrdict:
             return 'ERROR: no %s value received' % (attrib)
+    uid = usrdict['uid']
     fname = usrdict['fname']
     lname = usrdict['lname']
     cyear = usrdict['cyear']
     netid = usrdict['netid']
+    email = usrdict['email']
     if not app.config['DB_INIT']:
         dbinit()
-    uid = dbu.DBAddUser(app.config['DB_CONN'], app.config['DB_CUR'], fname, lname, cyear, netid)
+    dbu.DBAddUser(app.config['DB_CONN'], app.config['DB_CUR'], uid, fname, lname, cyear, netid, email)
     return "%s" % (uid)
 
 @app.route('/post/newevent/', methods=['POST'])
 def postnewevent():
-    postedjson = request.get_json()
+    #postedjson = request.get_json()
     print request.url
+    postedjson = request.data
     eventdict = json.loads(postedjson)
     for attrib in app.config['DB_EVENTS_REQD_FIELDS']:
         if attrib not in eventdict:
@@ -85,7 +94,7 @@ def getcall():
 
 @app.route('/get/userinfo/', methods=['GET'])
 def getuserinfo():
-    uid = request.args.get('userid','')
+    uid = request.args.get('uid','')
     if uid == '':
         return "ERROR: no userid provided"
     desiredfield = request.args.get('desired','')
