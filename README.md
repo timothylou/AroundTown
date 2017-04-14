@@ -1,5 +1,6 @@
 ## Welcome to AroundTown -- A Princeton COS333 Project
 
+WARNING: The node_modules arent uploaded to the git, so dont forget to npm install. If react-native-maps is being buggy use locally copied react-native-maps package (update messes up rnpm linking).
 Project Members:    
 * Hrishikesh Khandeparkar         hrk@princeton.edu
 * Timothy Lou                     tlou@princeton.edu
@@ -60,6 +61,7 @@ May 14 Submission
 
 ATown details
 - Supports login with info
-- Adds user to firebase
-- Supports dropping
+- Adds user to firebase, with details
+- Supports dropping pins, with user inputs
+- Updates pins on Flask App with SQLite running on AWS+Apache2
 ```
