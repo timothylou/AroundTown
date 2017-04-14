@@ -17,8 +17,8 @@ Below is the timeline for our project (last updated 3.27.17)
 
 ```markdown
 March 19 - 25
-- Get familiarized with React Native, JavaScript 
-- Learn the features of the react-native-maps and react-native-push-notifications API. 
+- Get familiarized with React Native, JavaScript
+- Learn the features of the react-native-maps and react-native-push-notifications API.
 - Toy around with implementing basic apps created using these packages.
 
 Mar 26 - 31
@@ -35,7 +35,7 @@ Apr 1 - 8
 
 Apr 9 - 15				
 - Refine backend API for unforeseen issues
-- Finish implementing backend (store pin info)	
+- Finish implementing backend (store pin info)
 - App can send information to user (SMS or push notifs)
 
 Apr 16 - 22 Prototype		
@@ -58,4 +58,8 @@ May 8 - 12 Demo days
 
 May 14 Submission
 
+ATown details
+- Supports login with info
+- Adds user to firebase
+- Supports dropping
 ```
