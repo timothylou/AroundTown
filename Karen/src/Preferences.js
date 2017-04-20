@@ -52,7 +52,7 @@ export default class Preferences extends Component{
     this.handleCategoryChange = this.handleCategoryChange.bind(this)
     this.handleHomeLocationChange = this.handleHomeLocationChange.bind(this)
     this.convertBoolToText = this.convertBoolToText.bind(this)
-    this.onIds = this.onIds.bind(this)
+    //this.onIds = this.onIds.bind(this)
   }
 
   // A method to passs the username and password to firebase and make a new user account
@@ -83,6 +83,8 @@ export default class Preferences extends Component{
       other: this.convertBoolToText(this.state.categories.other),
 
     }).catch( (error)=> console.log("Done with fetching from Firebase        " + error.message));
+
+    // OneSignal.sendTag("key", "value");
 
     console.log("done with firebase");
 
@@ -154,7 +156,6 @@ export default class Preferences extends Component{
     // If we are loading then we display an ActivityIndicator.
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
       <View>
-        <Text>{this.state.deviceid.userid}</Text>
         <Text style = {Style.genericText}>Select one or more home bases</Text>
 
         <CheckButton onChange={() => this.handleHomeLocationChange('rocky')}
