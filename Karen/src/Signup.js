@@ -11,6 +11,7 @@ import {
 import BaseStyle from './BaseStyles.js';
 import Login from './Login';
 import Town from './Town';
+import Preferences from './Preferences';
 import React, {Component} from 'react';
 
 export default class Signup extends Component {
@@ -50,8 +51,7 @@ export default class Signup extends Component {
           fname: this.state.fname,
           lname: this.state.lname,
           cyear: parseInt(this.state.cyear),
-          netid: this.state.netid,
-          uid: userData.uid
+          netid: this.state.netid
 
         }).catch( (error)=> console.log("Done with fetching from Firebase        " + error.message));
 
@@ -92,7 +92,7 @@ export default class Signup extends Component {
               loading: false
             });
             this.props.navigator.push({
-              component: Town
+              component: Preferences
             });
           }
         ).catch((error) =>
