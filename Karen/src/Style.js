@@ -68,6 +68,31 @@ var Style = StyleSheet.create({
     inputRow: {
       flex:1,
       flexDirection: 'row'
+    },
+
+    sideDrawer: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
+
+    drawerHeader: {
+      backgroundColor: 'dimgrey',
+      flex: 0.2
+    },
+
+    drawerHeaderText: {
+      fontSize: 26,
+      fontWeight: 'bold',
+      color: 'white',
+      textAlign: 'center',
+      textAlignVertical: 'center',
+      padding: 30
+    },
+
+    sideButtonContainer: {
+      padding: 15,
+      flex: 0.8,
+      backgroundColor: '#fff',
     }
 });
 

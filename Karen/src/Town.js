@@ -8,22 +8,40 @@ import {
   TextInput,
   Modal,
   Button,
-  Slider
+  Slider,
+  DrawerLayoutAndroid,
+  ToolbarAndroid,
+  TouchableHighlight,
 } from 'react-native';
+
+// self made components and stylesheets
 import Style from './Style';
 import Login from './Login';
 import Signup from './Signup';
+import Preferences from './Preferences';
+import About from './About'
 import MapView from 'react-native-maps';
 import CheckButton from './CheckButton';
+import SideButton from './SideButton';
+import TopBar from './TopBar';
+import SideDrawer from './SideDrawer';
+import CustomMapView from './CustomMapView';
+import CustomMarker from './CustomMarker';
+import Firebase from './Firebase';
+
+// import packages
 import Prompt from 'react-native-prompt';
+import OneSignal from 'react-native-onesignal';
+
+
 
 
 // Main App container
 export default class Town extends Component{
 
   // Constructor
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {checked1:false, // Checkbox flag
                   checked2:false,
                   markersList: [], // Local list of markers
@@ -35,53 +53,121 @@ export default class Town extends Component{
 
                   categories: [], // Future list of categories
                   incMarker: [], // list to store co-ordinates of onLongPress event
-                  modalVisible: false, // modalVisibility flag
+                  aboutVisible: false,
+                  modalVisible: false,
+                  hi: false, // modalVisibility flag
                   inputTitle: "", // temp Var for title of pin. Always "" when not making new pin
-                  inputDesc: ""}; // temp var for description of pin. Always "" when not making new pin
+                  inputDesc: "",
+                  markerInfo: ""}; // temp var for description of pin. Always "" when not making new pin
 
+    // Princeton's co-ordinates
+    this.defaultLocation = {
+      latitude: 40.3474,
+      longitude: - 74.6617,
+      latitudeDelta: 0.0022,
+      longitudeDelta: 0.0021,
+    };
     console.log("------------------------------ Constructor called ------------------------------");
 
-    // Binding
+    // Bindings
     this._handleMarkerPress = this._handleMarkerPress.bind(this);
     this._handleNewMarker = this._handleNewMarker.bind(this);
     this._handleCancelMarker = this._handleCancelMarker.bind(this);
+    this._renderCustomMarkers = this._renderCustomMarkers.bind(this);
+    this._onCalloutPress = this._onCalloutPress.bind(this);
+    this._setDrawer = this._setDrawer.bind(this);
+    this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
+    this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
+    this._openAbout = this._openAbout.bind(this);
+    this._closeAbout = this._closeAbout.bind(this);
 
-    setInterval(() => {
+    // Set timer for refreshing
+    this.timerId = setInterval(() => {
+      // Fetch from backend url
       fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
         method: "GET"
       }).then((fetchedMarkersList) => {
+
         var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
         this.setState({markersList: tempmarkersList});
-      }).catch( (error)=> console.log("Done with fetching from tim" + error.message));
-      console.log(" FETCHED FROM CONSTRUCTOR -------------------------");
+        console.log("Fetched list of events from backed");
+        console.log(tempmarkersList);
+
+      }).catch( (error)=> console.log("Error while fetching from backend: " + error.message));
 
     }, 5000);
 
   }
 
-
-  // Renders a
+  // Renders the main view
   render() {
+
+    var navigationView = (
+      <View style={Style.sideDrawer}>
+        <View style = {Style.drawerHeader}>
+          <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
+        </View>
+        <View style = {Style.sideButtonContainer}>
+          <SideButton
+            onPress = {this._onPressPrefsButton}
+            buttonText = {'Preferences'}
+          />
+          <SideButton
+            onPress = {this._onPressLogoutButton}
+            buttonText = {'Logout'}
+          />
+          <SideButton
+            onPress = {this._openAbout}
+            buttonText = {'About Us'}
+          />
+        </View>
+        <Modal
+          animationType = {'slide'}
+          onRequestClose = {this._closeAbout}
+          visible = {this.state.aboutVisible}
+          >
+          <View>
+            <Button
+              onPress={this._closeAbout}
+              title="Back to Town"
+              color="#FF5722"
+              accessibilityLabel="Learn more about this purple button"
+            />
+          </View>
+        </Modal>
+      </View>
+    );
+
     return(
       <View style={Style.rootContainer}>
+      <DrawerLayoutAndroid
+        drawerWidth={300}
+        drawerPosition={DrawerLayoutAndroid.positions.Left}
+        renderNavigationView={() => navigationView}
+        ref={'DRAWER'}>
+
+        <TopBar
+            title={'Town View'}
+            navigator={this.props.navigator}
+            sidebarRef={()=>this._setDrawer()}/>
+
         <View style={Style.mapContainer}>
-          <MapView  style={Style.map} initialRegion={{latitude: 40.3474,
-                                                      longitude: - 74.6617,
-                                                      latitudeDelta: 0.0022,
-                                                      longitudeDelta: 0.0021,
-                                                    }}
-                                      onLongPress={this._handleMarkerPress}
-                                      showsUserLocation	={true}
-                                      showsMyLocationButton	= {true}
-          >
-          {this._renderCustomMarkers(this.state.markersList)}
-          </MapView>
+
+        <CustomMapView
+          initialRegion={this.defaultLocation}
+          onLongPressHandler={this._handleMarkerPress}
+          markersList={this.state.markersList}
+          renderMarkers={this._renderCustomMarkers}
+        />
+
           <CheckButton onChange={this._onChange.bind(this)}
           checked={this.state.checked1}
-          label={this.state.test}/>
+          label={"Press to show time!!"}/>
+
           <CheckButton onChange={this._logout.bind(this)}
           checked={this.state.checked2}
           label={this.state.name + ' click here to log out'}/>
+
           <Modal
             animationType = {'slide'}
             onRequestClose = {this._handleCancelMarker}
@@ -106,9 +192,9 @@ export default class Town extends Component{
               <Text style = {{fontSize: 20, color: '#000000'}}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
               <Slider
                 maximumValue={180}
-                minimumValue={15}
+                minimumValue={0}
                 onValueChange={(time)=> this.setState({timer: time})}
-                step={15}
+                step={1}
                 value={this.state.timer}
                 >
 
@@ -129,65 +215,77 @@ export default class Town extends Component{
               />
             </View>
           </Modal>
-
+          <Modal
+            animationType = {'slide'}
+            onRequestClose = {this._handleCancelMarker}
+            visible = {this.state.hi}
+            >
+            <View>
+                <Button
+                  onPress={this._handleCancelMarker}
+                  title="Cancel"
+                  color="#FF5722"
+                  accessibilityLabel="Learn more about this purple button"
+                  />
+                  <Text>{this.state.markerInfo}</Text>
+            </View>
+          </Modal>
         </View>
+        </DrawerLayoutAndroid>
       </View>
     );
   }
 
-  // Checkbutton
+  // Checkbutton that shows time
   async _onChange(checked){
-    newmarkersList = [];
-    this.setState({markersList: newmarkersList});
-    // await AsyncStorage.setItem("markersList", JSON.stringify(newmarkersList));
+
     if (checked){
       this.setState({checked:false})
     }
     else{
       this.setState({checked:true})
     }
-
-    // var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newuser/', {
-    //     method: 'POST',
-    //
-    //     headers:{
-    //       'Content-Type': 'application/json',
-    //       'Accept': 'application/json',
-    //     },
-    //
-    //     body: JSON.stringify({
-    //       'fname': 'Jasmine',
-    //       'lname': 'Lou',
-    //       'cyear': 2019,
-    //       'netid': 'jlou',
-    //     })
-    //   });
-    //
-    // var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', {
-    //     method: 'POST',
-    //
-    //     headers:{
-    //       'Content-Type': 'application/json',
-    //       'Accept': 'application/json',
-    //     },
-    //
-    //     body: JSON.stringify({'lat': 0.0, 'lon': 1.1, 'title': 'birthday party', 'desc': 'its lit', 'cat': 9, 'oid': '7675vEYu8aSOSYwbbPVc0PQjV5H3', 'netid': 'tlou', 'stime': '00:54', 'dur': 60})
-    //   });
       alert(new Date().getTime());
-
-
-      // alert("Fetch was sent!");
   }
 
-  _logout() {
-    // logout, once that is complete, return the user to the login screen.
-    this.props.firebaseApp.auth().signOut().then(() => {
+  _openAbout() {
+    this.setState({aboutVisible: true})
+  }
+
+  _closeAbout() {
+    this.setState({aboutVisible: false});
+  }
+
+  _onPressLogoutButton() {
+    clearInterval(this.timerId);
+    Firebase.auth().signOut().then(() => {
       this.props.navigator.push({
         component: Login
       });
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
-  // Renders custom markers from a list of markers.
+
+  _onPressPrefsButton() {
+    this.props.navigator.push({
+      component: Preferences
+    });
+  }
+
+  _setDrawer() {
+    this.refs['DRAWER'].openDrawer();
+  }
+
+  _logout() {
+    // logout, once that is complete, return the user to the login screen.
+    clearInterval(this.timerId);
+    Firebase.auth().signOut().then(() => {
+      this.props.navigator.push({
+        component: Login
+      });
+    }).catch((error)=> console.log("Done with fetching from tim" + error.message));
+  }
+
+  // // Renders custom markers from a list of markers.
   _renderCustomMarkers(markersList){
         // List of <MarkerView>s
         let markers = [];
@@ -197,24 +295,44 @@ export default class Town extends Component{
 
         for(var m = 0; m < markersList.length; m++){
           marker = markersList[m];
+          markerprop = {
+            coordinate: { latitude: marker.latitude,
+                          longitude: marker.longitude},
+            view: {
+              title: marker.title
+            },
+
+            callout: {
+              description: marker.description
+            },
+
+            modal: {
+              description: marker.description
+            },
+
+          };
+
           markers.push(
-            <MapView.Marker
-            coordinate={
-              {latitude: marker.latitude,
-              longitude: marker.longitude}}
-            title={marker.title}
-            description={marker.description}
-            />
+
+                      <CustomMarker marker={markerprop}
+                        key={m}
+                        onCalloutPressed={this._onCalloutPress}
+                      />
+
           );
         }
-        console.log(" ----------------------------------------------");
-
-        console.log(" rendering " + JSON.stringify(markersList));
-        console.log(" ----------------------------------------------");
+        // console.log(" ----------------------------------------------");
+        //
+        // console.log(" rendering " + JSON.stringify(markersList));
+        // console.log(" ----------------------------------------------");
 
         return markers;
   }
 
+  _onCalloutPress(markerDescription){
+    this.setState({hi: true,
+      markerInfo: markerDescription})
+  };
   // Handles a onLongPress event
   // Saves co-ordinates in state variable incMarker
   _handleMarkerPress(e){
@@ -289,22 +407,33 @@ export default class Town extends Component{
     // set to null and remove Modal from view
     this.setState({inputTitle: "", inputDesc: "", timer: 60});
     this.setState({modalVisible: false});
+    this.setState({hi: false});
   }
 
 
   // Before mounting, load markers list from AsyncStorage
+  // onIds(device){
+  //   console.log(" FROM TOWN!!!!!!!!!!!!!!!")
+  //   console.log("Device info " , device);
+  //   console.log("Device id " , device.userId);
+  // }
+
   async componentWillMount(){
+
+    console.log("From Town!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.props.deviceInfo);
+    // OneSignal.addEventListener('ids',this.onIds);
+
 
     var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
       method: "GET"
     });
-    console.log(fetchedMarkersList);
+    // console.log(fetchedMarkersList);
     var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
     this.setState({markersList: tempmarkersList});
     console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
     // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
-    const userData = await this.props.firebaseApp.auth().currentUser;
-    const snapshot = await this.props.firebaseApp.database().ref('/users/' + userData.uid+ '/details').once('value');
+    const userData = await Firebase.auth().currentUser;
+    const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
     // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
@@ -318,10 +447,13 @@ export default class Town extends Component{
     this.setState({
       user: userData,
     });
+
     // var userId = firebaseApp.auth().currentUser.uid;
 
     // alert(JSON.stringify(this.state.user));
   }
+
+
 
   async componentDidMount(){
     console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
@@ -329,13 +461,13 @@ export default class Town extends Component{
     var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
       method: "GET"
     });
-    console.log(fetchedMarkersList);
+    // console.log(fetchedMarkersList);
     var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
     this.setState({markersList: tempmarkersList});
     console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
     // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
-    const userData = await this.props.firebaseApp.auth().currentUser;
-    const snapshot = await this.props.firebaseApp.database().ref('/users/' + userData.uid+ '/details').once('value');
+    const userData = await Firebase.auth().currentUser;
+    const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
     // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
