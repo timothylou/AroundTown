@@ -7,13 +7,20 @@ import {
   TouchableHighlight,
   ToolbarAndroid,
   StyleSheet,
-  Button
+  Button,
+  DrawerLayoutAndroid
 } from 'react-native';
 import Style from './Style'
 import Town from './Town';
+import Preferences from './Preferences'
+import TopBar from './TopBar';
+import SideButton from './SideButton';
+
+import Firebase from './Firebase'
 import React, {Component} from 'react';
 
 export default class About extends Component {
+
   render() {
     return (
       <View>
@@ -21,6 +28,11 @@ export default class About extends Component {
       </View>
     );
   }
+
+  _setDrawer() {
+    this.refs['DRAWER'].openDrawer();
+  }
+
 }
 
 const styles = StyleSheet.create({

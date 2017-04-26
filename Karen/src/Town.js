@@ -127,6 +127,7 @@ export default class Town extends Component{
           visible = {this.state.aboutVisible}
           >
           <View>
+            <About/>
             <Button
               onPress={this._closeAbout}
               title="Back to Town"

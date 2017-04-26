@@ -17,6 +17,7 @@ render() {
         onPress={this.props.onPress}>
           <View>
             <Text style = {styles.drawerButton}>{this.props.buttonText}</Text>
+            <Text style = {styles.drawerButton}> </Text>
           </View>
         </TouchableHighlight>
      </View>
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   drawerButton: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'left',
     textAlignVertical: 'center',
   }
 });

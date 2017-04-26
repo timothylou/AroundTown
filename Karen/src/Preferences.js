@@ -4,19 +4,107 @@ import {
   Text,
   TextInput,
   View,
+  ScrollView,
   TouchableHighlight,
   ToolbarAndroid,
-  ActivityIndicator
+  ActivityIndicator,
+  DrawerLayoutAndroid,
+  Modal,
+  Button
 } from 'react-native';
 import BaseStyle from './BaseStyles.js';
 import Style from './Style'
 import Login from './Login';
 import Town from './Town';
-import CheckButton from './CheckButton'
+import CheckButton from './CheckButton';
+import RadioButton from './RadioButton';
+import Firebase from './Firebase';
 import React, {Component} from 'react';
-
+import SideButton from './SideButton';
+import About from './About';
+import CheckButtonList from './CheckButtonList';
+import TopBar from './TopBar'
 // OneSignal import
 import OneSignal from 'react-native-onesignal';
+
+// defaultState
+
+
+const buttonsLocationTest = [
+  { label: "Rocky",
+  id: "rocky",
+  index: 0,
+  selected: true,},
+  {label: "Mathey",
+  id: "mathey",
+  index: 1,
+  selected: false},
+  {label: "Wilson",
+  id: "wilson",
+  index: 2,
+  selected: false},
+  {label: "Butler",
+  id: "butler",
+  index: 3,
+  selected: false},
+  {label: "Whitman",
+  id: "whitman",
+  index: 4,
+  selected: false},
+  {label: "Forbes",
+  id: "forbes",
+  index: 5,
+  selected: false},
+
+];
+
+const buttonsCatTest = [
+  { label: "Free Food",
+  id: "freeFood",
+  index: 0,
+  selected: false,},
+
+  {label: "Broken Facility",
+  id: "brokenFacility",
+  index: 1,
+  selected: false,},
+
+  {label: "Recruiting",
+  id: "recruiting",
+  index: 2,
+  selected: false,},
+
+  {label: "Study Break",
+  id: "studyBreak",
+  index: 3,
+  selected: false,},
+
+  {label: "Movie Screening",
+  id: "movie",
+  index: 4,
+  selected: false,},
+
+  {label: "Busy",
+  id: "busy",
+  index: 5,
+  selected: false,},
+
+  {label: "Fire Safety",
+  id: "fireSafety",
+  index: 6,
+  selected: false,},
+
+];
+//
+// const initialState = {
+//   loading: false,
+//
+//   locations: buttonsLocationTest,
+//
+//   categories: buttonsCatTest,
+//
+//   userData: null,
+// };
 
 // Main App container
 export default class Preferences extends Component{
@@ -24,95 +112,79 @@ export default class Preferences extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      // used to display a progress indicator if waiting for a network response.
-      loading: false,
-
-      // home locations
-      locations: {
-        rocky: false,
-        mathey: false,
-        whitman: false,
-        wilson: false,
-        butler: false,
-        forbes: false,
-      },
-
-      // categories
-      categories: {
-        freeFood: true,
-        brokenFacility: true,
-        recruiting: true,
-        studyBreak: true,
-        movie: true,
-        busy: true,
-        fireSafety: true,
-        other: true
-      }
-    }
-    this.handleCategoryChange = this.handleCategoryChange.bind(this)
-    this.handleHomeLocationChange = this.handleHomeLocationChange.bind(this)
-    this.convertBoolToText = this.convertBoolToText.bind(this)
-    //this.onIds = this.onIds.bind(this)
+      aboutVisible: false,
+      loading:true,
+      locations: buttonsLocationTest,
+      categories: buttonsCatTest,
+      userData: null,
+      name:null,
+    };
+    this.defaultState = this.state;
+    this.handleCategoryChange = this.handleCategoryChange.bind(this);
+    this.handleHomeLocationChange = this.handleHomeLocationChange.bind(this);
+    this.convertBoolToText = this.convertBoolToText.bind(this);
+    this._setDrawer = this._setDrawer.bind(this);
+    this._onPressTownButton = this._onPressTownButton.bind(this);
+    this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
+    this._openAbout = this._openAbout.bind(this);
+    this._closeAbout = this._closeAbout.bind(this);
   }
 
+
   // A method to passs the username and password to firebase and make a new user account
+  async componentWillMount(){
+    var currentUser = await Firebase.auth().currentUser;
+    const snapshot = await Firebase.database().ref('/users/' + currentUser.uid+ '/details').once('value');
+    var userName = snapshot.val().fname;
+    this.setState({userData: currentUser});
+    this.setState({loading: false});
+    this.setState({name: userName});
+  }
+
   async setPreferences() {
     this.setState({
       // When waiting for the firebase server show the loading indicator.
       loading: true
     });
 
-    const userData = await this.props.firebaseApp.auth().currentUser;
+    var currUser = this.state.userData
+    let userMobilePath = "/users/" + currUser.uid + "/details/prefs";
+    var locationPrefs = {};
+    var setLocations = this.state.locations;
+    var currLocation = null;
+    for(var l = 0; l< setLocations.length ; l++){
+      currLocation = setLocations[l];
+      locationPrefs[currLocation.label] = currLocation.selected.toString();
+    }
 
-    let userMobilePath = "/users/" + userData.uid + "/details/prefs";
+    var categoriesPrefs = {};
+    var setCategories = this.state.categories;
+    var currCategory = null;
+    for(var c = 0; c < setCategories.length ; c++){
+      currCategory = setCategories[c];
+      categoriesPrefs[currCategory.label] = currCategory.selected.toString();
+    }
 
-    await this.props.firebaseApp.database().ref(userMobilePath).set({
-      rocky: this.convertBoolToText(this.state.locations.rocky),
-      mathey: this.convertBoolToText(this.state.locations.mathey),
-      whitman: this.convertBoolToText(this.state.locations.whitman),
-      wilson: this.convertBoolToText(this.state.locations.wilson),
-      butler: this.convertBoolToText(this.state.locations.butler),
-      forbes: this.convertBoolToText(this.state.locations.forbes),
-      freeFood: this.convertBoolToText(this.state.categories.freeFood),
-      brokenFacility: this.convertBoolToText(this.state.categories.brokenFacility),
-      recruiting: this.convertBoolToText(this.state.categories.recruiting),
-      studyBreak: this.convertBoolToText(this.state.categories.studyBreak),
-      movie: this.convertBoolToText(this.state.categories.movie),
-      busy: this.convertBoolToText(this.state.categories.busy),
-      fireSafety: this.convertBoolToText(this.state.categories.fireSafety),
-      other: this.convertBoolToText(this.state.categories.other),
+    var setPreferences = {
+      location: locationPrefs,
+      categories: categoriesPrefs,
+    };
 
-    }).catch( (error)=> console.log("Done with fetching from Firebase        " + error.message));
-
-    // OneSignal.sendTag("key", "value");
-
+    var userDatabase = await Firebase.database().ref(userMobilePath);
+    userDatabase.set({Hello : "hello"});
     console.log("done with firebase");
+    //
+    // await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
+    //   method: 'POST',
+    //   headers: {
+    //             },
+    //     body: JSON.stringify({
+    //       deviceid: this.props.deviceInfo.userId,
+    //       preferences: setPreferences,
+    //     })
+    // }).then().catch( (error)=> console.log("BACKEND POST ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " + error.message));
 
-    await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
-      method: 'POST',
-      headers: {
-                },
-        body: JSON.stringify({
-          deviceid: 'b75c8fc8-af9c-411c-b79d-f9059f158f31',
-          tags: {
-            rocky: this.convertBoolToText(this.state.locations.rocky),
-            mathey: this.convertBoolToText(this.state.locations.mathey),
-            whitman: this.convertBoolToText(this.state.locations.whitman),
-            wilson: this.convertBoolToText(this.state.locations.wilson),
-            butler: this.convertBoolToText(this.state.locations.butler),
-            forbes: this.convertBoolToText(this.state.locations.forbes),
-            freefood: this.convertBoolToText(this.state.categories.freeFood),
-            brokenfacility: this.convertBoolToText(this.state.categories.brokenFacility),
-            recruiting: this.convertBoolToText(this.state.categories.recruiting),
-            studybreak: this.convertBoolToText(this.state.categories.studyBreak),
-            movie: this.convertBoolToText(this.state.categories.movie),
-            busy: this.convertBoolToText(this.state.categories.busy),
-            firesafety: this.convertBoolToText(this.state.categories.fireSafety),
-            other: this.convertBoolToText(this.state.categories.other),
-          }
-        })
-    }).then().catch( (error)=> console.log("Done with fetching from tim       " + error.message));
-    console.log("Done with fetching from tim");
+    console.log("Done with posting to tim");
 
     alert('Your preferences have been set!');
 
@@ -120,136 +192,166 @@ export default class Preferences extends Component{
     this.setState({
       loading: false
     });
+
+    this.setState({userData: null, locations: buttonsLocationTest, categories: buttonsCatTest, loading: false});
     this.props.navigator.push({
       component: Town
     });
 
-    this.setState({
-      // Clear out the fields when the user logs in and hide the progress indicator.
-      loading: false,
-
-      locations: {
-        rocky: false,
-        mathey: false,
-        whitman: false,
-        wilson: false,
-        butler: false,
-        forbes: false,
-      },
-
-      categories: {
-        freeFood: true,
-        brokenFacility: true,
-        recruiting: true,
-        studyBreak: true,
-        movie: true,
-        busy: true,
-        fireSafety: true,
-        other: true
-      }
-
-    });
   }
 
   render() {
     // The content of the screen should be inputs for a username, password and submit button.
     // If we are loading then we display an ActivityIndicator.
+
+    var navigationView = (
+      <View style={Style.sideDrawer}>
+        <View style = {Style.drawerHeader}>
+          <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
+        </View>
+        <View style = {Style.sideButtonContainer}>
+          <SideButton
+            onPress = {this._onPressTownButton}
+            buttonText = {'Town View'}
+          />
+          <SideButton
+            onPress = {this._onPressLogoutButton}
+            buttonText = {'Logout'}
+          />
+          <SideButton
+            onPress = {this._openAbout}
+            buttonText = {'About Us'}
+          />
+        </View>
+        <Modal
+          animationType = {'slide'}
+          onRequestClose = {this._closeAbout}
+          visible = {this.state.aboutVisible}
+          >
+          <View>
+            <About/>
+            <Button
+              onPress={this._closeAbout}
+              title="Back to Preferences"
+              color="#FF5722"
+              accessibilityLabel="Learn more about this purple button"
+            />
+          </View>
+        </Modal>
+      </View>
+    );
+
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
-      <View>
+      <ScrollView>
         <Text style = {Style.genericText}>Select one or more home bases</Text>
-
-        <CheckButton onChange={() => this.handleHomeLocationChange('rocky')}
-        checked={this.state.locations.rocky}
-        label={"Rockefeller College"}/>
-
-        <CheckButton onChange={() => this.handleHomeLocationChange('mathey')}
-        checked={this.state.locations.mathey}
-        label={"Mathey College"}/>
-
-        <CheckButton onChange={() => this.handleHomeLocationChange('whitman')}
-        checked={this.state.locations.whitman}
-        label={"Whitman College"}/>
-
-        <CheckButton onChange={() => this.handleHomeLocationChange('wilson')}
-        checked={this.state.locations.wilson}
-        label={"Wilson College"}/>
-
-        <CheckButton onChange={() => this.handleHomeLocationChange('butler')}
-        checked={this.state.locations.butler}
-        label={"Butler College"}/>
-
-        <CheckButton onChange={() => this.handleHomeLocationChange('forbes')}
-        checked={this.state.locations.forbes}
-        label={"Forbes College"}/>
-
+        <View>
+          {this._renderCheckButtons(this.state.locations, this.handleHomeLocationChange)}
+        </View>
         <Text style = {Style.genericText}>Which type of event would you like to receive notifications for?</Text>
-
-        <CheckButton onChange={() => this.handleCategoryChange('freeFood')}
-        checked={this.state.categories.freeFood}
-        label={"Free Food"}/>
-
-        <CheckButton onChange={() => this.handleCategoryChange('brokenFacility')}
-        checked={this.state.categories.brokenFacility}
-        label={"Broken Facility"}/>
-
-        <CheckButton onChange={() => this.handleCategoryChange('recruiting')}
-        checked={this.state.categories.recruiting}
-        label={"Recruiting/career event"}/>
-
-        <CheckButton onChange={() => this.handleCategoryChange('studyBreak')}
-        checked={this.state.categories.studyBreak}
-        label={"Study Break"}/>
-
-        <CheckButton onChange={() => this.handleCategoryChange('movie')}
-        checked={this.state.categories.movie}
-        label={"Movie screening"}/>
-
-        <CheckButton onChange={() => this.handleCategoryChange('busy')}
-        checked={this.state.categories.busy}
-        label={"Busy/crowded"}/>
-
-        <CheckButton onChange={() => this.handleCategoryChange('fireSafety')}
-        checked={this.state.categories.fireSafety}
-        label={"Fire safety in area"}/>
-
-        <CheckButton onChange={() => this.handleCategoryChange('other')}
-        checked={this.state.categories.other}
-        label={"Other"}/>
-
+        <View>
+          {this._renderCheckButtons(this.state.categories, this.handleCategoryChange)}
+        </View>
         <TouchableHighlight onPress={this.setPreferences.bind(this)} style={BaseStyle.primaryButton}>
           <Text style={BaseStyle.primaryButtonText}>Set Preferences</Text>
         </TouchableHighlight>
-      </View>;
+      </ScrollView>;
 
 
     // A simple UI with a toolbar, and content below it.
         return (
-                <View style={BaseStyle.container}>
-                        <ToolbarAndroid
-          style={BaseStyle.toolbar}
-          title="Set Preferences" />
-        <View style={BaseStyle.body}>
-          {content}
+        <View style={Style.rootContainer}>
+          <DrawerLayoutAndroid
+            drawerWidth={300}
+            drawerPosition={DrawerLayoutAndroid.positions.Left}
+            renderNavigationView={() => navigationView}
+            ref={'DRAWER'}>
+
+            <TopBar
+              title={'Set Preferences'}
+              navigator={this.props.navigator}
+              sidebarRef={()=>this._setDrawer()}/>
+
+          <View style={Style.prefsContainer}>
+            {content}
+          </View>
+          </DrawerLayoutAndroid>
         </View>
-      </View>
     );
   }
 
+  _renderCheckButtons(buttonsList, onPress){
+    let buttons = [];
+    if (buttonsList == null){
+      buttonsList = [];
+    }
+    var currLabel = null;
+    var currSelected = null;
+    var currId = null;
+    var currIndex = null;
+    var curronPress = null;
+    for (var b = 0; b < buttonsList.length; b++){
+
+      currLabel = buttonsList[b].label;
+      currSelected = buttonsList[b].selected;
+      currId = buttonsList[b].id;
+      currIndex = buttonsList[b].index;
+      curronPress = onPress.bind(null,currIndex);
+
+      buttons.push(
+        <RadioButton
+          label = {currLabel}
+          selected = {currSelected}
+          onPress = {curronPress}
+          index = {currIndex}
+          key = {currId}/>
+      );
+    }
+
+    return buttons;
+
+  }
+
+  _setDrawer() {
+    this.refs['DRAWER'].openDrawer();
+  }
+
+  _openAbout() {
+    this.setState({aboutVisible: true})
+  }
+
+  _closeAbout() {
+    this.setState({aboutVisible: false});
+  }
+
+  _onPressLogoutButton() {
+    clearInterval(this.timerId);
+    Firebase.auth().signOut().then(() => {
+      this.props.navigator.push({
+        component: Login
+      });
+    }).catch((error)=> console.log("Done with fetching from tim" + error.message));
+  }
+
+  _onPressTownButton() {
+    this.props.navigator.push({
+      component: Town
+    });
+  }
+
   // on category checked box
-  handleCategoryChange(propertyName){
-    const categories = this.state.categories;
-    categories[propertyName] = !categories[propertyName];
-    this.setState({categories: categories});
+  handleCategoryChange(currIndex){
+    var currentCategories = this.state.categories;
+    currentCategories[currIndex].selected = ! currentCategories[currIndex].selected
+    this.setState({categories: currentCategories});
 
   }
 
   // on location checked box
-  handleHomeLocationChange(propertyName) {
-    const locations = this.state.locations;
-    locations[propertyName] = !locations[propertyName];
-    this.setState({locations : locations});
-  }
-
+  handleHomeLocationChange(currIndex) {
+    var currentLocations = this.state.locations;
+    currentLocations[currIndex].selected = ! currentLocations[currIndex].selected
+    this.setState({locations: currentLocations});
+}
   // change true to yes and false to no
   convertBoolToText(bool) {
     const text = bool ? 'yes' : 'no';
