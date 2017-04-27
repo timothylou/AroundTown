@@ -1,40 +1,91 @@
+// Component imports
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
+  ScrollView,
   AsyncStorage,
   TextInput,
   Modal,
   Button,
   Slider,
   DrawerLayoutAndroid,
-  ToolbarAndroid,
-  TouchableHighlight,
+  Dimensions,
+  Animated,
+  Image
 } from 'react-native';
 
-// self made components and stylesheets
-import Style from './Style';
-import Login from './Login';
-import Signup from './Signup';
-import Preferences from './Preferences';
-import About from './About'
-import MapView from 'react-native-maps';
-import CheckButton from './CheckButton';
-import SideButton from './SideButton';
-import TopBar from './TopBar';
-import SideDrawer from './SideDrawer';
-import CustomMapView from './CustomMapView';
-import CustomMarker from './CustomMarker';
+// Custom Utils import
 import Firebase from './Firebase';
 
-// import packages
+// Custom Components
+import CustomMapView from './CustomMapView';
+import CustomMarker from './CustomMarker';
+import TopBar from './TopBar';
+import SideButton from './SideButton';
+import CheckButton from './CheckButton';
+import RadioButton from './RadioButton';
+import ClickButton from './ClickButton';
+// Pages imports
+import Preferences from './Preferences';
+import About from './About';
+import Login from './Login';
+import Signup from './Signup';
+
+// Style imports
+import Style from './Style';
+import ButtonStyle from './ButtonStyles';
+import PinInputStyle from './PinInputStyles';
+import TownStyle from './TownStyles';
+// Packages
+import MapView from 'react-native-maps';
 import Prompt from 'react-native-prompt';
 import OneSignal from 'react-native-onesignal';
 
 
+const buttonsCatTest = [
+  { label: "Free Food",
+  id: "freefood",
+  index: 0,
+  selected: false,},
 
+  {label: "Broken Facility",
+  id: "brokenfacility",
+  index: 1,
+  selected: false,},
+
+  {label: "Recruiting",
+  id: "recruiting",
+  index: 2,
+  selected: false,},
+
+  {label: "Study Break",
+  id: "studybreak",
+  index: 3,
+  selected: false,},
+
+  {label: "Movie Screening",
+  id: "movie",
+  index: 4,
+  selected: false,},
+
+  {label: "Busy",
+  id: "busy",
+  index: 5,
+  selected: false,},
+
+  {label: "Fire Safety",
+  id: "firesafety",
+  index: 6,
+  selected: false,},
+
+];
+
+// dimensions used for animations
+let windowWidth = Dimensions.get('window').width
+let windowHeight = Dimensions.get('window').height
 
 // Main App container
 export default class Town extends Component{
@@ -42,6 +93,7 @@ export default class Town extends Component{
   // Constructor
   constructor(props) {
     super(props);
+    this.animatedValue = new Animated.Value(windowWidth)
     this.state = {checked1:false, // Checkbox flag
                   checked2:false,
                   markersList: [], // Local list of markers
@@ -50,15 +102,26 @@ export default class Town extends Component{
                   timer: 60,
                   test: '',
                   netid: '',
+                  selectedCategory: '',
 
                   categories: [], // Future list of categories
                   incMarker: [], // list to store co-ordinates of onLongPress event
+
                   aboutVisible: false,
-                  modalVisible: false,
-                  hi: false, // modalVisibility flag
+
+
+                  markerInputVisible: false,
                   inputTitle: "", // temp Var for title of pin. Always "" when not making new pin
                   inputDesc: "",
-                  markerInfo: ""}; // temp var for description of pin. Always "" when not making new pin
+
+                  markerInfoVisbile: false, // modalVisibility flag
+                  markerInfo: "", // temp var for description of pin. Always "" when not making new pin
+
+                  filterVisible: false, // variable for filters being displayed or not
+
+                };
+
+
 
     // Princeton's co-ordinates
     this.defaultLocation = {
@@ -74,12 +137,16 @@ export default class Town extends Component{
     this._handleNewMarker = this._handleNewMarker.bind(this);
     this._handleCancelMarker = this._handleCancelMarker.bind(this);
     this._renderCustomMarkers = this._renderCustomMarkers.bind(this);
+    this._radioButtonPressed = this._radioButtonPressed.bind(this);
     this._onCalloutPress = this._onCalloutPress.bind(this);
     this._setDrawer = this._setDrawer.bind(this);
     this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
     this._closeAbout = this._closeAbout.bind(this);
+    this._showFilters = this._showFilters.bind(this);
+    this._hideFilters = this._hideFilters.bind(this);
+
 
     // Set timer for refreshing
     this.timerId = setInterval(() => {
@@ -98,9 +165,9 @@ export default class Town extends Component{
     }, 5000);
 
   }
-
   // Renders the main view
   render() {
+
 
     var navigationView = (
       <View style={Style.sideDrawer}>
@@ -139,102 +206,144 @@ export default class Town extends Component{
       </View>
     );
 
-    return(
-      <View style={Style.rootContainer}>
-      <DrawerLayoutAndroid
-        drawerWidth={300}
-        drawerPosition={DrawerLayoutAndroid.positions.Left}
-        renderNavigationView={() => navigationView}
-        ref={'DRAWER'}>
 
-        <TopBar
+    return(
+      <View style={TownStyle.rootContainer}>
+        <DrawerLayoutAndroid
+          drawerWidth={300}
+          drawerPosition={DrawerLayoutAndroid.positions.Left}
+          renderNavigationView={() => navigationView}
+          ref={'DRAWER'}>
+          <TopBar
             title={'Town View'}
             navigator={this.props.navigator}
             sidebarRef={()=>this._setDrawer()}/>
-
-        <View style={Style.mapContainer}>
-
-        <CustomMapView
-          initialRegion={this.defaultLocation}
-          onLongPressHandler={this._handleMarkerPress}
-          markersList={this.state.markersList}
-          renderMarkers={this._renderCustomMarkers}
-        />
-
-          <CheckButton onChange={this._onChange.bind(this)}
-          checked={this.state.checked1}
-          label={"Press to show time!!"}/>
-
-          <CheckButton onChange={this._logout.bind(this)}
-          checked={this.state.checked2}
-          label={this.state.name + ' click here to log out'}/>
-
-          <Modal
-            animationType = {'slide'}
-            onRequestClose = {this._handleCancelMarker}
-            visible = {this.state.modalVisible}
-          >
-            <View>
-              <Text style = {{fontSize: 20, color: '#000000'}}>Enter title here!</Text>
-              <TextInput
-                placeholder= {"Enter pin title here!"}
-                onChangeText={(text) => this.setState({inputTitle: text})}
-              />
-              <Text style = {{fontSize: 20, color: '#000000'}}>Enter description here!</Text>
-              <TextInput
-                value={this.state.descInput}
-                placeholder= {"Enter pin description here!"}
-                onChangeText={(text) => this.setState({inputDesc: text})}
-
-                multiline = {true}
-                numberOfLines = {8}
-                textAlignVertical = "top"
-              />
-              <Text style = {{fontSize: 20, color: '#000000'}}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
-              <Slider
-                maximumValue={180}
-                minimumValue={0}
-                onValueChange={(time)=> this.setState({timer: time})}
-                step={1}
-                value={this.state.timer}
-                >
-
-              </Slider>
-              <Text style = {{fontSize: 20, color: '#000000'}}>{this.state.timer}</Text>
-
-              <Button
-                onPress={this._handleNewMarker}
-                title="Submit"
-                color="#2196F3"
-                accessibilityLabel="Learn more about this purple button"
-              />
-              <Button
-                onPress={this._handleCancelMarker}
-                title="Cancel"
-                color="#FF5722"
-                accessibilityLabel="Learn more about this purple button"
-              />
-            </View>
-          </Modal>
-          <Modal
-            animationType = {'slide'}
-            onRequestClose = {this._handleCancelMarker}
-            visible = {this.state.hi}
+          <View style={TownStyle.mapContainer}>
+            <CustomMapView
+              initialRegion={this.defaultLocation}
+              onPressHandler = {this._showFilters}
+              onLongPressHandler={this._handleMarkerPress}
+              markersList={this.state.markersList}
+              renderMarkers={this._renderCustomMarkers}
+            />
+            <Modal
+              animationType = {'slide'}
+              onRequestClose = {this._handleCancelMarker}
+              visible = {this.state.markerInputVisible}
             >
-            <View>
-                <Button
-                  onPress={this._handleCancelMarker}
-                  title="Cancel"
-                  color="#FF5722"
-                  accessibilityLabel="Learn more about this purple button"
+              <ScrollView contentContainerStyle={PinInputStyle.MainContainer}>
+                <View style={PinInputStyle.TitleInputContainer}>
+                  <Text style={PinInputStyle.TitleInputTitle}>Enter title here!</Text>
+                  <TextInput
+                    placeholder= {"Enter pin title here!"}
+                    onChangeText={(text) => this.setState({inputTitle: text})}
                   />
-                  <Text>{this.state.markerInfo}</Text>
-            </View>
-          </Modal>
-        </View>
+                </View>
+
+                <View style={PinInputStyle.DescriptionInputContainer}>
+                  <Text style = {PinInputStyle.DescriptionInputTitle}>Enter description here!</Text>
+                  <TextInput
+                    value={this.state.descInput}
+                    placeholder= {"Enter pin description here!"}
+                    onChangeText={(text) => this.setState({inputDesc: text})}
+
+                    multiline = {true}
+                    numberOfLines = {8}
+                    textAlignVertical = "top"
+                  />
+                </View>
+
+
+                <View style={PinInputStyle.TimerBarContainer}>
+                  <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
+                  <Slider
+                    maximumValue={180}
+                    minimumValue={0}
+                    onValueChange={(time)=> this.setState({timer: time})}
+                    step={1}
+                    value={this.state.timer}
+                    >
+                  </Slider>
+                </View>
+                <View style={PinInputStyle.RadioButtonListContainer}>
+                  {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
+                </View>
+                <View style={PinInputStyle.ConfirmationButtonsContainer}>
+                  <View style={ButtonStyle.HorizontalButtonListContainer}>
+                    <ClickButton
+                      onPress={this._handleNewMarker}
+                      label="Submit"
+                      color="#2196F3"
+                    />
+                    <ClickButton
+                      onPress={this._handleCancelMarker}
+                      label="Cancel"
+                      color="#FF5722"
+                    />
+                  </View>
+                </View>
+              </ScrollView>
+            </Modal>
+            <Modal
+              animationType = {'slide'}
+              onRequestClose = {this._handleCancelMarker}
+              visible = {this.state.markerInfoVisbile}
+              >
+              <View>
+                  <Button
+                    onPress={this._handleCancelMarker}
+                    title="Cancel"
+                    color="#FF5722"
+                    accessibilityLabel="Learn more about this purple button"
+                    />
+                    <Text>{this.state.markerInfo}</Text>
+              </View>
+            </Modal>
+            <Animated.View
+              style={{
+                transform: [{ translateX: this.animatedValue }],
+                marginTop: 0,
+                backgroundColor: '#696969',
+                position: 'absolute',
+                left:0,
+                top:100,
+                bottom: 100,
+                width: 70,
+                flexDirection: 'column'
+              }}>
+              <ScrollView contentContainerStyle={PinInputStyle.ViewButtonListContainer}>
+                {this._renderRadioButtons(buttonsCatTest, this._viewButtonPressed)}
+              </ScrollView>
+            </Animated.View>
+          </View>
         </DrawerLayoutAndroid>
       </View>
     );
+  }
+
+  _showFilters() {
+    if (this.state.filterVisible) return;
+
+    this.setState({filterVisible: true});
+    Animated.timing(
+      this.animatedValue,
+      {
+        toValue: windowWidth - 70,
+        duration: 500
+      }
+    ).start(this._hideFilters());
+  }
+
+  _hideFilters() {
+    setTimeout(() => {
+      this.setState({ filterVisible: false })
+      Animated.timing(
+      this.animatedValue,
+      {
+        toValue: windowWidth,
+        duration: 500
+      }).start()
+    }, 5000)
   }
 
   // Checkbutton that shows time
@@ -248,6 +357,7 @@ export default class Town extends Component{
     }
       alert(new Date().getTime());
   }
+
 
   _openAbout() {
     this.setState({aboutVisible: true})
@@ -276,6 +386,7 @@ export default class Town extends Component{
     this.refs['DRAWER'].openDrawer();
   }
 
+
   _logout() {
     // logout, once that is complete, return the user to the login screen.
     clearInterval(this.timerId);
@@ -286,7 +397,47 @@ export default class Town extends Component{
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
 
-  // // Renders custom markers from a list of markers.
+  _radioButtonPressed(buttonId){
+    this.setState({selectedCategory: buttonId});
+  }
+
+  _viewButtonPressed(buttonId){
+    alert(buttonId);
+  }
+
+  _renderRadioButtons(buttonsList, onPress){
+    let buttons = [];
+    if (buttonsList == null){
+      buttonsList = [];
+    }
+    var currLabel = null;
+    var currSelected = null;
+    var currId = null;
+    var currIndex = null;
+    var curronPress = null;
+    for (var b = 0; b < buttonsList.length; b++){
+
+      currLabel = buttonsList[b].label;
+      currId = buttonsList[b].id;
+      currSelected = currId == this.state.selectedCategory ? true:false;
+      currIndex = buttonsList[b].index;
+      curronPress = onPress.bind(null,currId);
+
+      buttons.push(
+        <RadioButton
+          label = {currLabel}
+          selected = {currSelected}
+          onPress = {curronPress}
+          index = {currIndex}
+          key = {currId}/>
+      );
+    }
+
+    return buttons;
+
+  }
+
+  // Renders custom markers from a list of markers.
   _renderCustomMarkers(markersList){
         // List of <MarkerView>s
         let markers = [];
@@ -331,7 +482,7 @@ export default class Town extends Component{
   }
 
   _onCalloutPress(markerDescription){
-    this.setState({hi: true,
+    this.setState({markerInfoVisbile: true,
       markerInfo: markerDescription})
   };
   // Handles a onLongPress event
@@ -344,7 +495,7 @@ export default class Town extends Component{
                   }});
 
     // Make modal visible for user input.
-    this.setState({modalVisible: true});
+    this.setState({markerInputVisible: true});
   }
 
   // Evaluates inputted values on Modal
@@ -368,7 +519,7 @@ export default class Town extends Component{
         'longitude': this.state.incMarker.coordinate.longitude,
         'title': this.state.inputTitle,
         'description': this.state.inputDesc,
-        'cat': 9,
+        'cat': this.state.selectedCategory,
         'oid': this.state.user.uid,
         'netid': this.state.netid,
         'stime': new Date().getTime(),
@@ -398,7 +549,7 @@ export default class Town extends Component{
       // Remove modal from view
       this.setState({inputTitle: "", inputDesc: "", timer: 60});
       this.setState({incMarker: []});
-      this.setState({modalVisible: false});
+      this.setState({markerInputVisible: false});
 
     }
   }
@@ -407,8 +558,8 @@ export default class Town extends Component{
   _handleCancelMarker(){
     // set to null and remove Modal from view
     this.setState({inputTitle: "", inputDesc: "", timer: 60});
-    this.setState({modalVisible: false});
-    this.setState({hi: false});
+    this.setState({markerInputVisible: false});
+    this.setState({markerInfoVisbile: false});
   }
 
 
@@ -454,6 +605,10 @@ export default class Town extends Component{
     // alert(JSON.stringify(this.state.user));
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+
+  }
 
 
   async componentDidMount(){
