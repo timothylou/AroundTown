@@ -61,10 +61,12 @@ May 8 - 12 Demo days -- UPCOMING
 May 14 Submission
 
 ATown details
-- Supports login with info
-- Adds user to firebase, with details
-- Supports dropping pins, with user inputs
+- Supports login with info via Firebase
+- Adds user to Firebase, with details, and preferences
+- Supports dropping pins, with user inputs, and category
 - Updates pins on Flask App with SQLite running on AWS+Apache2
+- Push notifs implemented with OneSignal+Firebase
+
 ```
 
 WARNING: The node_modules arent uploaded to the git, so dont forget to npm install. If react-native-maps is being buggy use locally copied react-native-maps package (update messes up rnpm linking).
