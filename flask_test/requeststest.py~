@@ -57,24 +57,42 @@ print r.text
 print
 
 print "Check posting event info"
-eventdict = {'lat': 0.0, 'lon': 1.1, 'title': 'birthday party', 'desc': 'its lit', 'cat': 9, 'oid': 'uiduiduiduid', 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
+eventdict = {'latitude': 0.0, 'longitude': 1.1, 'title': 'birthday party', 'description': 'its lit', 'cat': 9, 'oid': 'uiduiduiduid', 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
 r = requests.post('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', data=json.dumps(eventdict))
 eventid = r.text
 print eventid
+print
+
+print "Check posting event info"
+eventdict = {'latitude': 2.2, 'longitude': 3.3, 'title': 'free food', 'description': 'its lit', 'cat': 9, 'oid': 'uiduiduiduid', 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
+r = requests.post('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', data=json.dumps(eventdict))
+eventid = r.text
+print eventid
+print
+
+print "Check posting event info"
+eventdict = {'latitude': 4.4, 'longitude': 5.5, 'title': 'free showing', 'description': 'its lit', 'cat': 9, 'oid': 'uiduiduiduid', 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
+r = requests.post('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', data=json.dumps(eventdict))
+eventid = r.text
+print eventid
+print
 
 payload3 = {'uid': 'uiduiduid2', 'desired': 'lastname'}
 r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/userinfo/', params = payload3)
 print r.url
 print r.text
+print
 
 payload4 = {'uid': 'uiduiduiduid', 'desired': 'notvalidfield'}
 r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/userinfo/', params = payload4)
 print r.url
 print r.text
+print
 
 r = requests.get('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive/')
 print r.url
 print r.text
+print
 
 '''Coordinate: {lat: 1212, lon: 123123}
 Title: 'blah',
