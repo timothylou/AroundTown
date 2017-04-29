@@ -50,7 +50,7 @@ Apr 23 - 30 Alpha test -- COMPLETED
 - Users can comment/give feedback to existing pins
 - Implement user location updates
 
-May 1 - 7 Beta test -- COMPLETED		
+May 1 - 7 Beta test -- UPCOMING	
 - Implement location-specific notifications
 - Add “home base” notification capabilities
 - No more adding features after the end of this week
