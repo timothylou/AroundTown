@@ -1,1 +1,1 @@
-import ATown from './src/MainApp';
+import ATown from './src/MainApp'

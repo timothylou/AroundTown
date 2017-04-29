@@ -1,29 +1,99 @@
+// Component imports
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
   View,
+  ScrollView,
   AsyncStorage,
   TextInput,
   Modal,
   Button,
-  Slider
+  Slider,
+  DrawerLayoutAndroid,
+  Dimensions,
+  Animated,
+  Image
 } from 'react-native';
-import Style from './Style';
+
+// Custom Utils import
+import Firebase from './Firebase';
+
+// Custom Components
+import CustomMapView from './CustomMapView';
+import CustomMarker from './CustomMarker';
+import TopBar from './TopBar';
+import SideButton from './SideButton';
+import CheckButton from './CheckButton';
+import RadioButton from './RadioButton';
+import ClickButton from './ClickButton';
+// Pages imports
+import Preferences from './Preferences';
+import About from './About';
 import Login from './Login';
 import Signup from './Signup';
-import MapView from 'react-native-maps';
-import CheckButton from './CheckButton';
-import Prompt from 'react-native-prompt';
 
+// Style imports
+import Style from './Style';
+import ButtonStyle from './ButtonStyles';
+import PinInputStyle from './PinInputStyles';
+import TownStyle from './TownStyles';
+// Packages
+import MapView from 'react-native-maps';
+import Prompt from 'react-native-prompt';
+import OneSignal from 'react-native-onesignal';
+
+
+const buttonsCatTest = [
+  { label: "Free Food",
+  id: "freefood",
+  index: 0,
+  selected: false,},
+
+  {label: "Broken Facility",
+  id: "brokenfacility",
+  index: 1,
+  selected: false,},
+
+  {label: "Recruiting",
+  id: "recruiting",
+  index: 2,
+  selected: false,},
+
+  {label: "Study Break",
+  id: "studybreak",
+  index: 3,
+  selected: false,},
+
+  {label: "Movie Screening",
+  id: "movie",
+  index: 4,
+  selected: false,},
+
+  {label: "Busy",
+  id: "busy",
+  index: 5,
+  selected: false,},
+
+  {label: "Fire Safety",
+  id: "firesafety",
+  index: 6,
+  selected: false,},
+
+];
+
+// dimensions used for animations
+let windowWidth = Dimensions.get('window').width
+let windowHeight = Dimensions.get('window').height
 
 // Main App container
 export default class Town extends Component{
 
   // Constructor
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.animatedValue = new Animated.Value(windowWidth)
     this.state = {checked1:false, // Checkbox flag
                   checked2:false,
                   markersList: [], // Local list of markers
@@ -32,158 +102,341 @@ export default class Town extends Component{
                   timer: 60,
                   test: '',
                   netid: '',
+                  selectedCategory: '',
 
                   categories: [], // Future list of categories
                   incMarker: [], // list to store co-ordinates of onLongPress event
-                  modalVisible: false, // modalVisibility flag
-                  inputTitle: "", // temp Var for title of pin. Always "" when not making new pin
-                  inputDesc: ""}; // temp var for description of pin. Always "" when not making new pin
 
+                  aboutVisible: false,
+
+
+                  markerInputVisible: false,
+                  inputTitle: "", // temp Var for title of pin. Always "" when not making new pin
+                  inputDesc: "",
+
+                  markerInfoVisbile: false, // modalVisibility flag
+                  markerInfo: "", // temp var for description of pin. Always "" when not making new pin
+
+                  filterVisible: false, // variable for filters being displayed or not
+
+                };
+
+
+
+    // Princeton's co-ordinates
+    this.defaultLocation = {
+      latitude: 40.3474,
+      longitude: - 74.6617,
+      latitudeDelta: 0.0022,
+      longitudeDelta: 0.0021,
+    };
     console.log("------------------------------ Constructor called ------------------------------");
 
-    // Binding
+    // Bindings
     this._handleMarkerPress = this._handleMarkerPress.bind(this);
     this._handleNewMarker = this._handleNewMarker.bind(this);
     this._handleCancelMarker = this._handleCancelMarker.bind(this);
+    this._renderCustomMarkers = this._renderCustomMarkers.bind(this);
+    this._radioButtonPressed = this._radioButtonPressed.bind(this);
+    this._onCalloutPress = this._onCalloutPress.bind(this);
+    this._setDrawer = this._setDrawer.bind(this);
+    this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
+    this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
+    this._openAbout = this._openAbout.bind(this);
+    this._closeAbout = this._closeAbout.bind(this);
+    this._showFilters = this._showFilters.bind(this);
+    this._hideFilters = this._hideFilters.bind(this);
 
-    setInterval(() => {
+
+    // Set timer for refreshing
+    this.timerId = setInterval(() => {
+      // Fetch from backend url
       fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
         method: "GET"
       }).then((fetchedMarkersList) => {
+
         var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
         this.setState({markersList: tempmarkersList});
-      }).done();
-      console.log(" FETCHED FROM CONSTRUCTOR -------------------------");
+        console.log("Fetched list of events from backed");
+        // console.log(tempmarkersList);
+
+      }).catch( (error)=> console.log("Error while fetching from backend: " + error.message));
+
     }, 5000);
 
   }
-
-
-  // Renders a
+  // Renders the main view
   render() {
-    return(
-      <View style={Style.rootContainer}>
-        <View style={Style.mapContainer}>
-          <MapView  style={Style.map} initialRegion={{latitude: 40.3474,
-                                                      longitude: - 74.6617,
-                                                      latitudeDelta: 0.0022,
-                                                      longitudeDelta: 0.0021,
-                                                    }}
-                                      onLongPress={this._handleMarkerPress}
-          >
-          {this._renderCustomMarkers(this.state.markersList)}
-          </MapView>
-          <CheckButton onChange={this._onChange.bind(this)}
-          checked={this.state.checked1}
-          label={this.state.test}/>
-          <CheckButton onChange={this._logout.bind(this)}
-          checked={this.state.checked2}
-          label={this.state.name + ' click here to log out'}/>
-          <Modal
-            animationType = {'slide'}
-            onRequestClose = {this._handleCancelMarker}
-            visible = {this.state.modalVisible}
-          >
-            <View>
-              <Text style = {{fontSize: 20, color: '#000000'}}>Enter title here!</Text>
-              <TextInput
-                placeholder= {"Enter pin title here!"}
-                onChangeText={(text) => this.setState({inputTitle: text})}
-              />
-              <Text style = {{fontSize: 20, color: '#000000'}}>Enter description here!</Text>
-              <TextInput
-                value={this.state.descInput}
-                placeholder= {"Enter pin description here!"}
-                onChangeText={(text) => this.setState({inputDesc: text})}
 
-                multiline = {true}
-                numberOfLines = {8}
-                textAlignVertical = "top"
-              />
-              <Text style = {{fontSize: 20, color: '#000000'}}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
-              <Slider
-                maximumValue={180}
-                minimumValue={15}
-                onValueChange={(time)=> this.setState({timer: time})}
-                step={15}
-                value={this.state.timer}
-                >
 
-              </Slider>
-              <Text style = {{fontSize: 20, color: '#000000'}}>{this.state.timer}</Text>
-
-              <Button
-                onPress={this._handleNewMarker}
-                title="Submit"
-                color="#2196F3"
-                accessibilityLabel="Learn more about this purple button"
-              />
-              <Button
-                onPress={this._handleCancelMarker}
-                title="Cancel"
-                color="#FF5722"
-                accessibilityLabel="Learn more about this purple button"
-              />
-            </View>
-          </Modal>
-
+    var navigationView = (
+      <View style={Style.sideDrawer}>
+        <View style = {Style.drawerHeader}>
+          <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
         </View>
+        <View style = {Style.sideButtonContainer}>
+          <SideButton
+            onPress = {this._onPressPrefsButton}
+            buttonText = {'Preferences'}
+          />
+          <SideButton
+            onPress = {this._onPressLogoutButton}
+            buttonText = {'Logout'}
+          />
+          <SideButton
+            onPress = {this._openAbout}
+            buttonText = {'About Us'}
+          />
+        </View>
+        <Modal
+          animationType = {'slide'}
+          onRequestClose = {this._closeAbout}
+          visible = {this.state.aboutVisible}
+          >
+          <View>
+            <About/>
+            <Button
+              onPress={this._closeAbout}
+              title="Back to Town"
+              color="#FF5722"
+              accessibilityLabel="Learn more about this purple button"
+            />
+          </View>
+        </Modal>
+      </View>
+    );
+
+
+    return(
+      <View style={TownStyle.rootContainer}>
+        <DrawerLayoutAndroid
+          drawerWidth={300}
+          drawerPosition={DrawerLayoutAndroid.positions.Left}
+          renderNavigationView={() => navigationView}
+          ref={'DRAWER'}>
+          <TopBar
+            title={'Town View'}
+            navigator={this.props.navigator}
+            sidebarRef={()=>this._setDrawer()}/>
+          <View style={TownStyle.mapContainer}>
+            <CustomMapView
+              initialRegion={this.defaultLocation}
+              onPressHandler = {this._showFilters}
+              onLongPressHandler={this._handleMarkerPress}
+              markersList={this.state.markersList}
+              renderMarkers={this._renderCustomMarkers}
+            />
+            <Modal
+              animationType = {'slide'}
+              onRequestClose = {this._handleCancelMarker}
+              visible = {this.state.markerInputVisible}
+            >
+              <ScrollView contentContainerStyle={PinInputStyle.MainContainer}>
+                <View style={PinInputStyle.TitleInputContainer}>
+                  <Text style={PinInputStyle.TitleInputTitle}>Enter title here!</Text>
+                  <TextInput
+                    placeholder= {"Enter pin title here!"}
+                    onChangeText={(text) => this.setState({inputTitle: text})}
+                  />
+                </View>
+
+                <View style={PinInputStyle.DescriptionInputContainer}>
+                  <Text style = {PinInputStyle.DescriptionInputTitle}>Enter description here!</Text>
+                  <TextInput
+                    value={this.state.descInput}
+                    placeholder= {"Enter pin description here!"}
+                    onChangeText={(text) => this.setState({inputDesc: text})}
+
+                    multiline = {true}
+                    numberOfLines = {8}
+                    textAlignVertical = "top"
+                  />
+                </View>
+
+
+                <View style={PinInputStyle.TimerBarContainer}>
+                  <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
+                  <Slider
+                    maximumValue={180}
+                    minimumValue={0}
+                    onValueChange={(time)=> this.setState({timer: time})}
+                    step={1}
+                    value={this.state.timer}
+                    >
+                  </Slider>
+                </View>
+                <View style={PinInputStyle.RadioButtonListContainer}>
+                  {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
+                </View>
+                <View style={PinInputStyle.ConfirmationButtonsContainer}>
+                  <View style={ButtonStyle.HorizontalButtonListContainer}>
+                    <ClickButton
+                      onPress={this._handleNewMarker}
+                      label="Submit"
+                      color="#2196F3"
+                    />
+                    <ClickButton
+                      onPress={this._handleCancelMarker}
+                      label="Cancel"
+                      color="#FF5722"
+                    />
+                  </View>
+                </View>
+              </ScrollView>
+            </Modal>
+            <Modal
+              animationType = {'slide'}
+              onRequestClose = {this._handleCancelMarker}
+              visible = {this.state.markerInfoVisbile}
+              >
+              <View>
+                  <Button
+                    onPress={this._handleCancelMarker}
+                    title="Cancel"
+                    color="#FF5722"
+                    accessibilityLabel="Learn more about this purple button"
+                    />
+                    <Text>{this.state.markerInfo}</Text>
+              </View>
+            </Modal>
+            <Animated.View
+              style={{
+                transform: [{ translateX: this.animatedValue }],
+                marginTop: 0,
+                backgroundColor: '#696969',
+                position: 'absolute',
+                left:0,
+                top:100,
+                bottom: 100,
+                width: 70,
+                flexDirection: 'column'
+              }}>
+              <ScrollView contentContainerStyle={PinInputStyle.ViewButtonListContainer}>
+                {this._renderRadioButtons(buttonsCatTest, this._viewButtonPressed)}
+              </ScrollView>
+            </Animated.View>
+          </View>
+        </DrawerLayoutAndroid>
       </View>
     );
   }
 
-  // Checkbutton
+  _showFilters() {
+    if (this.state.filterVisible) return;
+
+    this.setState({filterVisible: true});
+    Animated.timing(
+      this.animatedValue,
+      {
+        toValue: windowWidth - 70,
+        duration: 500
+      }
+    ).start(this._hideFilters());
+  }
+
+  _hideFilters() {
+    setTimeout(() => {
+      this.setState({ filterVisible: false })
+      Animated.timing(
+      this.animatedValue,
+      {
+        toValue: windowWidth,
+        duration: 500
+      }).start()
+    }, 5000)
+  }
+
+  // Checkbutton that shows time
   async _onChange(checked){
-    newmarkersList = [];
-    this.setState({markersList: newmarkersList});
-    // await AsyncStorage.setItem("markersList", JSON.stringify(newmarkersList));
+
     if (checked){
       this.setState({checked:false})
     }
     else{
       this.setState({checked:true})
     }
-
-    // var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newuser/', {
-    //     method: 'POST',
-    //
-    //     headers:{
-    //       'Content-Type': 'application/json',
-    //       'Accept': 'application/json',
-    //     },
-    //
-    //     body: JSON.stringify({
-    //       'fname': 'Jasmine',
-    //       'lname': 'Lou',
-    //       'cyear': 2019,
-    //       'netid': 'jlou',
-    //     })
-    //   });
-    //
-    // var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/', {
-    //     method: 'POST',
-    //
-    //     headers:{
-    //       'Content-Type': 'application/json',
-    //       'Accept': 'application/json',
-    //     },
-    //
-    //     body: JSON.stringify({'lat': 0.0, 'lon': 1.1, 'title': 'birthday party', 'desc': 'its lit', 'cat': 9, 'oid': '7675vEYu8aSOSYwbbPVc0PQjV5H3', 'netid': 'tlou', 'stime': '00:54', 'dur': 60})
-    //   });
       alert(new Date().getTime());
-
-
-      // alert("Fetch was sent!");
   }
 
-  _logout() {
-    // logout, once that is complete, return the user to the login screen.
-    this.props.firebaseApp.auth().signOut().then(() => {
+
+  _openAbout() {
+    this.setState({aboutVisible: true})
+  }
+
+  _closeAbout() {
+    this.setState({aboutVisible: false});
+  }
+
+  _onPressLogoutButton() {
+    clearInterval(this.timerId);
+    Firebase.auth().signOut().then(() => {
       this.props.navigator.push({
         component: Login
       });
+    }).catch((error)=> console.log("Done with fetching from tim" + error.message));
+  }
+
+  _onPressPrefsButton() {
+    this.props.navigator.push({
+      component: Preferences
     });
   }
+
+  _setDrawer() {
+    this.refs['DRAWER'].openDrawer();
+  }
+
+
+  _logout() {
+    // logout, once that is complete, return the user to the login screen.
+    clearInterval(this.timerId);
+    Firebase.auth().signOut().then(() => {
+      this.props.navigator.push({
+        component: Login
+      });
+    }).catch((error)=> console.log("Done with fetching from tim" + error.message));
+  }
+
+  _radioButtonPressed(buttonId){
+    this.setState({selectedCategory: buttonId});
+  }
+
+  _viewButtonPressed(buttonId){
+    alert(buttonId);
+  }
+
+  _renderRadioButtons(buttonsList, onPress){
+    let buttons = [];
+    if (buttonsList == null){
+      buttonsList = [];
+    }
+    var currLabel = null;
+    var currSelected = null;
+    var currId = null;
+    var currIndex = null;
+    var curronPress = null;
+    for (var b = 0; b < buttonsList.length; b++){
+
+      currLabel = buttonsList[b].label;
+      currId = buttonsList[b].id;
+      currSelected = currId == this.state.selectedCategory ? true:false;
+      currIndex = buttonsList[b].index;
+      curronPress = onPress.bind(null,currId);
+
+      buttons.push(
+        <RadioButton
+          label = {currLabel}
+          selected = {currSelected}
+          onPress = {curronPress}
+          index = {currIndex}
+          key = {currId}/>
+      );
+    }
+
+    return buttons;
+
+  }
+
   // Renders custom markers from a list of markers.
   _renderCustomMarkers(markersList){
         // List of <MarkerView>s
@@ -194,24 +447,44 @@ export default class Town extends Component{
 
         for(var m = 0; m < markersList.length; m++){
           marker = markersList[m];
+          markerprop = {
+            coordinate: { latitude: marker.latitude,
+                          longitude: marker.longitude},
+            view: {
+              title: marker.title
+            },
+
+            callout: {
+              description: marker.description
+            },
+
+            modal: {
+              description: marker.description
+            },
+
+          };
+
           markers.push(
-            <MapView.Marker
-            coordinate={
-              {latitude: marker.latitude,
-              longitude: marker.longitude}}
-            title={marker.title}
-            description={marker.description}
-            />
+
+                      <CustomMarker marker={markerprop}
+                        key={m}
+                        onCalloutPressed={this._onCalloutPress}
+                      />
+
           );
         }
-        console.log(" ----------------------------------------------");
-
-        console.log(" rendering " + JSON.stringify(markersList));
-        console.log(" ----------------------------------------------");
+        // console.log(" ----------------------------------------------");
+        //
+        // console.log(" rendering " + JSON.stringify(markersList));
+        // console.log(" ----------------------------------------------");
 
         return markers;
   }
 
+  _onCalloutPress(markerDescription){
+    this.setState({markerInfoVisbile: true,
+      markerInfo: markerDescription})
+  };
   // Handles a onLongPress event
   // Saves co-ordinates in state variable incMarker
   _handleMarkerPress(e){
@@ -222,7 +495,7 @@ export default class Town extends Component{
                   }});
 
     // Make modal visible for user input.
-    this.setState({modalVisible: true});
+    this.setState({markerInputVisible: true});
   }
 
   // Evaluates inputted values on Modal
@@ -246,7 +519,7 @@ export default class Town extends Component{
         'longitude': this.state.incMarker.coordinate.longitude,
         'title': this.state.inputTitle,
         'description': this.state.inputDesc,
-        'cat': 9,
+        'cat': this.state.selectedCategory,
         'oid': this.state.user.uid,
         'netid': this.state.netid,
         'stime': new Date().getTime(),
@@ -276,7 +549,7 @@ export default class Town extends Component{
       // Remove modal from view
       this.setState({inputTitle: "", inputDesc: "", timer: 60});
       this.setState({incMarker: []});
-      this.setState({modalVisible: false});
+      this.setState({markerInputVisible: false});
 
     }
   }
@@ -285,23 +558,27 @@ export default class Town extends Component{
   _handleCancelMarker(){
     // set to null and remove Modal from view
     this.setState({inputTitle: "", inputDesc: "", timer: 60});
-    this.setState({modalVisible: false});
+    this.setState({markerInputVisible: false});
+    this.setState({markerInfoVisbile: false});
   }
 
 
-  // Before mounting, load markers list from AsyncStorage
   async componentWillMount(){
+
+    console.log("From Town!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.props.deviceInfo);
+    // OneSignal.addEventListener('ids',this.onIds);
+
 
     var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
       method: "GET"
     });
-    console.log(fetchedMarkersList);
+    // console.log(fetchedMarkersList);
     var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
     this.setState({markersList: tempmarkersList});
     console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
     // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
-    const userData = await this.props.firebaseApp.auth().currentUser;
-    const snapshot = await this.props.firebaseApp.database().ref('/users/' + userData.uid+ '/details').once('value');
+    const userData = await Firebase.auth().currentUser;
+    const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
     // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
@@ -315,10 +592,17 @@ export default class Town extends Component{
     this.setState({
       user: userData,
     });
+
     // var userId = firebaseApp.auth().currentUser.uid;
 
     // alert(JSON.stringify(this.state.user));
   }
+
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+
+  }
+
 
   async componentDidMount(){
     console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
@@ -326,13 +610,13 @@ export default class Town extends Component{
     var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
       method: "GET"
     });
-    console.log(fetchedMarkersList);
+    // console.log(fetchedMarkersList);
     var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
     this.setState({markersList: tempmarkersList});
     console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
     // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
-    const userData = await this.props.firebaseApp.auth().currentUser;
-    const snapshot = await this.props.firebaseApp.database().ref('/users/' + userData.uid+ '/details').once('value');
+    const userData = await Firebase.auth().currentUser;
+    const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
     // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
