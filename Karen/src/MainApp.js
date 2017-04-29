@@ -71,7 +71,7 @@ class ATown extends Component {
       // If logged in, then go to main app
       if (user != null) {
         this.setState({page: Town});
-        
+
         return;
       }
       // else go to login page.
