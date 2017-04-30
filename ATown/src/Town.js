@@ -14,7 +14,7 @@ import {
   DrawerLayoutAndroid,
   Dimensions,
   Animated,
-  Image
+  Image,
 } from 'react-native';
 
 // Custom Utils import

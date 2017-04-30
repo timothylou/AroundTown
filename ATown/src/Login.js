@@ -6,15 +6,19 @@ import {
   View,
   TouchableHighlight,
   ToolbarAndroid,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView
 } from 'react-native';
 import React, {Component} from 'react';
 import Signup from './Signup';
 import Town from './Town';
 import Preferences from './Preferences';
 
-import BaseStyle from './BaseStyles.js';
+import BaseStyle from './BaseStyles';
 import Firebase from './Firebase';
+import SignupStyle from './SignupStyles';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class Login extends Component {
 
@@ -31,33 +35,43 @@ export default class Login extends Component {
     // The content of the screen should be inputs for a username, password and submit button.
     // If we are loading then we display an ActivityIndicator.
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
-      <View>
+      <View style = {SignupStyle.loginContainer}>
+        <Text style = {SignupStyle.textField}> Email</Text>
         <TextInput
-          style={BaseStyle.textInput}
+          style={SignupStyle.textInput}
+          selectionColor= {"#00897b"}
           onChangeText={(text) => this.setState({email: text})}
           value={this.state.email}
-          placeholder={"Email Address"} />
+          placeholder={" example@princeton.edu"}
+          placeholderTextColor = {'#bdbdbd'} />
+        <Text style = {SignupStyle.textField}> </Text>
+        <Text style = {SignupStyle.textField}> Password</Text>
         <TextInput
-          style={BaseStyle.textInput}
+          style={SignupStyle.textInput}
+          selectionColor= {"#00897b"}
           onChangeText={(text) => this.setState({password: text})}
           value={this.state.password}
           secureTextEntry={true}
-          placeholder={"Password"} />
-        <TouchableHighlight onPress={this.login.bind(this)} style={BaseStyle.primaryButton}>
-          <Text style={BaseStyle.primaryButtonText}>Login</Text>
+          placeholder={" Enter a password"}
+          placeholderTextColor = {'#bdbdbd'} />
+        <TouchableHighlight onPress={this.login.bind(this)} style={SignupStyle.primaryButton}
+        underlayColor= {"#00695c"}>
+          <Text style={SignupStyle.primaryButtonText}>Login</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={this.goToSignup.bind(this)} style={BaseStyle.transparentButton}>
-          <Text style={BaseStyle.transparentButtonText}>New here?</Text>
+        <TouchableHighlight onPress={this.goToSignup.bind(this)} style={SignupStyle.transparentButton}
+        underlayColor = {"white"}>
+          <Text style={SignupStyle.transparentButtonText}>New here?</Text>
         </TouchableHighlight>
       </View>;
 
     // A simple UI with a toolbar, and content below it.
   	return (
-  		<View style={BaseStyle.container}>
-        <View style={BaseStyle.body}>
-          {content}
-        </View>
-      </View>
+      <KeyboardAwareScrollView style={SignupStyle.containerScrollView}
+      contentContainerStyle = {SignupStyle.contentView}
+        showsVerticalScrollIndicator = {false}
+      >
+        {content}
+      </KeyboardAwareScrollView>
 		);
   }
 
