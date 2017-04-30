@@ -67,7 +67,7 @@ ATown details
 - Updates pins on Flask App with SQLite running on AWS+Apache2
 - Push notifs implemented with OneSignal+Firebase
 - Filtering upcoming
-- what am I ???
+
 ```
 
 WARNING: The node_modules arent uploaded to the git, so dont forget to npm install. If react-native-maps is being buggy use locally copied react-native-maps package (update messes up rnpm linking).
