@@ -66,6 +66,7 @@ ATown details
 - Supports dropping pins, with user inputs, and category
 - Updates pins on Flask App with SQLite running on AWS+Apache2
 - Push notifs implemented with OneSignal+Firebase
+- Filtering upcoming
 
 ```
 
