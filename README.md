@@ -50,7 +50,7 @@ Apr 23 - 30 Alpha test -- COMPLETED
 - Users can comment/give feedback to existing pins
 - Implement user location updates
 
-May 1 - 7 Beta test -- UPCOMING	
+May 1 - 7 Beta test -- UPCOMING
 - Implement location-specific notifications
 - Add “home base” notification capabilities
 - No more adding features after the end of this week
@@ -62,6 +62,7 @@ May 14 Submission
 
 ATown details
 - Supports login with info via Firebase
+- Blah blah???
 - Adds user to Firebase, with details, and preferences
 - Supports dropping pins, with user inputs, and category
 - Updates pins on Flask App with SQLite running on AWS+Apache2
