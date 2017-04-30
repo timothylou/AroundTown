@@ -28,8 +28,8 @@ export default class CustomMarker extends Component {
       title={this.props.marker.view.title}
       >
         <Callout
-          onPress={() => this.props.onCalloutPressed(this.props.marker.modal.description)}>
-          <View >          
+          onPress={() => this.props.onCalloutPressed(this.props.marker.modal)}>
+          <View >
             <Text >{this.props.marker.view.title}</Text>
           </View>
         </Callout>

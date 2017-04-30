@@ -45,43 +45,45 @@ import Prompt from 'react-native-prompt';
 import OneSignal from 'react-native-onesignal';
 
 
-const buttonsCatTest = [
+var buttonsCatTest = [
   { label: "Free Food",
   id: "freefood",
   index: 0,
-  selected: false,},
+  selected: true,},
 
   {label: "Broken Facility",
   id: "brokenfacility",
   index: 1,
-  selected: false,},
+  selected: true,},
 
   {label: "Recruiting",
   id: "recruiting",
   index: 2,
-  selected: false,},
+  selected: true,},
 
   {label: "Study Break",
   id: "studybreak",
   index: 3,
-  selected: false,},
+  selected: true,},
 
   {label: "Movie Screening",
   id: "movie",
   index: 4,
-  selected: false,},
+  selected: true,},
 
   {label: "Busy",
   id: "busy",
   index: 5,
-  selected: false,},
+  selected: true,},
 
   {label: "Fire Safety",
   id: "firesafety",
   index: 6,
-  selected: false,},
+  selected: true,},
 
 ];
+
+
 
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
@@ -102,7 +104,7 @@ export default class Town extends Component{
                   timer: 60,
                   test: '',
                   netid: '',
-                  selectedCategory: '',
+                  selectedCategory: null,
 
                   categories: [], // Future list of categories
                   incMarker: [], // list to store co-ordinates of onLongPress event
@@ -118,6 +120,7 @@ export default class Town extends Component{
                   markerInfo: "", // temp var for description of pin. Always "" when not making new pin
 
                   filterVisible: false, // variable for filters being displayed or not
+                  filterPicked: buttonsCatTest,
 
                 };
 
@@ -146,6 +149,7 @@ export default class Town extends Component{
     this._closeAbout = this._closeAbout.bind(this);
     this._showFilters = this._showFilters.bind(this);
     this._hideFilters = this._hideFilters.bind(this);
+    this._viewButtonPressed = this._viewButtonPressed.bind(this);
 
 
     // Set timer for refreshing
@@ -158,7 +162,7 @@ export default class Town extends Component{
         var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
         this.setState({markersList: tempmarkersList});
         console.log("Fetched list of events from backed");
-        // console.log(tempmarkersList);
+        console.log(tempmarkersList);
 
       }).catch( (error)=> console.log("Error while fetching from backend: " + error.message));
 
@@ -296,7 +300,9 @@ export default class Town extends Component{
                     color="#FF5722"
                     accessibilityLabel="Learn more about this purple button"
                     />
-                    <Text>{this.state.markerInfo}</Text>
+                    <Text>{this.state.markerInfo.title}</Text>
+                    <Text>{this.state.markerInfo.description}</Text>
+                    <Text>{this.state.user.uid==this.state.markerInfo.owner? 'you own this!!': 'this aint your pin'}</Text>
               </View>
             </Modal>
             <Animated.View
@@ -312,7 +318,7 @@ export default class Town extends Component{
                 flexDirection: 'column'
               }}>
               <ScrollView contentContainerStyle={PinInputStyle.ViewButtonListContainer}>
-                {this._renderRadioButtons(buttonsCatTest, this._viewButtonPressed)}
+                {this._renderFilterButtons(this.state.filterPicked, this._viewButtonPressed)}
               </ScrollView>
             </Animated.View>
           </View>
@@ -401,8 +407,12 @@ export default class Town extends Component{
     this.setState({selectedCategory: buttonId});
   }
 
-  _viewButtonPressed(buttonId){
-    alert(buttonId);
+  _viewButtonPressed(buttonIdx){
+
+    var currentPicked = this.state.filterPicked;
+    currentPicked[buttonIdx].selected = ! currentPicked[buttonIdx].selected
+    this.setState({filterPicked: currentPicked});
+
   }
 
   _renderRadioButtons(buttonsList, onPress){
@@ -418,10 +428,10 @@ export default class Town extends Component{
     for (var b = 0; b < buttonsList.length; b++){
 
       currLabel = buttonsList[b].label;
-      currId = buttonsList[b].id;
-      currSelected = currId == this.state.selectedCategory ? true:false;
       currIndex = buttonsList[b].index;
-      curronPress = onPress.bind(null,currId);
+      currId = buttonsList[b].id;
+      currSelected = currIndex == this.state.selectedCategory ? true:false;
+      curronPress = onPress.bind(null,currIndex);
 
       buttons.push(
         <RadioButton
@@ -446,32 +456,43 @@ export default class Town extends Component{
         }
 
         for(var m = 0; m < markersList.length; m++){
+
           marker = markersList[m];
-          markerprop = {
-            coordinate: { latitude: marker.latitude,
-                          longitude: marker.longitude},
-            view: {
-              title: marker.title
-            },
+          // console.log(marker.category);
 
-            callout: {
-              description: marker.description
-            },
+          if (this.state.filterPicked[parseInt(marker.category)].selected){
+            markerprop = {
+              coordinate: { latitude: marker.latitude,
+                            longitude: marker.longitude},
+              view: {
+                title: marker.title
+              },
 
-            modal: {
-              description: marker.description
-            },
+              callout: {
+                description: marker.description
+              },
 
-          };
+              modal: {
+                title: marker.title,
+                description: marker.description,
+                owner: marker.ownerid,
 
-          markers.push(
 
-                      <CustomMarker marker={markerprop}
-                        key={m}
-                        onCalloutPressed={this._onCalloutPress}
-                      />
 
-          );
+              },
+
+            };
+
+            markers.push(
+
+                        <CustomMarker marker={markerprop}
+                          key={m}
+                          onCalloutPressed={this._onCalloutPress}
+                        />
+
+            );
+          }
+
         }
         // console.log(" ----------------------------------------------");
         //
@@ -480,6 +501,39 @@ export default class Town extends Component{
 
         return markers;
   }
+
+
+    _renderFilterButtons(buttonsList, onPress){
+      let buttons = [];
+      if (buttonsList == null){
+        buttonsList = [];
+      }
+      var currLabel = null;
+      var currSelected = null;
+      var currId = null;
+      var currIndex = null;
+      var curronPress = null;
+      for (var b = 0; b < buttonsList.length; b++){
+
+        currLabel = buttonsList[b].label;
+        currSelected = buttonsList[b].selected;
+        currId = buttonsList[b].id;
+        currIndex = buttonsList[b].index;
+        curronPress = onPress.bind(null,currIndex);
+
+        buttons.push(
+          <CheckButton
+            label = {currLabel}
+            selected = {currSelected}
+            onPress = {curronPress}
+            index = {currIndex}
+            key = {currId}/>
+        );
+      }
+
+      return buttons;
+
+    }
 
   _onCalloutPress(markerDescription){
     this.setState({markerInfoVisbile: true,
@@ -514,12 +568,13 @@ export default class Town extends Component{
     // If valid inputs then ...
     else{
 
+
       var newMarker = {
         'latitude': this.state.incMarker.coordinate.latitude,
         'longitude': this.state.incMarker.coordinate.longitude,
         'title': this.state.inputTitle,
         'description': this.state.inputDesc,
-        'cat': this.state.selectedCategory,
+        'cat': this.state.selectedCategory.toString(),
         'oid': this.state.user.uid,
         'netid': this.state.netid,
         'stime': new Date().getTime(),
