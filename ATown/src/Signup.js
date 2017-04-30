@@ -11,6 +11,8 @@ import {
 import BaseStyle from './BaseStyles.js';
 import Login from './Login';
 import Town from './Town';
+import Preferences from './Preferences';
+import Firebase from './Firebase';
 import React, {Component} from 'react';
 
 export default class Signup extends Component {
@@ -38,21 +40,24 @@ export default class Signup extends Component {
     });
 
     // Make a call to firebase to create a new user.
-    this.props.firebaseApp.auth().createUserWithEmailAndPassword(
+    Firebase.auth().createUserWithEmailAndPassword(
       this.state.email,
       this.state.password).then((userData) => {
         // then and catch are methods that we call on the Promise returned from
         // createUserWithEmailAndPassword
-        // this.props.firebaseApp.auth().currentUser.then((userData) => const user = userData;).done();
+        // Firebase.auth().currentUser.then((userData) => const user = userData;).done();
         let userMobilePath = "/users/" + userData.uid + "/details";
-        this.props.firebaseApp.database().ref(userMobilePath).set({
+
+        Firebase.database().ref(userMobilePath).set({
           fname: this.state.fname,
           lname: this.state.lname,
           cyear: parseInt(this.state.cyear),
           netid: this.state.netid,
           uid: userData.uid
 
-        }).then().done();
+        }).catch( (error)=> console.log("Done with fetching from Firebase        " + error.message));
+
+        console.log("done with firebase");
 
         fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newuser/', {
             method: 'POST',
@@ -71,24 +76,25 @@ export default class Signup extends Component {
               // netid: 'kz7',
               // uid: '4m8124kOXAcN5qCpFYY9dtHIrpH2'
             })
-          });
+          }).then().catch( (error)=> console.log("Done with fetching from tim       " + error.message));
+        console.log("Done with fetching from tim");
 
         alert('Your account was created!' + userData.uid);
 
 
-        // this.props.firebaseApp.child("users").child(userData.uid).set({
+        // Firebase.child("users").child(userData.uid).set({
         //   provider: userData.provider,
         //   name: this.state.name,
         // });
 
-        this.props.firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password
+        Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password
         ).then((userData) =>
           {
             this.setState({
               loading: false
             });
             this.props.navigator.push({
-              component: Town
+              component: Preferences
             });
           }
         ).catch((error) =>
@@ -168,15 +174,12 @@ export default class Signup extends Component {
 
     // A simple UI with a toolbar, and content below it.
         return (
-                <View style={BaseStyle.container}>
-                        <ToolbarAndroid
-          style={BaseStyle.toolbar}
-          title="Signup" />
-        <View style={BaseStyle.body}>
-          {content}
-        </View>
-      </View>
-    );
+          <View style={BaseStyle.container}>
+            <View style={BaseStyle.body}>
+              {content}
+            </View>
+          </View>
+        );
   }
 
   goToLogin(){

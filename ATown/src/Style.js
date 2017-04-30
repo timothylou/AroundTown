@@ -7,9 +7,14 @@ var Style = StyleSheet.create({
         // flexDirection: 'row'
     },
 
+    prefsContainer: {
+      flex: 15,
+      backgroundColor: '#FFF',
+    },
+
 
     mapContainer: {
-      flex:15,
+      flex:20,
       // position: 'absolute',
       // top: 0,
       // left: 0,
@@ -68,6 +73,33 @@ var Style = StyleSheet.create({
     inputRow: {
       flex:1,
       flexDirection: 'row'
+    },
+
+    sideDrawer: {
+      flex: 1,
+      backgroundColor: '#fff',
+    },
+
+    drawerHeader: {
+      backgroundColor: 'dimgrey',
+      flex: 0.2,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingLeft: 15
+    },
+
+    drawerHeaderText: {
+      fontSize: 26,
+      fontWeight: 'bold',
+      color: 'white',
+      textAlign: 'left',
+      textAlignVertical: 'center',
+    },
+
+    sideButtonContainer: {
+      padding: 15,
+      flex: 0.8,
+      backgroundColor: '#fff',
     }
 });
 

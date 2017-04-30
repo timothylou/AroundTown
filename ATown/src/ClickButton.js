@@ -1,29 +1,22 @@
 'use strict';
 
+import React, { Component } from 'react';
 import {
-  AppRegistry,
-  Text,
-  View,
-  TouchableHighlight,
+    TouchableHighlight,
+    Text
 } from 'react-native';
 
-import React, {Component} from 'react';
+import ButtonStyle from './ButtonStyles';
 
 export default class ClickButton extends Component {
-  render(){
-    return(
-      <View>
-        <TouchableHighlight underlayColor={this.props.buttonUnderlayColor}
-          onPress={this.props.onPress}
-          style={this.props.buttonStyle}>
-          <View>
-            <Text style={this.props.buttonTextStyle}
-            >{this.props.buttonText}</Text>
-          </View>
-        </TouchableHighlight>
-      </View>
-    );
-  }
-}
 
-AppRegistry.registerComponent('ClickButton', () => ClickButton);
+    render() {
+        return (
+            <TouchableHighlight style={[ButtonStyle.ClickButtonTouchable, {backgroundColor:this.props.color}]}
+                                onPress={this.props.onPress}>
+                <Text style={ButtonStyle.ClickButtonText}>{this.props.label}</Text>
+            </TouchableHighlight>
+        )
+    }
+
+}

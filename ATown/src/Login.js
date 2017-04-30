@@ -11,13 +11,15 @@ import {
 import React, {Component} from 'react';
 import Signup from './Signup';
 import Town from './Town';
+import Preferences from './Preferences';
+
 import BaseStyle from './BaseStyles.js';
+import Firebase from './Firebase';
 
 export default class Login extends Component {
 
   constructor(props){
     super(props);
-    // We have the same props as in our signup.js file and they serve the same purposes.
     this.state = {
       loading: false,
       email: '',
@@ -52,9 +54,6 @@ export default class Login extends Component {
     // A simple UI with a toolbar, and content below it.
   	return (
   		<View style={BaseStyle.container}>
-  			<ToolbarAndroid
-          style={BaseStyle.toolbar}
-          title="Login" />
         <View style={BaseStyle.body}>
           {content}
         </View>
@@ -62,28 +61,48 @@ export default class Login extends Component {
 		);
   }
 
-  login(){
+  async login(){
     this.setState({
       loading: true
     });
     // Log in and display an alert to tell the user what happened.
-    this.props.firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password
-    ).then((userData) =>
-      {
-        this.setState({
-	        loading: false
-	      });
-        this.props.navigator.push({
-          component: Town
-        });
-      }
-    ).catch((error) =>
+    await Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password
+    ).then((userData) => {
+      var currUser = userData;
+
+      let userMobilePath = "/users/" + currUser.uid + "/details/prefs";
+      Firebase.database().ref(userMobilePath).once('value').then((snapshot) =>{
+        var prefs = snapshot.val();
+
+        prefs['deviceid'] = this.props.deviceInfo.userId;
+
+
+        fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
+          method: 'POST',
+          headers: {
+                    },
+            body: JSON.stringify(prefs),
+        }).then().catch( (error)=> console.log("BACKEND POST ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " + error.message));
+        }
+      ).catch((error)=> console.log(error.message));
+
+      this.setState({
+        loading: false
+      });
+
+      alert("Welcome! " + currUser.uid);
+      this.props.navigator.push({
+        component: Town
+      });
+    }).catch((error) =>
     	{
 	      this.setState({
 	        loading: false
 	      });
         alert('Login Failed. Please try again' + error.message);
     });
+
+
   }
 
   // Go to the signup page

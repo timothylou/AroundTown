@@ -93,7 +93,7 @@ export default class Town extends Component{
   // Constructor
   constructor(props) {
     super(props);
-    this.animatedValue = new Animated.Value(windowWidth)
+    this.animatedValue = new Animated.Value(windowWidth);
     this.state = {checked1:false, // Checkbox flag
                   checked2:false,
                   markersList: [], // Local list of markers
@@ -158,7 +158,7 @@ export default class Town extends Component{
         var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
         this.setState({markersList: tempmarkersList});
         console.log("Fetched list of events from backed");
-        console.log(tempmarkersList);
+        // console.log(tempmarkersList);
 
       }).catch( (error)=> console.log("Error while fetching from backend: " + error.message));
 
@@ -573,6 +573,8 @@ export default class Town extends Component{
   async componentWillMount(){
 
     console.log("From Town!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", this.props.deviceInfo);
+
+
     // OneSignal.addEventListener('ids',this.onIds);
 
 
@@ -582,7 +584,7 @@ export default class Town extends Component{
     // console.log(fetchedMarkersList);
     var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
     this.setState({markersList: tempmarkersList});
-    console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
+    // console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
     // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
     const userData = await Firebase.auth().currentUser;
     const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
