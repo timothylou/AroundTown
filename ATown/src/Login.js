@@ -17,6 +17,7 @@ import Preferences from './Preferences';
 import BaseStyle from './BaseStyles';
 import Firebase from './Firebase';
 import SignupStyle from './SignupStyles';
+import TextInputBox from './TextInputBox';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -36,24 +37,19 @@ export default class Login extends Component {
     // If we are loading then we display an ActivityIndicator.
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
       <View style = {SignupStyle.loginContainer}>
-        <Text style = {SignupStyle.textField}> Email</Text>
-        <TextInput
-          style={SignupStyle.textInput}
-          selectionColor= {"#00897b"}
+        <TextInputBox
+          title = {" Email"}
           onChangeText={(text) => this.setState({email: text})}
           value={this.state.email}
-          placeholder={" example@princeton.edu"}
-          placeholderTextColor = {'#bdbdbd'} />
-        <Text style = {SignupStyle.textField}> </Text>
-        <Text style = {SignupStyle.textField}> Password</Text>
-        <TextInput
-          style={SignupStyle.textInput}
-          selectionColor= {"#00897b"}
-          onChangeText={(text) => this.setState({password: text})}
-          value={this.state.password}
-          secureTextEntry={true}
-          placeholder={" Enter a password"}
-          placeholderTextColor = {'#bdbdbd'} />
+          placeholder={" Your email"}
+          secure = {false} />
+        <TextInputBox
+          title = {" Password"}
+          onChangeText={(text) => this.setState({email: text})}
+          value={this.state.email}
+          placeholder={" Your password"}
+          secure = {true} />
+
         <TouchableHighlight onPress={this.login.bind(this)} style={SignupStyle.primaryButton}
         underlayColor= {"#00695c"}>
           <Text style={SignupStyle.primaryButtonText}>Login</Text>
