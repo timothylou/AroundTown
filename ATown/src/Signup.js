@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import SignupStyle from './SignupStyles';
+import TextInputBox from './TextInputBox';
 import Login from './Login';
 import Town from './Town';
 import Preferences from './Preferences';
@@ -34,8 +35,6 @@ export default class Signup extends Component {
       cyear: null,
       uid: null
     }
-
-    this._updateGrad = this._updateGrad.bind(this);
   }
 
   // A method to passs the username and password to firebase and make a new user account
@@ -143,52 +142,41 @@ export default class Signup extends Component {
     // If we are loading then we display an ActivityIndicator.
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
       <View style = {SignupStyle.container}>
-          <Text style = {SignupStyle.textField}> Email</Text>
-          <TextInput
-            style={SignupStyle.textInput}
-            selectionColor= {"#00897b"}
+          <TextInputBox
+            title = {" Email"}
             onChangeText={(text) => this.setState({email: text})}
             value={this.state.email}
             placeholder={" example@princeton.edu"}
-            placeholderTextColor = {'#bdbdbd'} />
-          <Text style = {SignupStyle.textField}> </Text>
-          <Text style = {SignupStyle.textField}> Password</Text>
-          <TextInput
-            style={SignupStyle.textInput}
-            selectionColor= {"#00897b"}
+            secure = {false}/>
+
+          <TextInputBox
+            title = {" Password"}
             onChangeText={(text) => this.setState({password: text})}
             value={this.state.password}
-            secureTextEntry={true}
             placeholder={" Enter a password"}
-            placeholderTextColor = {'#bdbdbd'} />
-          <Text style = {SignupStyle.textField}> </Text>
-          <Text style = {SignupStyle.textField}> First Name</Text>
-          <TextInput
-            style={SignupStyle.textInput}
-            selectionColor= {"#00897b"}
+            secure = {true}/>
+
+          <TextInputBox
+            title = {" First Name"}
             onChangeText={(text) => this.setState({fname: text})}
-            value={this.state.name}
+            value={this.state.fname}
             placeholder={" Your first name"}
-            placeholderTextColor = {'#bdbdbd'} />
-          <Text style = {SignupStyle.textField}> </Text>
-          <Text style = {SignupStyle.textField}> Last Name</Text>
-          <TextInput
-            style={SignupStyle.textInput}
-            selectionColor= {"#00897b"}
+            secure = {false}/>
+
+          <TextInputBox
+            title = {" Last Name"}
             onChangeText={(text) => this.setState({lname: text})}
-            value={this.state.name}
+            value={this.state.lname}
             placeholder={" Your last name"}
-            placeholderTextColor = {'#bdbdbd'} />
-          <Text style = {SignupStyle.textField}> </Text>
-          <Text style = {SignupStyle.textField}> Net ID</Text>
-          <TextInput
-            style={SignupStyle.textInput}
-            selectionColor= {"#00897b"}
+            secure = {false}/>
+
+          <TextInputBox
+            title = {" Net ID"}
             onChangeText={(text) => this.setState({netid: text})}
-            value={this.state.name}
+            value={this.state.netid}
             placeholder={" Your net ID"}
-            placeholderTextColor = {'#bdbdbd'} />
-          <Text style = {SignupStyle.textField}> </Text>
+            secure = {false}/>
+
           <Text style = {SignupStyle.textField}> Class Year</Text>
           <Picker
             selectedValue = {this.state.cyear}
@@ -209,7 +197,6 @@ export default class Signup extends Component {
           </TouchableHighlight>
       </View>
 
-
     // A simple UI with a toolbar, and content below it.
         return (
           <KeyboardAwareScrollView style={SignupStyle.containerScrollView}
@@ -219,10 +206,6 @@ export default class Signup extends Component {
             {content}
           </KeyboardAwareScrollView>
         );
-  }
-
-  _updateGrad(value) {
-    this.setState({cyear: value});
   }
 
   goToLogin(){
