@@ -47,11 +47,11 @@ Apr 16 - 22 -- COMPLETED
 
 Apr 23 - 30 Alpha test -- COMPLETED
 - Add pin categories and filters
-- Users can comment/give feedback to existing pins
 - Implement user location updates
+- Implement location-specific notifications
 
 May 1 - 7 Beta test -- UPCOMING
-- Implement location-specific notifications
+- Users can comment/give feedback to existing pins
 - Add “home base” notification capabilities
 - No more adding features after the end of this week
 
@@ -64,7 +64,8 @@ ATown details
 - Supports login with info via Firebase
 - Adds user to Firebase, with details, and preferences
 - Supports dropping pins, with user inputs, and category
-- Updates pins on Flask App with SQLite running on AWS+Apache2
+- Updates pins on Flask App running on Heroku+Gunicorn
+- Backend DB is on PostgreSQL
 - Push notifs implemented with OneSignal+Firebase
 
 ```
