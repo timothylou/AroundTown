@@ -155,7 +155,7 @@ export default class Town extends Component{
     // Set timer for refreshing
     this.timerId = setInterval(() => {
       // Fetch from backend url
-      fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
+      fetch('https://herokuflask0.herokuapp.com/get/allactive', {
         method: "GET"
       }).then((fetchedMarkersList) => {
 
@@ -582,7 +582,7 @@ export default class Town extends Component{
 
       // Add new marker to newMarkersList
       // eventdict = {'lat': 0.0, 'lon': 1.1, 'title': 'birthday party', 'desc': 'its lit', 'cat': 9, 'oid': uid_tim, 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
-      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/',
+      var ret = await fetch('https://herokuflask0.herokuapp.com/post/newevent/',
         {
           method: 'POST',
 
@@ -624,7 +624,7 @@ export default class Town extends Component{
     // OneSignal.addEventListener('ids',this.onIds);
 
 
-    var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
+    var fetchedMarkersList = await fetch('https://herokuflask0.herokuapp.com/get/allactive', {
       method: "GET"
     });
     // console.log(fetchedMarkersList);
@@ -636,7 +636,7 @@ export default class Town extends Component{
     const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
-    // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
+    // var ttext = await fetch('https://herokuflask0.herokuapp.com/user/hrishikesh');
 
     // this.setState({test: ttext});
     // alert(ttext._bodyText);
@@ -662,7 +662,7 @@ export default class Town extends Component{
   async componentDidMount(){
     console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
 
-    var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
+    var fetchedMarkersList = await fetch('https://herokuflask0.herokuapp.com/get/allactive', {
       method: "GET"
     });
     // console.log(fetchedMarkersList);
@@ -674,7 +674,7 @@ export default class Town extends Component{
     const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
-    // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
+    // var ttext = await fetch('https://herokuflask0.herokuapp.com/user/hrishikesh');
 
     // this.setState({test: ttext});
     // alert(ttext._bodyText);
