@@ -375,6 +375,18 @@ export default class Town extends Component{
 
   _onPressLogoutButton() {
     clearInterval(this.timerId);
+    var ret = fetch('https://herokuflask0.herokuapp.com/logout/',
+      {
+        method: 'POST',
+
+        headers:{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+
+        body: JSON.stringify({deviceid: this.props.deviceInfo.userId })
+      });
+
     Firebase.auth().signOut().then(() => {
       this.props.navigator.push({
         component: Login
