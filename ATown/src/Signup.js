@@ -68,7 +68,7 @@ export default class Signup extends Component {
 
           console.log("done with firebase");
 
-          fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newuser/', {
+          fetch('https://herokuflask0.herokuapp.com/post/newuser/', {
               method: 'POST',
               headers: {
               },

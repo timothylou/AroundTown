@@ -45,8 +45,8 @@ export default class Login extends Component {
           secure = {false} />
         <TextInputBox
           title = {" Password"}
-          onChangeText={(text) => this.setState({email: text})}
-          value={this.state.email}
+          onChangeText={(text) => this.setState({password: text})}
+          value={this.state.password}
           placeholder={" Your password"}
           secure = {true} />
 
@@ -87,7 +87,7 @@ export default class Login extends Component {
         prefs['deviceid'] = this.props.deviceInfo.userId;
 
 
-        fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
+        fetch('https://herokuflask0.herokuapp.com/post/prefs/', {
           method: 'POST',
           headers: {
                     },

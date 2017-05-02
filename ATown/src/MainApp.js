@@ -102,7 +102,7 @@ class ATown extends Component {
           initialRoute={{component: this.state.page}}
           configureScene={() => {
             // SceneConfigs + gesturs: {} to prevent swipe-to-go-back
-            return {... Navigator.SceneConfigs.FloatFromRight, gestures: {}};
+            return {... Navigator.SceneConfigs.FadeAndroid, gestures: {}};
           }}
           renderScene={(route, navigator) => {
             if(route.component){
