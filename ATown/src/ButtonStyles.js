@@ -3,6 +3,8 @@ import React, {
   StyleSheet
 } from 'react-native';
 
+const checkButtonColor = "#3F51B5";
+
 var ButtonStyle = StyleSheet.create({
   RadioButtonOuter:{
       height: 30,
@@ -92,16 +94,16 @@ var ButtonStyle = StyleSheet.create({
       width: 30,
       borderRadius: 4,
       borderWidth: 2,
-      borderColor: '#FF00FF',
+      borderColor: checkButtonColor,
       alignItems: 'center',
       justifyContent: 'center',
     },
 
   CheckButtonInner:{
-      height: 12,
-      width: 12,
+      height: 20,
+      width: 20,
       borderRadius: 3,
-      backgroundColor: '#FF00FF',
+      backgroundColor: checkButtonColor,
     },
 
 
