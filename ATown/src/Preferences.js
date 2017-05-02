@@ -197,7 +197,7 @@ export default class Preferences extends Component{
     console.log("done with firebase");
 
 
-    await fetch('https://herokuflask0.herokuapp.com/post/prefs/', {
+    await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
       method: 'POST',
       headers: {
                 },
@@ -348,7 +348,7 @@ export default class Preferences extends Component{
 
   _onPressLogoutButton() {
     clearInterval(this.timerId);
-    var ret = fetch('https://herokuflask0.herokuapp.com/logout/',
+    var ret = fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/logout/',
       {
         method: 'POST',
 

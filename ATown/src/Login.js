@@ -87,7 +87,7 @@ export default class Login extends Component {
         prefs['deviceid'] = this.props.deviceInfo.userId;
 
 
-        fetch('https://herokuflask0.herokuapp.com/post/prefs/', {
+        fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
           method: 'POST',
           headers: {
                     },

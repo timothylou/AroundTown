@@ -44,42 +44,55 @@ import MapView from 'react-native-maps';
 import Prompt from 'react-native-prompt';
 import OneSignal from 'react-native-onesignal';
 
-
 var buttonsCatTest = [
   { label: "Free Food",
   id: "freefood",
   index: 0,
-  selected: true,},
+  selected: true,
+  icon: './icons/food.png',
+},
 
   {label: "Broken Facility",
   id: "brokenfacility",
   index: 1,
-  selected: true,},
+  selected: true,
+  icon: './icons/brokenfacility.png',
+},
 
   {label: "Recruiting",
   id: "recruiting",
   index: 2,
-  selected: true,},
+  selected: true,
+  icon: './icons/recruiting.png',
+},
 
   {label: "Study Break",
   id: "studybreak",
   index: 3,
-  selected: true,},
+  selected: true,
+  icon: './icons/studybreak.png',
+},
 
   {label: "Movie Screening",
   id: "movie",
   index: 4,
-  selected: true,},
+  selected: true,
+  icon: './icons/movie.png',
+},
 
   {label: "Busy",
   id: "busy",
   index: 5,
-  selected: true,},
+  selected: true,
+  icon: './icons/busy.png',
+},
 
   {label: "Fire Safety",
   id: "firesafety",
   index: 6,
-  selected: true,},
+  selected: true,
+  icon: './icons/firesafer.png',
+},
 
 ];
 
@@ -155,14 +168,14 @@ export default class Town extends Component{
     // Set timer for refreshing
     this.timerId = setInterval(() => {
       // Fetch from backend url
-      fetch('https://herokuflask0.herokuapp.com/get/allactive', {
+      fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
         method: "GET"
       }).then((fetchedMarkersList) => {
 
         var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
         this.setState({markersList: tempmarkersList});
         console.log("Fetched list of events from backed");
-        console.log(tempmarkersList);
+        // console.log(tempmarkersList);
 
       }).catch( (error)=> console.log("Error while fetching from backend: " + error.message));
 
@@ -302,14 +315,14 @@ export default class Town extends Component{
                     />
                     <Text>{this.state.markerInfo.title}</Text>
                     <Text>{this.state.markerInfo.description}</Text>
-                    <Text>{this.state.user.uid==this.state.markerInfo.owner? 'you own this!!': 'this aint your pin'}</Text>
+                    <Text>{this.state.markerInfo.netid}</Text>
+
               </View>
             </Modal>
             <Animated.View
               style={{
                 transform: [{ translateX: this.animatedValue }],
                 marginTop: 0,
-                backgroundColor: '#696969',
                 position: 'absolute',
                 left:0,
                 top:100,
@@ -375,7 +388,7 @@ export default class Town extends Component{
 
   _onPressLogoutButton() {
     clearInterval(this.timerId);
-    var ret = fetch('https://herokuflask0.herokuapp.com/logout/',
+    var ret = fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/logout/',
       {
         method: 'POST',
 
@@ -485,20 +498,19 @@ export default class Town extends Component{
               },
 
               modal: {
+                netid: marker.netid,
                 title: marker.title,
                 description: marker.description,
                 owner: marker.ownerid,
 
-
-
               },
-
             };
 
             markers.push(
 
                         <CustomMarker marker={markerprop}
-                          key={m}
+                          key={marker.eventid}
+                          type={parseInt(marker.category)}
                           onCalloutPressed={this._onCalloutPress}
                         />
 
@@ -506,6 +518,8 @@ export default class Town extends Component{
           }
 
         }
+
+        console.log("Rendered markers : ", markersList.length);
         // console.log(" ----------------------------------------------");
         //
         // console.log(" rendering " + JSON.stringify(markersList));
@@ -572,20 +586,22 @@ export default class Town extends Component{
       return;
     }
 
-    else if (!this.state.inputDesc){
-      alert("Please enter a Description!")
-      return;
+    else if (this.state.selectedCategory === null){
+      alert("Please pick a category!")
     }
-
     // If valid inputs then ...
     else{
+      var description = this.state.inputDesc;
+      if (!this.state.inputDesc){
+        description = "Happening now!";
+      }
 
 
       var newMarker = {
         'latitude': this.state.incMarker.coordinate.latitude,
         'longitude': this.state.incMarker.coordinate.longitude,
         'title': this.state.inputTitle,
-        'description': this.state.inputDesc,
+        'description': description,
         'cat': this.state.selectedCategory.toString(),
         'oid': this.state.user.uid,
         'netid': this.state.netid,
@@ -594,7 +610,7 @@ export default class Town extends Component{
 
       // Add new marker to newMarkersList
       // eventdict = {'lat': 0.0, 'lon': 1.1, 'title': 'birthday party', 'desc': 'its lit', 'cat': 9, 'oid': uid_tim, 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
-      var ret = await fetch('https://herokuflask0.herokuapp.com/post/newevent/',
+      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newevent/',
         {
           method: 'POST',
 
@@ -614,7 +630,7 @@ export default class Town extends Component{
       // await AsyncStorage.setItem("markersList", JSON.stringify(newMarkersList));
       console.log("posted!");
       // Remove modal from view
-      this.setState({inputTitle: "", inputDesc: "", timer: 60});
+      this.setState({inputTitle: "", inputDesc: "", selectedCategory: null, timer: 60});
       this.setState({incMarker: []});
       this.setState({markerInputVisible: false});
 
@@ -624,7 +640,7 @@ export default class Town extends Component{
   // Handles cancelled request
   _handleCancelMarker(){
     // set to null and remove Modal from view
-    this.setState({inputTitle: "", inputDesc: "", timer: 60});
+    this.setState({inputTitle: "", inputDesc: "", selectedCategory: null, timer: 60});
     this.setState({markerInputVisible: false});
     this.setState({markerInfoVisbile: false});
   }
@@ -636,7 +652,7 @@ export default class Town extends Component{
     // OneSignal.addEventListener('ids',this.onIds);
 
 
-    var fetchedMarkersList = await fetch('https://herokuflask0.herokuapp.com/get/allactive', {
+    var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
       method: "GET"
     });
     // console.log(fetchedMarkersList);
@@ -648,7 +664,7 @@ export default class Town extends Component{
     const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
-    // var ttext = await fetch('https://herokuflask0.herokuapp.com/user/hrishikesh');
+    // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
 
     // this.setState({test: ttext});
     // alert(ttext._bodyText);
@@ -674,7 +690,7 @@ export default class Town extends Component{
   async componentDidMount(){
     console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
 
-    var fetchedMarkersList = await fetch('https://herokuflask0.herokuapp.com/get/allactive', {
+    var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
       method: "GET"
     });
     // console.log(fetchedMarkersList);
@@ -686,7 +702,7 @@ export default class Town extends Component{
     const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
-    // var ttext = await fetch('https://herokuflask0.herokuapp.com/user/hrishikesh');
+    // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
 
     // this.setState({test: ttext});
     // alert(ttext._bodyText);
