@@ -38,7 +38,7 @@ var PinInputStyle = StyleSheet.create({
 
   TimerText:{
     flex:1,
-    fontSize: 20,
+    fontSize: 15,
     color: '#000000'
   },
 
@@ -65,6 +65,8 @@ var PinInputStyle = StyleSheet.create({
 
   ViewButtonListContainer:{
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   DrawerLayoutAndroid,
   Button,
+  Dimensions,
 } from 'react-native';
 import React, {Component} from 'react';
 
@@ -105,6 +106,9 @@ const buttonsCatTest = [
   selected: false,},
 
 ];
+
+let windowWidth = Dimensions.get('window').width
+let windowHeight = Dimensions.get('window').height
 // const initialState = {
 //   loading: false,
 //
@@ -296,8 +300,8 @@ export default class Preferences extends Component{
             style={{
               justifyContent: 'center',
               alignItems: 'stretch',
-              height: 550,
-              width: 350,
+              height: windowHeight*0.8,
+              width: windowWidth*0.9,
               padding: 5,
               borderRadius : 10,
               elevation: 5,

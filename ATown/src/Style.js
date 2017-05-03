@@ -90,7 +90,6 @@ var Style = StyleSheet.create({
 
     drawerHeaderText: {
       fontSize: 26,
-      fontWeight: 'bold',
       color: 'white',
       textAlign: 'left',
       textAlignVertical: 'center',

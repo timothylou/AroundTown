@@ -14,8 +14,10 @@ import {
   Animated,
   Slider,
   Image,
+
 } from 'react-native';
 import Modal from 'react-native-modalbox';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 
 // Custom Utils import
@@ -100,7 +102,7 @@ var buttonsCatTest = [
 ];
 
 const filterTime = 4000;
-const filterDuration = 700;
+const filterDuration = 550;
 
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
@@ -139,6 +141,12 @@ export default class Town extends Component{
                   filterVisible: false, // variable for filters being displayed or not
                   filterPicked: buttonsCatTest,
 
+                  currRegion: {
+                    latitude: 40.3474,
+                    longitude: - 74.6617,
+                    latitudeDelta: 0.0022,
+                    longitudeDelta: 0.0021,
+                  },
                 };
 
 
@@ -248,8 +256,8 @@ export default class Town extends Component{
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: 500,
-                width: 350,
+                height: windowHeight*0.45,
+                width: windowWidth*0.8,
                 padding: 10,
                 borderRadius : 10,
                 elevation: 5,
@@ -257,7 +265,7 @@ export default class Town extends Component{
               onClosed = {() => {this.setState({markerInputVisible: false}); this._handleCancelMarker();}}
               isOpen = {this.state.markerInputVisible}
             >
-              <View style={PinInputStyle.MainContainer}>
+              <KeyboardAwareScrollView contentContainerStyle={PinInputStyle.MainContainer}>
                 <View style={PinInputStyle.TitleInputContainer}>
                   <TextInput
                     placeholder= {"Enter pin title here!"}
@@ -276,7 +284,6 @@ export default class Town extends Component{
                     textAlignVertical = "top"
                   />
                 </View>
-
 
                 <View style={PinInputStyle.TimerBarContainer}>
                   <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
@@ -306,14 +313,14 @@ export default class Town extends Component{
                     />
                   </View>
                 </View>
-              </View>
+              </KeyboardAwareScrollView>
             </Modal>
             <Modal
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: 300,
-                width: 300,
+                height: windowHeight*0.4,
+                width: windowWidth*0.8,
                 padding: 10,
                 borderRadius : 10,
                 elevation: 5,
@@ -322,21 +329,21 @@ export default class Town extends Component{
               onClosed = {() => this.setState({markerInfoVisbile: false})}
               isOpen = {this.state.markerInfoVisbile}
               >
-              <View style={{flex:1, backgroundColor: '#EEEEEE'}}>
+              <KeyboardAwareScrollView style={{flex:1, backgroundColor: '#EEEEEE'}}>
                     <Text style={{flex:1}}>{this.state.markerInfo.title}</Text>
                     <Text style={{flex:1}}>{this.state.markerInfo.description}</Text>
                     <Text style={{flex:1}}>{this.state.markerInfo.netid}</Text>
-              </View>
+              </KeyboardAwareScrollView>
             </Modal>
             <Modal
               animationType = {'slide'}
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: 550,
-                width: 350,
+                height: windowHeight*0.8,
+                width: windowWidth*0.9,
                 padding: 5,
-                borderRadius : 10,
+                borderRadius : 3,
                 elevation: 5,
               }}
               onClosed = {() => this._closeAbout()}
@@ -352,9 +359,9 @@ export default class Town extends Component{
                 marginTop: 0,
                 position: 'absolute',
                 left:0,
-                top:100,
-                bottom: 100,
-                width: 70,
+                top:windowHeight*0.15,
+                bottom: windowHeight*0.15,
+                width: windowWidth*0.15,
                 flexDirection: 'column'
               }}>
               <ScrollView contentContainerStyle={PinInputStyle.ViewButtonListContainer}>
@@ -385,7 +392,7 @@ export default class Town extends Component{
       Animated.timing(
         this.animatedValue,
         {
-          toValue: windowWidth - 70,
+          toValue: windowWidth*0.85,
           duration: filterDuration,
         }
       ).start(this._hideFilters());
@@ -444,6 +451,7 @@ export default class Town extends Component{
       });
 
     Firebase.auth().signOut().then(() => {
+      clearTimeout(this.filterTimeout);
       this.props.navigator.replace({
         component: Login
       });
@@ -455,6 +463,7 @@ export default class Town extends Component{
   }
 
   _onPressPrefsButton() {
+    clearTimeout(this.filterTimeout);
     this.props.navigator.replace({
       component: Preferences
     });
@@ -746,6 +755,20 @@ export default class Town extends Component{
     this.setState({
       user: userData,
     });
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          currRegion:{
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          }
+        });
+      },
+      (error) => {alert(error.message)},
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+
 
     // var userId = firebaseApp.auth().currentUser.uid;
 
