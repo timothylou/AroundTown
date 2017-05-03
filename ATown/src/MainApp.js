@@ -8,31 +8,27 @@ import {
   Text,
   View,
   ToolbarAndroid,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage,
 } from 'react-native';
 
 // Pages
 import Signup from './Signup';
 import Login from './Login';
 import Town from './Town';
+import Preferences from './Preferences';
 
-// Firebase Utils
-import * as firebase from 'firebase';
+// Firebase utils
+import Firebase from './Firebase';
+
+// OneSignal import
+import OneSignal from 'react-native-onesignal';
 
 // Styles and titles
 import Style from './Style'
-import TitleBar from './TitleBar'
+import BaseStyle from './BaseStyles.js';
 
-// Config for firebaseApp
-var firebaseConfig = {
-  apiKey: "AIzaSyDeX_9Y3OPvz8xD9kTReYDEpFWNiWbz9gw",
-  authDomain: "aroundtown-deead.firebaseapp.com",
-  databaseURL: "https://aroundtown-deead.firebaseio.com",
-  projectId: "aroundtown-deead",
-  storageBucket: "aroundtown-deead.appspot.com",
-  messagingSenderId: "532018067815"
-};
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+import TitleBar from './TitleBar'
 
 
 /* ------------------------------------------------------------------------- */
@@ -48,17 +44,33 @@ class ATown extends Component {
       // Default page
       page: null,
       // Loaded?
-      loaded: false
+      loaded: false,
+      deviceInfo: null,
     };
+
+    this.onIds = this.onIds.bind(this);
+  }
+
+  // push notifications
+  async componentDidMount() {
+    var device = await AsyncStorage.getItem('device');
+    this.setState({deviceInfo: JSON.parse(device)})
+    OneSignal.inFocusDisplaying(1);
   }
 
   // Called before component is mounted.
   componentWillMount(){
     // Check if logged in, ...
-    const unsubscribe = firebaseApp.auth().onAuthStateChanged((user) => {
+    OneSignal.addEventListener('ids', this.onIds);
+    OneSignal.inFocusDisplaying(1);
+
+    console.log('Added listener!!!');
+
+    const unsubscribe = Firebase.auth().onAuthStateChanged((user) => {
       // If logged in, then go to main app
       if (user != null) {
         this.setState({page: Town});
+
         return;
       }
       // else go to login page.
@@ -68,7 +80,20 @@ class ATown extends Component {
     });
   }
 
+  componentWillUnmount() {
+   OneSignal.removeEventListener('ids', this.onIds);
+   console.log('RemovedEventListener!!');
+  }
+
+  async onIds(device) {
+   console.log('Device info: ', device);
+   await AsyncStorage.setItem('device', JSON.stringify(device));
+   this.setState({deviceInfo: device});
+
+  }
+
   render() {
+    var deviceInfo = this.state.deviceInfo;
     // If the page has been selected go to appropriate page
     if (this.state.page){
       return (
@@ -77,13 +102,12 @@ class ATown extends Component {
           initialRoute={{component: this.state.page}}
           configureScene={() => {
             // SceneConfigs + gesturs: {} to prevent swipe-to-go-back
-            return {... Navigator.SceneConfigs.FloatFromRight, gestures: {}};
+            return {... Navigator.SceneConfigs.FadeAndroid, gestures: {}};
           }}
           renderScene={(route, navigator) => {
             if(route.component){
               // Pass the navigator to the component so it can navigate as well.
-              // Pass firebaseApp so it can make calls to firebase.
-              return React.createElement(route.component, { navigator, firebaseApp});
+              return React.createElement(route.component, { navigator, deviceInfo,});
             }
         }} />
       );
@@ -91,10 +115,9 @@ class ATown extends Component {
     // else go to a landing/loading view
     else{
       return(
-        <View style={Style.rootContainer}>
-          <TitleBar title={"PATIENCE"} loading={false}/>
-          <View style={Style.inputContainer}>
-            <ActivityIndicator size="large" />
+        <View style={BaseStyle.container}>
+          <View style={BaseStyle.body}>
+            <ActivityIndicator size="large"/>
           </View>
         </View>
       );

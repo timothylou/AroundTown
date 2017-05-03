@@ -20,11 +20,11 @@ var BaseStyle = StyleSheet.create({
     backgroundColor: '#e9eaed',
   },
   textInput: {
-    height: 30,
+    flex: 1,
+    //height: 30,
     fontSize: 8,
-    width: 200,
-    borderColor: 'red',
-    borderWidth: 1
+    //width: 200,
+    borderWidth: 0
   },
   transparentButton: {
     marginTop: 10,

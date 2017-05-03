@@ -87,6 +87,8 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
+    manifestPlaceholders = [onesignal_app_id: "39b2daee-d8a9-4d37-aabb-63c5da1804fb",
+    onesignal_google_project_number: "532018067815"]
         applicationId "com.atown"
         minSdkVersion 16
         targetSdkVersion 22
@@ -126,7 +128,14 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-maps')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-onesignal')
+    compile(project(':react-native-maps')){
+	exclude group: 'com.google.android.gms', module: 'play-services-base'
+	exclude group: 'com.google.android.gms', module: 'play-services-maps'
+    }
+    compile 'com.google.android.gms:play-services-base:+'
+    compile 'com.google.android.gms:play-services-maps:+'
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules

@@ -1,6 +1,6 @@
 ## Welcome to AroundTown -- A Princeton COS333 Project
 
-AroundTown is a mobile app for Princeton students that integrates all live event information, crowdsourced from users who drop “pins," onto a single campus map. Using location services and push notifications, only potentially interested people will get notifications about a certain event, freeing others from annoying emails or alerts and making sure you never miss out. 
+AroundTown is a mobile app for Princeton students that integrates all live event information, crowdsourced from users who drop “pins," onto a single campus map. Using location services and push notifications, only potentially interested people will get notifications about a certain event, freeing others from annoying emails or alerts and making sure you never miss out.
 
 Project Members:    
 * Hrishikesh Khandeparkar         hrk@princeton.edu
@@ -40,18 +40,18 @@ Apr 9 - 15 -- COMPLETED
 - Finish implementing backend (store pin info)
 - App can send information to user (SMS or push notifs)
 
-Apr 16 - 22 -- IN PROGRESS		
+Apr 16 - 22 -- COMPLETED
 - Minimum viable product complete
 - Users can place pins and receive notifications
 - Start working on location specific notifications for subsets of users
 
-Apr 23 - 30 Alpha test -- UPCOMING		
+Apr 23 - 30 Alpha test -- COMPLETED
 - Add pin categories and filters
-- Users can comment/give feedback to existing pins
 - Implement user location updates
-
-May 1 - 7 Beta test -- UPCOMING			
 - Implement location-specific notifications
+
+May 1 - 7 Beta test -- UPCOMING
+- Users can comment/give feedback to existing pins
 - Add “home base” notification capabilities
 - No more adding features after the end of this week
 
@@ -61,10 +61,13 @@ May 8 - 12 Demo days -- UPCOMING
 May 14 Submission
 
 ATown details
-- Supports login with info
-- Adds user to firebase, with details
-- Supports dropping pins, with user inputs
-- Updates pins on Flask App with SQLite running on AWS+Apache2
+- Supports login with info via Firebase
+- Adds user to Firebase, with details, and preferences
+- Supports dropping pins, with user inputs, and category
+- Updates pins on Flask App running on Heroku+Gunicorn
+- Backend DB is on PostgreSQL
+- Push notifs implemented with OneSignal+Firebase
+
 ```
 
 WARNING: The node_modules arent uploaded to the git, so dont forget to npm install. If react-native-maps is being buggy use locally copied react-native-maps package (update messes up rnpm linking).

@@ -6,18 +6,25 @@ import {
   View,
   TouchableHighlight,
   ToolbarAndroid,
-  ActivityIndicator
+  ActivityIndicator,
+  ScrollView
 } from 'react-native';
 import React, {Component} from 'react';
 import Signup from './Signup';
 import Town from './Town';
-import BaseStyle from './BaseStyles.js';
+import Preferences from './Preferences';
+
+import BaseStyle from './BaseStyles';
+import Firebase from './Firebase';
+import SignupStyle from './SignupStyles';
+import TextInputBox from './TextInputBox';
+
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default class Login extends Component {
 
   constructor(props){
     super(props);
-    // We have the same props as in our signup.js file and they serve the same purposes.
     this.state = {
       loading: false,
       email: '',
@@ -29,61 +36,83 @@ export default class Login extends Component {
     // The content of the screen should be inputs for a username, password and submit button.
     // If we are loading then we display an ActivityIndicator.
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
-      <View>
-        <TextInput
-          style={BaseStyle.textInput}
+      <View style = {SignupStyle.loginContainer}>
+        <TextInputBox
+          title = {" Email"}
           onChangeText={(text) => this.setState({email: text})}
           value={this.state.email}
-          placeholder={"Email Address"} />
-        <TextInput
-          style={BaseStyle.textInput}
+          placeholder={" Your email"}
+          secure = {false} />
+        <TextInputBox
+          title = {" Password"}
           onChangeText={(text) => this.setState({password: text})}
           value={this.state.password}
-          secureTextEntry={true}
-          placeholder={"Password"} />
-        <TouchableHighlight onPress={this.login.bind(this)} style={BaseStyle.primaryButton}>
-          <Text style={BaseStyle.primaryButtonText}>Login</Text>
+          placeholder={" Your password"}
+          secure = {true} />
+
+        <TouchableHighlight onPress={this.login.bind(this)} style={SignupStyle.primaryButton}
+        underlayColor= {"#00695c"}>
+          <Text style={SignupStyle.primaryButtonText}>Login</Text>
         </TouchableHighlight>
-        <TouchableHighlight onPress={this.goToSignup.bind(this)} style={BaseStyle.transparentButton}>
-          <Text style={BaseStyle.transparentButtonText}>New here?</Text>
+        <TouchableHighlight onPress={this.goToSignup.bind(this)} style={SignupStyle.transparentButton}
+        underlayColor = {"white"}>
+          <Text style={SignupStyle.transparentButtonText}>New here?</Text>
         </TouchableHighlight>
       </View>;
 
     // A simple UI with a toolbar, and content below it.
   	return (
-  		<View style={BaseStyle.container}>
-  			<ToolbarAndroid
-          style={BaseStyle.toolbar}
-          title="Login" />
-        <View style={BaseStyle.body}>
-          {content}
-        </View>
-      </View>
+      <KeyboardAwareScrollView style={SignupStyle.containerScrollView}
+      contentContainerStyle = {SignupStyle.contentView}
+        showsVerticalScrollIndicator = {false}
+      >
+        {content}
+      </KeyboardAwareScrollView>
 		);
   }
 
-  login(){
+  async login(){
     this.setState({
       loading: true
     });
     // Log in and display an alert to tell the user what happened.
-    this.props.firebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password
-    ).then((userData) =>
-      {
-        this.setState({
-	        loading: false
-	      });
-        this.props.navigator.push({
-          component: Town
-        });
-      }
-    ).catch((error) =>
+    await Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password
+    ).then((userData) => {
+      var currUser = userData;
+
+      let userMobilePath = "/users/" + currUser.uid + "/details/prefs";
+      Firebase.database().ref(userMobilePath).once('value').then((snapshot) =>{
+        var prefs = snapshot.val();
+
+        prefs['deviceid'] = this.props.deviceInfo.userId;
+
+
+        fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
+          method: 'POST',
+          headers: {
+                    },
+            body: JSON.stringify(prefs),
+        }).then().catch( (error)=> console.log("BACKEND POST ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " + error.message));
+        }
+      ).catch((error)=> console.log(error.message));
+
+      this.setState({
+        loading: false
+      });
+
+      alert("Welcome! " + currUser.uid);
+      this.props.navigator.push({
+        component: Town
+      });
+    }).catch((error) =>
     	{
 	      this.setState({
 	        loading: false
 	      });
         alert('Login Failed. Please try again' + error.message);
     });
+
+
   }
 
   // Go to the signup page
