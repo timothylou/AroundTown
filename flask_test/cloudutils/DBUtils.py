@@ -76,7 +76,6 @@ def DBGetEventField(conn, cur, fieldname, eid):
         return res[0]
     return None
 
-# unused
 def DBSetEventStatus(conn, cur, eid, newstatus):
     update_q = '''UPDATE events SET status = %d WHERE eventid = '%s';''' % (newstatus, eid)
     print update_q

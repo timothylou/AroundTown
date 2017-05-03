@@ -123,7 +123,7 @@ def postnewevent():
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
     # send notification to correct audience
-    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, ["forbes"])
+    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, [cat])
     return "%s" % (eventid)
 
 @app.route('/post/prefs/', methods=['POST'])
