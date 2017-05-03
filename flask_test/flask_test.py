@@ -72,14 +72,6 @@ def index():
     #return render_template('index.html')
     return "hi"
 
-# testing function
-@app.route('/post/', methods=['POST'])
-def postcall():
-    #return request.form['key1'] + request.form['key2']
-    print request.get_json()
-    print request.url
-    return "You posted: " + request.get_json()
-
 @app.route('/post/newuser/', methods=['POST'])
 def postnewuser():
     postedjson = request.data
@@ -223,10 +215,6 @@ def loguserout():
     print "deactivating device " + deviceid
     osu.OSDeactivateStatus(app.config['OS_APP_ID'], app.config['OS_AUTH'], deviceid)
     return "Success"
-
-@app.route('/user/<username>')
-def varcall(username):
-    return 'Your username: ' + username
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
