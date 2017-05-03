@@ -31,7 +31,7 @@ render() {
 const styles = StyleSheet.create({
   drawerButton: {
     paddingHorizontal: 10,
-    fontSize: 24,
+    fontSize: 18,
     textAlign: 'left',
     textAlignVertical: 'center',
   }

@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     flexDirection: 'row',
-    flex : 1,
+    height: 55,
     backgroundColor: "#00897b",
     elevation:10
   }
