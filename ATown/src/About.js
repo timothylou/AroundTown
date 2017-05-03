@@ -25,7 +25,7 @@ export default class About extends Component {
   render() {
     return (
       <View>
-        <Text style = {styles.aboutText}>Thank you for using AroundTown!</Text>
+        <Text style = {styles.aboutText}>{"Thank you for using AroundTown! \n Find more about us at https://github.com/timothylou/AroundTown/ "}</Text>
       </View>
     );
   }
@@ -42,6 +42,5 @@ const styles = StyleSheet.create({
     color: 'dimgrey',
     textAlign: 'center',
     textAlignVertical: 'center',
-    padding: 60
   }
 })

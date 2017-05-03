@@ -10,6 +10,7 @@ import {
   ToolbarAndroid,
   ActivityIndicator,
   AsyncStorage,
+  StatusBar,
 } from 'react-native';
 
 // Pages
@@ -97,19 +98,24 @@ class ATown extends Component {
     // If the page has been selected go to appropriate page
     if (this.state.page){
       return (
-
-        <Navigator
-          initialRoute={{component: this.state.page}}
-          configureScene={() => {
-            // SceneConfigs + gesturs: {} to prevent swipe-to-go-back
-            return {... Navigator.SceneConfigs.FadeAndroid, gestures: {}};
-          }}
-          renderScene={(route, navigator) => {
-            if(route.component){
-              // Pass the navigator to the component so it can navigate as well.
-              return React.createElement(route.component, { navigator, deviceInfo,});
-            }
-        }} />
+        <View style={{flex:1}}>
+          <StatusBar
+            backgroundColor="#00796B"
+            barStyle="light-content"
+          />
+          <Navigator
+            initialRoute={{component: this.state.page}}
+            configureScene={() => {
+              // SceneConfigs + gesturs: {} to prevent swipe-to-go-back
+              return {... Navigator.SceneConfigs.FadeAndroid, gestures: {}};
+            }}
+            renderScene={(route, navigator) => {
+              if(route.component){
+                // Pass the navigator to the component so it can navigate as well.
+                return React.createElement(route.component, { navigator, deviceInfo,});
+              }
+          }} />
+        </View>
       );
     }
     // else go to a landing/loading view
