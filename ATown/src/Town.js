@@ -100,7 +100,6 @@ var buttonsCatTest = [
 
 const filterTime = 4000;
 
-
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
 let windowHeight = Dimensions.get('window').height
@@ -390,6 +389,8 @@ export default class Town extends Component{
                         duration: 500
                       }
                     ).start()}, filterTime);
+
+
   }
 
   // Checkbutton that shows time
