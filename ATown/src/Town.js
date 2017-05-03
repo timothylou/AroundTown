@@ -12,6 +12,7 @@ import {
   DrawerLayoutAndroid,
   Dimensions,
   Animated,
+  Slider,
   Image,
 } from 'react-native';
 import Modal from 'react-native-modalbox';
@@ -45,7 +46,6 @@ import MapView from 'react-native-maps';
 import Prompt from 'react-native-prompt';
 import OneSignal from 'react-native-onesignal';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Slider from 'react-native-slider';
 
 var buttonsCatTest = [
   { label: "Free Food",
@@ -160,6 +160,7 @@ export default class Town extends Component{
     this._radioButtonPressed = this._radioButtonPressed.bind(this);
     this._onCalloutPress = this._onCalloutPress.bind(this);
     this._setDrawer = this._setDrawer.bind(this);
+    this._onPressTownButton = this._onPressTownButton.bind(this);
     this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
@@ -199,33 +200,26 @@ export default class Town extends Component{
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
+            icon={"map-marker-radius"}
+            onPress = {this._onPressTownButton}
+            buttonText = {'Town View'}
+          />
+          <SideButton
+            icon= {"settings"}
             onPress = {this._onPressPrefsButton}
             buttonText = {'Preferences'}
           />
           <SideButton
+            icon= {"logout"}
             onPress = {this._onPressLogoutButton}
             buttonText = {'Logout'}
           />
           <SideButton
+            icon= {"information"}
             onPress = {this._openAbout}
             buttonText = {'About Us'}
           />
         </View>
-        <Modal
-          animationType = {'slide'}
-          onClosed = {() => this._closeAbout()}
-          isOpen = {this.state.aboutVisible}
-          >
-          <View>
-            <About/>
-            <Button
-              onPress={this._closeAbout}
-              title="Back to Town"
-              color="#FF5722"
-              accessibilityLabel="Learn more about this purple button"
-            />
-          </View>
-        </Modal>
       </View>
     );
 
@@ -334,6 +328,24 @@ export default class Town extends Component{
                     <Text style={{flex:1}}>{this.state.markerInfo.netid}</Text>
               </View>
             </Modal>
+            <Modal
+              animationType = {'slide'}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'stretch',
+                height: 550,
+                width: 350,
+                padding: 5,
+                borderRadius : 10,
+                elevation: 5,
+              }}
+              onClosed = {() => this._closeAbout()}
+              isOpen = {this.state.aboutVisible}
+              >
+              <View>
+                <About/>
+              </View>
+            </Modal>
             <Animated.View
               style={{
                 transform: [{ translateX: this.animatedValue }],
@@ -409,6 +421,7 @@ export default class Town extends Component{
 
 
   _openAbout() {
+    this.refs['DRAWER'].closeDrawer();
     this.setState({aboutVisible: true})
   }
 
@@ -431,14 +444,18 @@ export default class Town extends Component{
       });
 
     Firebase.auth().signOut().then(() => {
-      this.props.navigator.push({
+      this.props.navigator.replace({
         component: Login
       });
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
 
+  _onPressTownButton() {
+    this.refs['DRAWER'].closeDrawer();
+  }
+
   _onPressPrefsButton() {
-    this.props.navigator.push({
+    this.props.navigator.replace({
       component: Preferences
     });
   }
@@ -534,7 +551,8 @@ export default class Town extends Component{
                 owner: marker.ownerid,
               },
 
-              icon: buttonsCatTest[parseInt(marker.category)].icon
+              icon: buttonsCatTest[parseInt(marker.category)].icon,
+              key: marker.eventid,
             };
 
             markers.push(

@@ -102,7 +102,7 @@ export default class Signup extends Component {
               this.setState({
                 loading: false
               });
-              this.props.navigator.push({
+              this.props.navigator.replace({
                 component: Preferences
               });
             }
@@ -209,7 +209,7 @@ export default class Signup extends Component {
   }
 
   goToLogin(){
-    this.props.navigator.push({
+    this.props.navigator.replace({
       component: Login
     });
   }

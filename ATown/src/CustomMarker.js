@@ -31,6 +31,7 @@ export default class CustomMarker extends Component {
       coordinate={
         this.props.marker.coordinate
       }
+      key = {this.props.marker.key}
       image = {this.state.icon}
       title={this.props.marker.view.title}
       >

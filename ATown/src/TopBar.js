@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     flex : 1,
-    backgroundColor: '#2196F3',
+    backgroundColor: "#00897b",
     elevation:10
   }
 });

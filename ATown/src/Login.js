@@ -101,7 +101,7 @@ export default class Login extends Component {
       });
 
       alert("Welcome! " + currUser.uid);
-      this.props.navigator.push({
+      this.props.navigator.replace({
         component: Town
       });
     }).catch((error) =>
@@ -117,7 +117,7 @@ export default class Login extends Component {
 
   // Go to the signup page
   goToSignup(){
-    this.props.navigator.push({
+    this.props.navigator.replace({
       component: Signup
     });
   }
