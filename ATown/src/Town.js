@@ -9,7 +9,6 @@ import {
   AsyncStorage,
   TextInput,
   Button,
-  Slider,
   DrawerLayoutAndroid,
   Dimensions,
   Animated,
@@ -29,6 +28,7 @@ import SideButton from './SideButton';
 import CheckButton from './CheckButton';
 import RadioButton from './RadioButton';
 import ClickButton from './ClickButton';
+import FilterButton from './FilterButton'
 // Pages imports
 import Preferences from './Preferences';
 import About from './About';
@@ -45,6 +45,7 @@ import MapView from 'react-native-maps';
 import Prompt from 'react-native-prompt';
 import OneSignal from 'react-native-onesignal';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Slider from 'react-native-slider';
 
 var buttonsCatTest = [
   { label: "Free Food",
@@ -99,6 +100,7 @@ var buttonsCatTest = [
 ];
 
 const filterTime = 4000;
+const filterDuration = 700;
 
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
@@ -361,7 +363,7 @@ export default class Town extends Component{
       Animated.timing( this.animatedValue,
                       {
                         toValue: windowWidth,
-                        duration: 500
+                        duration: filterDuration,
                       }
                     ).start();
       return;
@@ -372,7 +374,7 @@ export default class Town extends Component{
         this.animatedValue,
         {
           toValue: windowWidth - 70,
-          duration: 500
+          duration: filterDuration,
         }
       ).start(this._hideFilters());
       return;
@@ -386,7 +388,7 @@ export default class Town extends Component{
       Animated.timing( this.animatedValue,
                       {
                         toValue: windowWidth,
-                        duration: 500
+                        duration: filterDuration,
                       }
                     ).start()}, filterTime);
 
@@ -459,7 +461,7 @@ export default class Town extends Component{
       Animated.timing( this.animatedValue,
                       {
                         toValue: windowWidth,
-                        duration: 500
+                        duration: filterDuration,
                       }
                     ).start()}, filterTime);
     var currentPicked = this.state.filterPicked;
@@ -568,20 +570,23 @@ export default class Town extends Component{
       var currId = null;
       var currIndex = null;
       var curronPress = null;
+      var currIcon = null;
       for (var b = 0; b < buttonsList.length; b++){
 
         currLabel = buttonsList[b].label;
         currSelected = buttonsList[b].selected;
         currId = buttonsList[b].id;
         currIndex = buttonsList[b].index;
+        currIcon = buttonsList[b].icon;
         curronPress = onPress.bind(null,currIndex);
 
         buttons.push(
-          <CheckButton
+          <FilterButton
             label = {currLabel}
             selected = {currSelected}
             onPress = {curronPress}
             index = {currIndex}
+            icon = {currIcon}
             key = {currId}/>
         );
       }
@@ -591,12 +596,31 @@ export default class Town extends Component{
     }
 
   _onCalloutPress(markerDescription){
+
+    clearTimeout(this.filterTimeout);
+    this.setState({ filterVisible: false })
+    Animated.timing( this.animatedValue,
+                    {
+                      toValue: windowWidth,
+                      duration: filterDuration,
+                    }
+                  ).start();
+
     this.setState({markerInfoVisbile: true,
       markerInfo: markerDescription})
   };
   // Handles a onLongPress event
   // Saves co-ordinates in state variable incMarker
   _handleMarkerPress(e){
+    clearTimeout(this.filterTimeout);
+    this.setState({ filterVisible: false })
+    Animated.timing( this.animatedValue,
+                    {
+                      toValue: windowWidth,
+                      duration: filterDuration,
+                    }
+                  ).start();
+
     this.setState({ incMarker: {
                     coordinate: e.nativeEvent.coordinate,
                     title: "blahblah",
