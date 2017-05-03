@@ -8,7 +8,6 @@ import {
   ScrollView,
   AsyncStorage,
   TextInput,
-  Modal,
   Button,
   Slider,
   DrawerLayoutAndroid,
@@ -16,6 +15,8 @@ import {
   Animated,
   Image,
 } from 'react-native';
+import Modal from 'react-native-modalbox';
+
 
 // Custom Utils import
 import Firebase from './Firebase';
@@ -96,6 +97,8 @@ var buttonsCatTest = [
 },
 
 ];
+
+const filterTime = 4000;
 
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
@@ -180,6 +183,8 @@ export default class Town extends Component{
 
     }, 5000);
 
+    this.filterTimeout = null;
+
   }
   // Renders the main view
   render() {
@@ -206,8 +211,8 @@ export default class Town extends Component{
         </View>
         <Modal
           animationType = {'slide'}
-          onRequestClose = {this._closeAbout}
-          visible = {this.state.aboutVisible}
+          onClosed = {() => this._closeAbout()}
+          isOpen = {this.state.aboutVisible}
           >
           <View>
             <About/>
@@ -244,12 +249,20 @@ export default class Town extends Component{
             />
             <Modal
               animationType = {'slide'}
-              onRequestClose = {this._handleCancelMarker}
-              visible = {this.state.markerInputVisible}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'stretch',
+                height: 500,
+                width: 350,
+                padding: 10,
+                borderRadius : 10,
+                elevation: 5,
+              }}
+              onClosed = {() => {this.setState({markerInputVisible: false}); this._handleCancelMarker();}}
+              isOpen = {this.state.markerInputVisible}
             >
-              <ScrollView contentContainerStyle={PinInputStyle.MainContainer}>
+              <View style={PinInputStyle.MainContainer}>
                 <View style={PinInputStyle.TitleInputContainer}>
-                  <Text style={PinInputStyle.TitleInputTitle}>Enter title here!</Text>
                   <TextInput
                     placeholder= {"Enter pin title here!"}
                     onChangeText={(text) => this.setState({inputTitle: text})}
@@ -257,7 +270,6 @@ export default class Town extends Component{
                 </View>
 
                 <View style={PinInputStyle.DescriptionInputContainer}>
-                  <Text style = {PinInputStyle.DescriptionInputTitle}>Enter description here!</Text>
                   <TextInput
                     value={this.state.descInput}
                     placeholder= {"Enter pin description here!"}
@@ -298,24 +310,26 @@ export default class Town extends Component{
                     />
                   </View>
                 </View>
-              </ScrollView>
+              </View>
             </Modal>
             <Modal
+              style={{
+                justifyContent: 'center',
+                alignItems: 'stretch',
+                height: 300,
+                width: 300,
+                padding: 10,
+                borderRadius : 10,
+                elevation: 5,
+              }}
               animationType = {'slide'}
-              onRequestClose = {this._handleCancelMarker}
-              visible = {this.state.markerInfoVisbile}
+              onClosed = {() => this.setState({markerInfoVisbile: false})}
+              isOpen = {this.state.markerInfoVisbile}
               >
-              <View>
-                  <Button
-                    onPress={this._handleCancelMarker}
-                    title="Cancel"
-                    color="#FF5722"
-                    accessibilityLabel="Learn more about this purple button"
-                    />
-                    <Text>{this.state.markerInfo.title}</Text>
-                    <Text>{this.state.markerInfo.description}</Text>
-                    <Text>{this.state.markerInfo.netid}</Text>
-
+              <View style={{flex:1, backgroundColor: '#EEEEEE'}}>
+                    <Text style={{flex:1}}>{this.state.markerInfo.title}</Text>
+                    <Text style={{flex:1}}>{this.state.markerInfo.description}</Text>
+                    <Text style={{flex:1}}>{this.state.markerInfo.netid}</Text>
               </View>
             </Modal>
             <Animated.View
@@ -340,28 +354,43 @@ export default class Town extends Component{
   }
 
   _showFilters() {
-    if (this.state.filterVisible) return;
+    if (this.state.filterVisible) {
 
-    this.setState({filterVisible: true});
-    Animated.timing(
-      this.animatedValue,
-      {
-        toValue: windowWidth - 70,
-        duration: 500
-      }
-    ).start(this._hideFilters());
-  }
-
-  _hideFilters() {
-    setTimeout(() => {
+      clearTimeout(this.filterTimeout);
       this.setState({ filterVisible: false })
+      Animated.timing( this.animatedValue,
+                      {
+                        toValue: windowWidth,
+                        duration: 500
+                      }
+                    ).start();
+      return;
+    }
+    else{
+      this.setState({filterVisible: true});
       Animated.timing(
-      this.animatedValue,
-      {
-        toValue: windowWidth,
-        duration: 500
-      }).start()
-    }, 4000)
+        this.animatedValue,
+        {
+          toValue: windowWidth - 70,
+          duration: 500
+        }
+      ).start(this._hideFilters());
+      return;
+    }
+  }
+  
+  _hideFilters() {
+
+    this.filterTimeout= setTimeout(() => {
+      this.setState({ filterVisible: false })
+      Animated.timing( this.animatedValue,
+                      {
+                        toValue: windowWidth,
+                        duration: 500
+                      }
+                    ).start()}, filterTime);
+
+
   }
 
   // Checkbutton that shows time
@@ -423,6 +452,16 @@ export default class Town extends Component{
 
   _viewButtonPressed(buttonIdx){
 
+    clearTimeout(this.filterTimeout);
+
+    this.filterTimeout = setTimeout(() => {
+      this.setState({ filterVisible: false })
+      Animated.timing( this.animatedValue,
+                      {
+                        toValue: windowWidth,
+                        duration: 500
+                      }
+                    ).start()}, filterTime);
     var currentPicked = this.state.filterPicked;
     currentPicked[buttonIdx].selected = ! currentPicked[buttonIdx].selected
     this.setState({filterPicked: currentPicked});
