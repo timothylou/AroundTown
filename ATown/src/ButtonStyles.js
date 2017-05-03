@@ -99,6 +99,16 @@ var ButtonStyle = StyleSheet.create({
       justifyContent: 'center',
     },
 
+  FilterButtonOuter:{
+      height: 34,
+      width: 34,
+      borderRadius: 4,
+      borderWidth: 0,
+      borderColor: checkButtonColor,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
   CheckButtonInner:{
       height: 20,
       width: 20,
