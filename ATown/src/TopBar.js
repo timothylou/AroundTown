@@ -8,13 +8,15 @@ Text,
 ToolbarAndroid
 } from 'react-native';
 
+var Icon = require('react-native-vector-icons/MaterialCommunityIcons');
+
 export default class TopBar extends Component{
 render() {
   var navigator = this.props.navigator;
    return (
     <ToolbarAndroid
      title={this.props.title}
-     navIcon={require('./icons/ic_menu_white_18dp.png')}
+     navIcon = {require('./icons/ic_menu_white_18dp.png')}
      style = {styles.toolbar}
      titleColor={'white'}
      onIconClicked={this.props.sidebarRef}/>
