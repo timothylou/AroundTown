@@ -72,7 +72,7 @@ var buttonsCatTest = [
   id: "studybreak",
   index: 3,
   selected: true,
-  icon: 'laptop-off',
+  icon: 'pencil-off',
 },
 
   {label: "Movie Screening",
@@ -378,7 +378,7 @@ export default class Town extends Component{
       return;
     }
   }
-  
+
   _hideFilters() {
 
     this.filterTimeout= setTimeout(() => {

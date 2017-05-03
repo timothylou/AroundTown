@@ -13,59 +13,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import React, {Component} from 'react';
 
-
-// var buttonsCatTest = [
-//   { label: "Free Food",
-//   id: "freefood",
-//   index: 0,
-//   selected: true,
-//   icon: null,
-// },
-//
-//   {label: "Broken Facility",
-//   id: "brokenfacility",
-//   index: 1,
-//   selected: true,
-//   icon: null,
-// },
-//
-//   {label: "Recruiting",
-//   id: "recruiting",
-//   index: 2,
-//   selected: true,
-//   icon: null,
-// },
-//
-//   {label: "Study Break",
-//   id: "studybreak",
-//   index: 3,
-//   selected: true,
-//   icon: null,
-// },
-//
-//   {label: "Movie Screening",
-//   id: "movie",
-//   index: 4,
-//   selected: true,
-//   icon: null,
-// },
-//
-//   {label: "Busy",
-//   id: "busy",
-//   index: 5,
-//   selected: true,
-//   icon: null,
-// },
-//
-//   {label: "Fire Safety",
-//   id: "firesafety",
-//   index: 6,
-//   selected: true,
-//   icon: null,
-// },
-//
-// ];
-
 export default class CustomMarker extends Component {
 
   constructor(props){
