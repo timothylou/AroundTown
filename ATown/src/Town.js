@@ -43,60 +43,59 @@ import TownStyle from './TownStyles';
 import MapView from 'react-native-maps';
 import Prompt from 'react-native-prompt';
 import OneSignal from 'react-native-onesignal';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 var buttonsCatTest = [
   { label: "Free Food",
   id: "freefood",
   index: 0,
   selected: true,
-  icon: './icons/food.png',
+  icon: 'food',
 },
 
   {label: "Broken Facility",
   id: "brokenfacility",
   index: 1,
   selected: true,
-  icon: './icons/brokenfacility.png',
+  icon: 'vlc',
 },
 
   {label: "Recruiting",
   id: "recruiting",
   index: 2,
   selected: true,
-  icon: './icons/recruiting.png',
+  icon: 'account-multiple',
 },
 
   {label: "Study Break",
   id: "studybreak",
   index: 3,
   selected: true,
-  icon: './icons/studybreak.png',
+  icon: 'laptop-off',
 },
 
   {label: "Movie Screening",
   id: "movie",
   index: 4,
   selected: true,
-  icon: './icons/movie.png',
+  icon: 'filmstrip',
 },
 
   {label: "Busy",
   id: "busy",
   index: 5,
   selected: true,
-  icon: './icons/busy.png',
+  icon: 'do-not-disturb',
 },
 
   {label: "Fire Safety",
   id: "firesafety",
   index: 6,
   selected: true,
-  icon: './icons/firesafer.png',
+  icon: 'alert',
 },
 
 ];
-
-
 
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
@@ -362,7 +361,7 @@ export default class Town extends Component{
         toValue: windowWidth,
         duration: 500
       }).start()
-    }, 5000)
+    }, 4000)
   }
 
   // Checkbutton that shows time
@@ -417,16 +416,6 @@ export default class Town extends Component{
     this.refs['DRAWER'].openDrawer();
   }
 
-
-  _logout() {
-    // logout, once that is complete, return the user to the login screen.
-    clearInterval(this.timerId);
-    Firebase.auth().signOut().then(() => {
-      this.props.navigator.push({
-        component: Login
-      });
-    }).catch((error)=> console.log("Done with fetching from tim" + error.message));
-  }
 
   _radioButtonPressed(buttonId){
     this.setState({selectedCategory: buttonId});
@@ -502,8 +491,9 @@ export default class Town extends Component{
                 title: marker.title,
                 description: marker.description,
                 owner: marker.ownerid,
-
               },
+
+              icon: buttonsCatTest[parseInt(marker.category)].icon
             };
 
             markers.push(

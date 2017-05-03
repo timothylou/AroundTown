@@ -8,7 +8,8 @@ import {
   ToolbarAndroid,
   StyleSheet,
   Button,
-  DrawerLayoutAndroid
+  DrawerLayoutAndroid,
+  Image
 } from 'react-native';
 import Style from './Style'
 import Town from './Town';
@@ -24,6 +25,7 @@ export default class About extends Component {
   render() {
     return (
       <View>
+        <Image source = {this.state.icon} />
         <Text style = {styles.aboutText}>Thank you for using AroundTown!</Text>
       </View>
     );
