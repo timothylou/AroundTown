@@ -103,6 +103,12 @@ export default class Login extends Component {
         }
       ).catch((error)=> console.log(error.message));
 
+
+      Firebase.database().ref("/users/" + currUser.uid + "/details").once('value').then((snapshot) =>{
+        var fname = snapshot.val().fname;
+        alert("Welcome back, " + fname+ "!");
+      }).catch((error)=> console.log(error.message));
+
       this.setState({
         loading: false
       });
@@ -115,7 +121,7 @@ export default class Login extends Component {
 	      this.setState({
 	        loading: false
 	      });
-        alert('Login Failed. Please try again' + error.message);
+        alert('Sorry, but ' + error.message);
     });
 
 
