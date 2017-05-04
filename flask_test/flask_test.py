@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, url_for
 from apscheduler.schedulers.background import BackgroundScheduler
-
 import requests
 from werkzeug.contrib.fixers import ProxyFix
-import cloudutils.DBUtils as dbu
-import cloudutils.OneSignalUtils as osu
 import json
-from config import dbpath
 import logging
 
+import cloudutils.DBUtils as dbu
+import cloudutils.OneSignalUtils as osu
+from config import dbpath
 
 # Create the application.
 app = Flask(__name__)
@@ -215,6 +214,23 @@ def loguserout():
     print "deactivating device " + deviceid
     osu.OSDeactivateStatus(app.config['OS_APP_ID'], app.config['OS_AUTH'], deviceid)
     return "Success"
+
+@app.route('/vote/', methods=['POST'])
+def voteevent():
+    postedjson = request.data
+    votedict = json.loads(postedjson)
+    for attrib in app.config['DB_EVENTVOTE_REQD_FIELDS']:
+        if attrib not in votedict:
+            return 'ERROR: no %s value received' % (attrib)
+    eventid = votedict['eventid']
+    upvotechange = votedict['upvotechange']
+    downvotechange = votedict['downvotechange']
+    dbu.DBUpdateVoteStatus(app.config['DB_CONN'], app.config['DB_CUR'], eventid, upvotechange, downvotechange)
+    # is this really necessary? only one thing changes... maybe can just edit that one event?
+    eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
+    app.config['EVENTS_LIST'] = json.dumps(eventlst)
+    return "Success"
+    
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
