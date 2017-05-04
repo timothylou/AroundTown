@@ -209,6 +209,24 @@ export default class Town extends Component{
 
     }, 5000);
 
+    this.locTimerId = setInterval(() => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.setState({
+            currRegion:{
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              latitudeDelta: 0.0022,
+              longitudeDelta: 0.0021,
+            },
+
+            regionSet: true,
+          });
+        },
+        (error) => {alert(error.message)},
+      );
+    }, 60000);
+
     this.filterTimeout = null;
 
   }
@@ -515,6 +533,7 @@ export default class Town extends Component{
 
   _onPressLogoutButton() {
     clearInterval(this.timerId);
+    clearInterval(this.locTimerId);
     var ret = fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/logout/',
       {
         method: 'POST',
@@ -912,6 +931,7 @@ export default class Town extends Component{
 
   componentWillUnmount() {
     clearInterval(this.timerId);
+    clearInterval(this.locTimerId);
 
   }
 
