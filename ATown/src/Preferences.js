@@ -233,6 +233,12 @@ export default class Preferences extends Component{
     var navigationView = (
       <View style={Style.sideDrawer}>
         <View style = {Style.drawerHeader}>
+          <TouchableWithoutFeedback onPress={() => alert("Hoooot!")}>
+            <Image
+              source={require('./icons/hoot2.png')}
+              style={{width: 90, height: 90, padding: 10}}
+            />
+          </TouchableWithoutFeedback>
           <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
         </View>
         <View style = {Style.sideButtonContainer}>
