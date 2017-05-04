@@ -19,7 +19,7 @@ var PinInputStyle = StyleSheet.create({
   },
 
   inputContainer:{
-    padding: 10,
+    paddingHorizontal: 10,
     flex:9,
     backgroundColor: Colors.WHITE,
     justifyContent: 'center',

@@ -188,22 +188,24 @@ export default class Preferences extends Component{
     var userName = detsnapshot.val().fname;
 
     const prefsnap = await Firebase.database().ref('/users/' + currentUser.uid+ '/details/prefs/tags').once('value');
-    var locs = prefsnap.val().location;
-    var cats = prefsnap.val().category;
+    if(!prefsnap){
+      var locs = prefsnap.val().location;
+      var cats = prefsnap.val().category;
 
-    var statelocs = this.state.locations;
-    var statecats = this.state.categories;
+      var statelocs = this.state.locations;
+      var statecats = this.state.categories;
 
-    for (var c = 0; c < statecats.length; c++){
+      for (var c = 0; c < statecats.length; c++){
+        statecats[c].selected = (cats[statecats[c].id] == 'true');
+      }
 
-      statecats[c].selected = (cats[statecats[c].id] == 'true');
+      for (var l = 0; l < statelocs.length; l++){
+        statelocs[l].selected = (locs[statelocs[l].id] == 'true');
+      }
+
+      this.setState({locations: statelocs, categories: statecats});
     }
 
-    for (var l = 0; l < statelocs.length; l++){
-      statelocs[l].selected = (locs[statelocs[l].id] == 'true');
-    }
-
-    this.setState({locations: statelocs, categories: statecats});
     this.setState({userData: currentUser});
     this.setState({name: userName});
     this.setState({loading: false});
@@ -273,7 +275,7 @@ export default class Preferences extends Component{
       loading: false
     });
 
-    this.setState({userData: null, locations: buttonsLocationTest, categories: buttonsCatTest, loading: false});
+    this.setState({userData: null, loading: false});
     this.props.navigator.replace({
       component: Town
     });
@@ -488,10 +490,9 @@ export default class Preferences extends Component{
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
 
-  _onPressTownButton() {
-    this.props.navigator.replace({
-      component: Town
-    });
+  async _onPressTownButton() {
+    await this.setPreferences();
+
   }
 
 
