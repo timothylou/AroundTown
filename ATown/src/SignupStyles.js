@@ -1,14 +1,18 @@
 'use strict';
 import React, {
-  StyleSheet
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 const background = 'white';
 const primary = '#00897b';
+let windowWidth = Dimensions.get('window').width
+let windowHeight = Dimensions.get('window').height
+
 
 var SignupStyle = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingVertical: 50,
+    paddingHorizontal: windowWidth*0.05,
+    paddingVertical: windowHeight*0.05,
     backgroundColor: background,
     alignItems: 'stretch',
     flex: 1
@@ -16,20 +20,22 @@ var SignupStyle = StyleSheet.create({
 
   loginContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 200,
+    paddingTop: 80,
+    paddingBottom: 100,
     backgroundColor: background,
     alignItems: 'stretch',
+    justifyContent: 'center',
     flex: 1
   },
 
   containerScrollView:{
     height: '100%',
-
     backgroundColor: background,
   },
 
   contentView: {
-      alignItems: 'stretch',
+    backgroundColor: background,
+    alignItems: 'stretch',
   },
 
   body: {
@@ -41,8 +47,10 @@ var SignupStyle = StyleSheet.create({
   },
 
   textField: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: '200',
     flex:1,
+    color: '#212121',
   },
 
   textInput: {
@@ -79,6 +87,22 @@ var SignupStyle = StyleSheet.create({
     color: '#FFF',
     textAlign: 'center',
     fontSize: 18,
+  },
+
+  logoFont:{
+    color: '#2196F3',
+    fontFamily: 'Calibri',
+    alignSelf: 'center',
+    fontSize: 30,
+    fontWeight: '400' ,
+    elevation: 20
+  },
+
+  logo:{
+    width: 90,
+    height: 90,
+    alignSelf: 'center',
+    padding: 10
   },
 
 });

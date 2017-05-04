@@ -100,14 +100,14 @@ class ATown extends Component {
       return (
         <View style={{flex:1}}>
           <StatusBar
-            backgroundColor="#00796B"
+            backgroundColor="#1976D2"
             barStyle="light-content"
           />
           <Navigator
             initialRoute={{component: this.state.page}}
             configureScene={() => {
               // SceneConfigs + gesturs: {} to prevent swipe-to-go-back
-              return {... Navigator.SceneConfigs.FadeAndroid, gestures: {}};
+              return {... Navigator.SceneConfigs.FloatFromRight, gestures: {}};
             }}
             renderScene={(route, navigator) => {
               if(route.component){

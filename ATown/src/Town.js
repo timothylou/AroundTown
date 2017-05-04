@@ -14,6 +14,7 @@ import {
   Animated,
   Slider,
   Image,
+  TouchableWithoutFeedback,
 
 } from 'react-native';
 import Modal from 'react-native-modalbox';
@@ -43,6 +44,7 @@ import Style from './Style';
 import ButtonStyle from './ButtonStyles';
 import PinInputStyle from './PinInputStyles';
 import TownStyle from './TownStyles';
+import SignupStyle from './SignupStyles';
 // Packages
 import MapView from 'react-native-maps';
 import Prompt from 'react-native-prompt';
@@ -204,6 +206,13 @@ export default class Town extends Component{
     var navigationView = (
       <View style={Style.sideDrawer}>
         <View style = {Style.drawerHeader}>
+          <TouchableWithoutFeedback onPress={() => alert("Hoooot!")}>
+            <Image
+              source={require('./icons/hoot2.png')}
+              style={{width: 90, height: 90, padding: 10}}
+            />
+          </TouchableWithoutFeedback>
+
           <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
         </View>
         <View style = {Style.sideButtonContainer}>
@@ -235,7 +244,7 @@ export default class Town extends Component{
     return(
       <View style={TownStyle.rootContainer}>
         <DrawerLayoutAndroid
-          drawerWidth={300}
+          drawerWidth={windowWidth*0.8}
           drawerPosition={DrawerLayoutAndroid.positions.Left}
           renderNavigationView={() => navigationView}
           ref={'DRAWER'}>
@@ -765,7 +774,7 @@ export default class Town extends Component{
           }
         });
       },
-      (error) => {alert(error.message)},
+      (error) => {console.log(error.message)},
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
 
@@ -780,37 +789,37 @@ export default class Town extends Component{
 
   }
 
-
-  async componentDidMount(){
-    console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
-
-    var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
-      method: "GET"
-    });
-    // console.log(fetchedMarkersList);
-    var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
-    this.setState({markersList: tempmarkersList});
-    console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
-    // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
-    const userData = await Firebase.auth().currentUser;
-    const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
-    var userName = snapshot.val().fname;
-    var netid = snapshot.val().netid;
-    // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
-
-    // this.setState({test: ttext});
-    // alert(ttext._bodyText);
-    // alert(userName);
-    this.setState({netid: netid});
-    this.setState({name: userName});
-    this.setState({uid: userData.uid})
-    this.setState({
-      user: userData,
-    });
-    // var userId = firebaseApp.auth().currentUser.uid;
-
-    // alert(JSON.stringify(this.state.user));
-  }
+  //
+  // async componentDidMount(){
+  //   console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
+  //
+  //   var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
+  //     method: "GET"
+  //   });
+  //   // console.log(fetchedMarkersList);
+  //   var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
+  //   this.setState({markersList: tempmarkersList});
+  //   console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
+  //   // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
+  //   const userData = await Firebase.auth().currentUser;
+  //   const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
+  //   var userName = snapshot.val().fname;
+  //   var netid = snapshot.val().netid;
+  //   // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
+  //
+  //   // this.setState({test: ttext});
+  //   // alert(ttext._bodyText);
+  //   // alert(userName);
+  //   this.setState({netid: netid});
+  //   this.setState({name: userName});
+  //   this.setState({uid: userData.uid})
+  //   this.setState({
+  //     user: userData,
+  //   });
+  //   // var userId = firebaseApp.auth().currentUser.uid;
+  //
+  //   // alert(JSON.stringify(this.state.user));
+  // }
 }
 
 // Dont forget to register main App!!
