@@ -36,14 +36,14 @@ export default class CustomMarker extends Component {
       key = {this.props.marker.key}
       title={this.props.marker.view.title}
       >
-      <View style={{height: 26, width: 26, borderRadius: 13, backgroundColor: markerCircle , alignItems: 'center', justifyContent: 'center'}}>
-        <Icon name={this.props.marker.icon} size={18} color={markerIcon} />
-
+      <View style={{height: 24, width: 24, borderRadius: 12, backgroundColor: markerCircle , alignItems: 'center', justifyContent: 'center', elevation: 5}}>
+        <Icon name={this.props.marker.icon} size={16} color={markerIcon} />
       </View>
         <Callout
+          style={{width: this.props.marker.view.title.length*8}}
           onPress={() => this.props.onCalloutPressed(this.props.marker.modal)}>
           <View >
-            <Text >{this.props.marker.view.title}</Text>
+            <Text style={{textAlign: 'center'}} >{this.props.marker.view.title}</Text>
           </View>
         </Callout>
       </Marker>
