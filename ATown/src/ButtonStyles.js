@@ -130,8 +130,8 @@ var ButtonStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: 'white',
-    borderRadius: 10,
-    elevation: 5,
+    borderRadius: 5,
+    elevation: 2,
 
   },
 

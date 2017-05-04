@@ -5,6 +5,8 @@ import {
   Text,
   View,
   TouchableHighlight,
+  Image,
+  ActivityIndicator,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import TownStyle from './TownStyles';
@@ -39,8 +41,10 @@ export default class CustomMapView extends Component {
 
   // Renders a MapView component, with initial region
   render(){
-    return(
-      <MapView  style={TownStyle.map}
+    var landing = ( <View style={{flex:1, justifyContent:'center', alignItems: 'center'}}>
+                      <ActivityIndicator size="large"/>
+                    </View>);
+    var content =  !this.props.regionSet ? (landing):(<MapView  style={TownStyle.map}
         initialRegion={this.props.initialRegion}
         onLongPress={this.props.onLongPressHandler}
         onPress={this.props.onPressHandler}
@@ -52,6 +56,8 @@ export default class CustomMapView extends Component {
       {this.props.renderMarkers(this.props.markersList)}
       </MapView>
     );
+
+    return content;
   }
 
 }
