@@ -8,11 +8,13 @@ import {
   View,
   ScrollView,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   ToolbarAndroid,
   ActivityIndicator,
   DrawerLayoutAndroid,
   Button,
   Dimensions,
+  Image,
 } from 'react-native';
 import React, {Component} from 'react';
 
