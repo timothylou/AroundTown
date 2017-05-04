@@ -283,7 +283,7 @@ export default class Preferences extends Component{
     return (
       <View style={Style.rootContainer}>
         <DrawerLayoutAndroid
-          drawerWidth={300}
+          drawerWidth={windowWidth*0.8}
           drawerPosition={DrawerLayoutAndroid.positions.Left}
           renderNavigationView={() => navigationView}
           ref={'DRAWER'}>

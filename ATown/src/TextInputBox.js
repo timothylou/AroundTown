@@ -21,7 +21,7 @@ render() {
          onChangeText={this.props.onChangeText}
          value={this.props.value}
          placeholder={this.props.placeholder}
-         placeholderTextColor = {'#bdbdbd'}
+         placeholderTextColor = {'#757575'}
          secureTextEntry = {this.props.secure}/>
       </View>
     );

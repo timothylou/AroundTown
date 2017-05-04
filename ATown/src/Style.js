@@ -83,9 +83,12 @@ var Style = StyleSheet.create({
     drawerHeader: {
       backgroundColor: '#3F51B5',
       flex: 0.2,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingLeft: 15
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      paddingLeft: 15,
+      paddingBottom: 10,
+      paddingTop: 10,
+      elevation:8,
     },
 
     drawerHeaderText: {

@@ -7,7 +7,8 @@ import {
   TouchableHighlight,
   ToolbarAndroid,
   ActivityIndicator,
-  ScrollView
+  ScrollView,
+  Image
 } from 'react-native';
 import React, {Component} from 'react';
 import Signup from './Signup';
@@ -37,6 +38,11 @@ export default class Login extends Component {
     // If we are loading then we display an ActivityIndicator.
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
       <View style = {SignupStyle.loginContainer}>
+        <Image
+          source={require('./icons/hoot2.png')}
+          style={SignupStyle.logo}
+        />
+        <Text style={SignupStyle.logoFont}>Hoot</Text>
         <TextInputBox
           title = {" Email"}
           onChangeText={(text) => this.setState({email: text})}
