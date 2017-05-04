@@ -5,7 +5,8 @@ import {
 StyleSheet,
 View,
 Text,
-ToolbarAndroid
+ToolbarAndroid,
+Image
 } from 'react-native';
 
 var Icon = require('react-native-vector-icons/MaterialCommunityIcons');
@@ -27,10 +28,10 @@ render() {
 const styles = StyleSheet.create({
   toolbar: {
     padding: 10,
-    alignItems: 'center',
+
     flexDirection: 'row',
-    flex : 1,
-    backgroundColor: '#2196F3',
+    height: 55,
+    backgroundColor: "#2196F3",
     elevation:10
   }
 });

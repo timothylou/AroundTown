@@ -77,20 +77,22 @@ var Style = StyleSheet.create({
 
     sideDrawer: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#00897b',
     },
 
     drawerHeader: {
-      backgroundColor: 'dimgrey',
+      backgroundColor: '#3F51B5',
       flex: 0.2,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingLeft: 15
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      paddingLeft: 15,
+      paddingBottom: 10,
+      paddingTop: 10,
+      elevation:8,
     },
 
     drawerHeaderText: {
       fontSize: 26,
-      fontWeight: 'bold',
       color: 'white',
       textAlign: 'left',
       textAlignVertical: 'center',
@@ -99,7 +101,7 @@ var Style = StyleSheet.create({
     sideButtonContainer: {
       padding: 15,
       flex: 0.8,
-      backgroundColor: '#fff',
+      backgroundColor: '#EEEEEE',
     }
 });
 

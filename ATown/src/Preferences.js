@@ -11,8 +11,8 @@ import {
   ToolbarAndroid,
   ActivityIndicator,
   DrawerLayoutAndroid,
-  Modal,
   Button,
+  Dimensions,
 } from 'react-native';
 import React, {Component} from 'react';
 
@@ -37,6 +37,8 @@ import Style from './Style'
 
 // Packages imports
 import OneSignal from 'react-native-onesignal';
+import Modal from 'react-native-modalbox';
+
 
 // defaultState
 const buttonsLocationTest = [
@@ -104,6 +106,9 @@ const buttonsCatTest = [
   selected: false,},
 
 ];
+
+let windowWidth = Dimensions.get('window').width
+let windowHeight = Dimensions.get('window').height
 // const initialState = {
 //   loading: false,
 //
@@ -133,6 +138,7 @@ export default class Preferences extends Component{
     this.convertBoolToText = this.convertBoolToText.bind(this);
     this._setDrawer = this._setDrawer.bind(this);
     this._onPressTownButton = this._onPressTownButton.bind(this);
+    this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
     this._closeAbout = this._closeAbout.bind(this);
@@ -214,7 +220,7 @@ export default class Preferences extends Component{
     });
 
     this.setState({userData: null, locations: buttonsLocationTest, categories: buttonsCatTest, loading: false});
-    this.props.navigator.push({
+    this.props.navigator.replace({
       component: Town
     });
 
@@ -227,38 +233,38 @@ export default class Preferences extends Component{
     var navigationView = (
       <View style={Style.sideDrawer}>
         <View style = {Style.drawerHeader}>
+          <TouchableWithoutFeedback onPress={() => alert("Hoooot!")}>
+            <Image
+              source={require('./icons/hoot2.png')}
+              style={{width: 90, height: 90, padding: 10}}
+            />
+          </TouchableWithoutFeedback>
           <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
+            icon={"map-marker-radius"}
             onPress = {this._onPressTownButton}
             buttonText = {'Town View'}
           />
           <SideButton
+            icon= {"settings"}
+            onPress = {this._onPressPrefsButton}
+            buttonText = {'Preferences'}
+          />
+          <SideButton
+            icon= {"logout"}
             onPress = {this._onPressLogoutButton}
             buttonText = {'Logout'}
           />
           <SideButton
+            icon= {"information"}
             onPress = {this._openAbout}
             buttonText = {'About Us'}
           />
         </View>
-        <Modal
-          animationType = {'slide'}
-          onRequestClose = {this._closeAbout}
-          visible = {this.state.aboutVisible}
-          >
-          <View>
-            <About/>
-            <Button
-              onPress={this._closeAbout}
-              title="Back to Preferences"
-              color="#FF5722"
-              accessibilityLabel="Learn more about this purple button"
-            />
-          </View>
-        </Modal>
       </View>
+
     );
 
 
@@ -283,7 +289,7 @@ export default class Preferences extends Component{
     return (
       <View style={Style.rootContainer}>
         <DrawerLayoutAndroid
-          drawerWidth={300}
+          drawerWidth={windowWidth*0.8}
           drawerPosition={DrawerLayoutAndroid.positions.Left}
           renderNavigationView={() => navigationView}
           ref={'DRAWER'}>
@@ -295,6 +301,24 @@ export default class Preferences extends Component{
 
         <View style={Style.prefsContainer}>
           {content}
+          <Modal
+            animationType = {'slide'}
+            style={{
+              justifyContent: 'center',
+              alignItems: 'stretch',
+              height: windowHeight*0.8,
+              width: windowWidth*0.9,
+              padding: 5,
+              borderRadius : 10,
+              elevation: 5,
+            }}
+            onClosed = {() => this._closeAbout()}
+            isOpen = {this.state.aboutVisible}
+            >
+            <View>
+              <About/>
+            </View>
+          </Modal>
         </View>
         </DrawerLayoutAndroid>
       </View>
@@ -333,14 +357,19 @@ export default class Preferences extends Component{
 
   }
 
+  _onPressPrefsButton() {
+    this.refs['DRAWER'].closeDrawer();
+  }
 
   _setDrawer() {
     this.refs['DRAWER'].openDrawer();
   }
 
   _openAbout() {
+    this.refs['DRAWER'].closeDrawer();
     this.setState({aboutVisible: true})
   }
+
 
   _closeAbout() {
     this.setState({aboutVisible: false});
@@ -361,14 +390,14 @@ export default class Preferences extends Component{
       });
 
     Firebase.auth().signOut().then(() => {
-      this.props.navigator.push({
+      this.props.navigator.replace({
         component: Login
       });
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
 
   _onPressTownButton() {
-    this.props.navigator.push({
+    this.props.navigator.replace({
       component: Town
     });
   }

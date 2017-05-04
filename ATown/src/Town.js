@@ -9,13 +9,16 @@ import {
   AsyncStorage,
   TextInput,
   Button,
-  Slider,
   DrawerLayoutAndroid,
   Dimensions,
   Animated,
+  Slider,
   Image,
+  TouchableWithoutFeedback,
+
 } from 'react-native';
 import Modal from 'react-native-modalbox';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 
 // Custom Utils import
@@ -29,6 +32,7 @@ import SideButton from './SideButton';
 import CheckButton from './CheckButton';
 import RadioButton from './RadioButton';
 import ClickButton from './ClickButton';
+import FilterButton from './FilterButton'
 // Pages imports
 import Preferences from './Preferences';
 import About from './About';
@@ -40,6 +44,7 @@ import Style from './Style';
 import ButtonStyle from './ButtonStyles';
 import PinInputStyle from './PinInputStyles';
 import TownStyle from './TownStyles';
+import SignupStyle from './SignupStyles';
 // Packages
 import MapView from 'react-native-maps';
 import Prompt from 'react-native-prompt';
@@ -99,6 +104,7 @@ var buttonsCatTest = [
 ];
 
 const filterTime = 4000;
+const filterDuration = 550;
 
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
@@ -137,6 +143,12 @@ export default class Town extends Component{
                   filterVisible: false, // variable for filters being displayed or not
                   filterPicked: buttonsCatTest,
 
+                  currRegion: {
+                    latitude: 40.3474,
+                    longitude: - 74.6617,
+                    latitudeDelta: 0.0022,
+                    longitudeDelta: 0.0021,
+                  },
                 };
 
 
@@ -158,6 +170,7 @@ export default class Town extends Component{
     this._radioButtonPressed = this._radioButtonPressed.bind(this);
     this._onCalloutPress = this._onCalloutPress.bind(this);
     this._setDrawer = this._setDrawer.bind(this);
+    this._onPressTownButton = this._onPressTownButton.bind(this);
     this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
@@ -193,37 +206,37 @@ export default class Town extends Component{
     var navigationView = (
       <View style={Style.sideDrawer}>
         <View style = {Style.drawerHeader}>
+          <TouchableWithoutFeedback onPress={() => alert("Hoooot!")}>
+            <Image
+              source={require('./icons/hoot2.png')}
+              style={{width: 90, height: 90, padding: 10}}
+            />
+          </TouchableWithoutFeedback>
+
           <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
+            icon={"map-marker-radius"}
+            onPress = {this._onPressTownButton}
+            buttonText = {'Town View'}
+          />
+          <SideButton
+            icon= {"settings"}
             onPress = {this._onPressPrefsButton}
             buttonText = {'Preferences'}
           />
           <SideButton
+            icon= {"logout"}
             onPress = {this._onPressLogoutButton}
             buttonText = {'Logout'}
           />
           <SideButton
+            icon= {"information"}
             onPress = {this._openAbout}
             buttonText = {'About Us'}
           />
         </View>
-        <Modal
-          animationType = {'slide'}
-          onClosed = {() => this._closeAbout()}
-          isOpen = {this.state.aboutVisible}
-          >
-          <View>
-            <About/>
-            <Button
-              onPress={this._closeAbout}
-              title="Back to Town"
-              color="#FF5722"
-              accessibilityLabel="Learn more about this purple button"
-            />
-          </View>
-        </Modal>
       </View>
     );
 
@@ -231,7 +244,7 @@ export default class Town extends Component{
     return(
       <View style={TownStyle.rootContainer}>
         <DrawerLayoutAndroid
-          drawerWidth={300}
+          drawerWidth={windowWidth*0.8}
           drawerPosition={DrawerLayoutAndroid.positions.Left}
           renderNavigationView={() => navigationView}
           ref={'DRAWER'}>
@@ -252,8 +265,8 @@ export default class Town extends Component{
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: 500,
-                width: 350,
+                height: windowHeight*0.45,
+                width: windowWidth*0.8,
                 padding: 10,
                 borderRadius : 10,
                 elevation: 5,
@@ -261,7 +274,7 @@ export default class Town extends Component{
               onClosed = {() => {this.setState({markerInputVisible: false}); this._handleCancelMarker();}}
               isOpen = {this.state.markerInputVisible}
             >
-              <View style={PinInputStyle.MainContainer}>
+              <KeyboardAwareScrollView contentContainerStyle={PinInputStyle.MainContainer}>
                 <View style={PinInputStyle.TitleInputContainer}>
                   <TextInput
                     placeholder= {"Enter pin title here!"}
@@ -280,7 +293,6 @@ export default class Town extends Component{
                     textAlignVertical = "top"
                   />
                 </View>
-
 
                 <View style={PinInputStyle.TimerBarContainer}>
                   <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
@@ -310,14 +322,14 @@ export default class Town extends Component{
                     />
                   </View>
                 </View>
-              </View>
+              </KeyboardAwareScrollView>
             </Modal>
             <Modal
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: 300,
-                width: 300,
+                height: windowHeight*0.4,
+                width: windowWidth*0.8,
                 padding: 10,
                 borderRadius : 10,
                 elevation: 5,
@@ -326,10 +338,28 @@ export default class Town extends Component{
               onClosed = {() => this.setState({markerInfoVisbile: false})}
               isOpen = {this.state.markerInfoVisbile}
               >
-              <View style={{flex:1, backgroundColor: '#EEEEEE'}}>
+              <KeyboardAwareScrollView style={{flex:1, backgroundColor: '#EEEEEE'}}>
                     <Text style={{flex:1}}>{this.state.markerInfo.title}</Text>
                     <Text style={{flex:1}}>{this.state.markerInfo.description}</Text>
                     <Text style={{flex:1}}>{this.state.markerInfo.netid}</Text>
+              </KeyboardAwareScrollView>
+            </Modal>
+            <Modal
+              animationType = {'slide'}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'stretch',
+                height: windowHeight*0.8,
+                width: windowWidth*0.9,
+                padding: 5,
+                borderRadius : 3,
+                elevation: 5,
+              }}
+              onClosed = {() => this._closeAbout()}
+              isOpen = {this.state.aboutVisible}
+              >
+              <View>
+                <About/>
               </View>
             </Modal>
             <Animated.View
@@ -338,9 +368,9 @@ export default class Town extends Component{
                 marginTop: 0,
                 position: 'absolute',
                 left:0,
-                top:100,
-                bottom: 100,
-                width: 70,
+                top:windowHeight*0.15,
+                bottom: windowHeight*0.15,
+                width: windowWidth*0.15,
                 flexDirection: 'column'
               }}>
               <ScrollView contentContainerStyle={PinInputStyle.ViewButtonListContainer}>
@@ -361,7 +391,7 @@ export default class Town extends Component{
       Animated.timing( this.animatedValue,
                       {
                         toValue: windowWidth,
-                        duration: 500
+                        duration: filterDuration,
                       }
                     ).start();
       return;
@@ -371,8 +401,8 @@ export default class Town extends Component{
       Animated.timing(
         this.animatedValue,
         {
-          toValue: windowWidth - 70,
-          duration: 500
+          toValue: windowWidth*0.85,
+          duration: filterDuration,
         }
       ).start(this._hideFilters());
       return;
@@ -386,7 +416,7 @@ export default class Town extends Component{
       Animated.timing( this.animatedValue,
                       {
                         toValue: windowWidth,
-                        duration: 500
+                        duration: filterDuration,
                       }
                     ).start()}, filterTime);
 
@@ -407,6 +437,7 @@ export default class Town extends Component{
 
 
   _openAbout() {
+    this.refs['DRAWER'].closeDrawer();
     this.setState({aboutVisible: true})
   }
 
@@ -429,14 +460,20 @@ export default class Town extends Component{
       });
 
     Firebase.auth().signOut().then(() => {
-      this.props.navigator.push({
+      clearTimeout(this.filterTimeout);
+      this.props.navigator.replace({
         component: Login
       });
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
 
+  _onPressTownButton() {
+    this.refs['DRAWER'].closeDrawer();
+  }
+
   _onPressPrefsButton() {
-    this.props.navigator.push({
+    clearTimeout(this.filterTimeout);
+    this.props.navigator.replace({
       component: Preferences
     });
   }
@@ -459,7 +496,7 @@ export default class Town extends Component{
       Animated.timing( this.animatedValue,
                       {
                         toValue: windowWidth,
-                        duration: 500
+                        duration: filterDuration,
                       }
                     ).start()}, filterTime);
     var currentPicked = this.state.filterPicked;
@@ -532,7 +569,8 @@ export default class Town extends Component{
                 owner: marker.ownerid,
               },
 
-              icon: buttonsCatTest[parseInt(marker.category)].icon
+              icon: buttonsCatTest[parseInt(marker.category)].icon,
+              key: marker.eventid,
             };
 
             markers.push(
@@ -568,20 +606,23 @@ export default class Town extends Component{
       var currId = null;
       var currIndex = null;
       var curronPress = null;
+      var currIcon = null;
       for (var b = 0; b < buttonsList.length; b++){
 
         currLabel = buttonsList[b].label;
         currSelected = buttonsList[b].selected;
         currId = buttonsList[b].id;
         currIndex = buttonsList[b].index;
+        currIcon = buttonsList[b].icon;
         curronPress = onPress.bind(null,currIndex);
 
         buttons.push(
-          <CheckButton
+          <FilterButton
             label = {currLabel}
             selected = {currSelected}
             onPress = {curronPress}
             index = {currIndex}
+            icon = {currIcon}
             key = {currId}/>
         );
       }
@@ -591,12 +632,31 @@ export default class Town extends Component{
     }
 
   _onCalloutPress(markerDescription){
+
+    clearTimeout(this.filterTimeout);
+    this.setState({ filterVisible: false })
+    Animated.timing( this.animatedValue,
+                    {
+                      toValue: windowWidth,
+                      duration: filterDuration,
+                    }
+                  ).start();
+
     this.setState({markerInfoVisbile: true,
       markerInfo: markerDescription})
   };
   // Handles a onLongPress event
   // Saves co-ordinates in state variable incMarker
   _handleMarkerPress(e){
+    clearTimeout(this.filterTimeout);
+    this.setState({ filterVisible: false })
+    Animated.timing( this.animatedValue,
+                    {
+                      toValue: windowWidth,
+                      duration: filterDuration,
+                    }
+                  ).start();
+
     this.setState({ incMarker: {
                     coordinate: e.nativeEvent.coordinate,
                     title: "blahblah",
@@ -705,6 +765,20 @@ export default class Town extends Component{
       user: userData,
     });
 
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          currRegion:{
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          }
+        });
+      },
+      (error) => {console.log(error.message)},
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+
+
     // var userId = firebaseApp.auth().currentUser.uid;
 
     // alert(JSON.stringify(this.state.user));
@@ -715,37 +789,37 @@ export default class Town extends Component{
 
   }
 
-
-  async componentDidMount(){
-    console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
-
-    var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
-      method: "GET"
-    });
-    // console.log(fetchedMarkersList);
-    var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
-    this.setState({markersList: tempmarkersList});
-    console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
-    // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
-    const userData = await Firebase.auth().currentUser;
-    const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
-    var userName = snapshot.val().fname;
-    var netid = snapshot.val().netid;
-    // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
-
-    // this.setState({test: ttext});
-    // alert(ttext._bodyText);
-    // alert(userName);
-    this.setState({netid: netid});
-    this.setState({name: userName});
-    this.setState({uid: userData.uid})
-    this.setState({
-      user: userData,
-    });
-    // var userId = firebaseApp.auth().currentUser.uid;
-
-    // alert(JSON.stringify(this.state.user));
-  }
+  //
+  // async componentDidMount(){
+  //   console.log(" ---------------------------starting to fetch -------------\n \n \n \n -------------");
+  //
+  //   var fetchedMarkersList = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/get/allactive', {
+  //     method: "GET"
+  //   });
+  //   // console.log(fetchedMarkersList);
+  //   var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
+  //   this.setState({markersList: tempmarkersList});
+  //   console.log(" ---------------------------fetched Data -------------\n \n \n \n -------------");
+  //   // await AsyncStorage.getItem("markersList").then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log("VALUE!!");console.log(value)}}).done();
+  //   const userData = await Firebase.auth().currentUser;
+  //   const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
+  //   var userName = snapshot.val().fname;
+  //   var netid = snapshot.val().netid;
+  //   // var ttext = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/user/hrishikesh');
+  //
+  //   // this.setState({test: ttext});
+  //   // alert(ttext._bodyText);
+  //   // alert(userName);
+  //   this.setState({netid: netid});
+  //   this.setState({name: userName});
+  //   this.setState({uid: userData.uid})
+  //   this.setState({
+  //     user: userData,
+  //   });
+  //   // var userId = firebaseApp.auth().currentUser.uid;
+  //
+  //   // alert(JSON.stringify(this.state.user));
+  // }
 }
 
 // Dont forget to register main App!!
