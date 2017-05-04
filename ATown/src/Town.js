@@ -296,6 +296,9 @@ export default class Town extends Component{
                       selectionColor= {Colors.PRIMARY}
                       underlineColorAndroid = {Colors.PRIMARY_DARK}
                       placeholderTextColor = {Colors.DARK_GREY}
+                      maxLength = {30}
+                      style={{flex:1}}
+
                       placeholder= {"Enter pin title here!"}
                       onChangeText={(text) => this.setState({inputTitle: text})}
                     />
@@ -309,7 +312,6 @@ export default class Town extends Component{
                       value={this.state.descInput}
                       placeholder= {"Enter pin description here!"}
                       onChangeText={(text) => this.setState({inputDesc: text})}
-
                       multiline = {true}
                       numberOfLines = {4}
                       textAlignVertical = "top"
@@ -329,7 +331,7 @@ export default class Town extends Component{
                       >
                     </Slider>
                   </View>
-                  <Text style = {{color: 'black', flex:0.7}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
+                  <Text style = {{color: 'black', flex:0.5}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
                   <View style={PinInputStyle.RadioButtonListContainer}>
                     {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
                   </View>
@@ -370,7 +372,7 @@ export default class Town extends Component{
                         <Icon name={this.state.markerInfo.icon} size={30} color={markerIcon} />
                       </View>
                       <View style={{paddingLeft:10, alignItems: 'stretch', justifyContent:'center', flex: 4,}}>
-                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 30, fontWeight: '300', color:Colors.BLACK }}>{this.state.markerInfo.title}</Text>
+                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 20, fontWeight: '300', color:Colors.BLACK }}>{this.state.markerInfo.title}</Text>
                       </View>
                     </View>
                     <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10}}>
@@ -391,6 +393,21 @@ export default class Town extends Component{
                 </View>
 
             </Modal>
+            <Animated.View
+              style={{
+                transform: [{ translateX: this.animatedValue }],
+                marginTop: 0,
+                position: 'absolute',
+                left:0,
+                top:windowHeight*0.15,
+                bottom: windowHeight*0.15,
+                width: windowWidth*0.15,
+                flexDirection: 'column'
+              }}>
+              <ScrollView contentContainerStyle={PinInputStyle.ViewButtonListContainer}>
+                {this._renderFilterButtons(this.state.filterPicked, this._viewButtonPressed)}
+              </ScrollView>
+            </Animated.View>
             <Modal
               animationType = {'slide'}
               style={{
@@ -409,21 +426,6 @@ export default class Town extends Component{
                 <About/>
               </View>
             </Modal>
-            <Animated.View
-              style={{
-                transform: [{ translateX: this.animatedValue }],
-                marginTop: 0,
-                position: 'absolute',
-                left:0,
-                top:windowHeight*0.15,
-                bottom: windowHeight*0.15,
-                width: windowWidth*0.15,
-                flexDirection: 'column'
-              }}>
-              <ScrollView contentContainerStyle={PinInputStyle.ViewButtonListContainer}>
-                {this._renderFilterButtons(this.state.filterPicked, this._viewButtonPressed)}
-              </ScrollView>
-            </Animated.View>
           </View>
         </DrawerLayoutAndroid>
       </View>
