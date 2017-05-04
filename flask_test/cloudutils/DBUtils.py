@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 USERS_COLUMNS = ['userid', 'firstname', 'lastname', 'classyear', 'netid', 'email']
-EVENTS_COLUMNS = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'status']
+EVENTS_COLUMNS = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'upvotes', 'downvotes', 'status']
 #PREFS_COLUMNS = ['userid', 'freefood', 'facility', 'recruiting', 'studybreak', 'movie', 'busypacked', 'firesafety'] # add location prefs later
 
 def DBConnect(dbName):
@@ -27,7 +27,7 @@ def DBInitResetTables(conn, cur):
     print create_q
     cur.execute(create_q)
     create_q2 = '''CREATE TABLE events(eventid varchar(36), longitude double, latitude double,
-    title varchar(30), description text, category varchar(20), ownerid varchar(36), netid varchar(20), starttime datetime, duration int, status int)'''
+    title varchar(30), description text, category varchar(20), ownerid varchar(36), netid varchar(20), starttime datetime, duration int, upvotes int, downvotes int, status int)'''
     print create_q2
     cur.execute(create_q2)
     #create_q3 = '''CREATE TABLE preferences(userid varchar(50), freefood boolean, facility boolean, recruiting boolean, studybreak boolean, 
@@ -38,8 +38,8 @@ def DBInitResetTables(conn, cur):
 
 def DBAddEvent(conn, cur, lon, lat, title, desc, cat, oid, netid, stime, dur):
     eventid = str(uuid.uuid4())
-    insert_q = '''INSERT INTO events VALUES('%s', %f, %f, '%s', '%s', '%s', '%s', '%s', '%s', %d, 1)''' % (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur)
-    insert_q_actual = 'INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)' 
+    insert_q = '''INSERT INTO events VALUES('%s', %f, %f, '%s', '%s', '%s', '%s', '%s', '%s', %d,0, 0, 1)''' % (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur)
+    insert_q_actual = 'INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 1)' 
     print insert_q
     cur.execute(insert_q_actual, (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur))
     conn.commit()
@@ -76,13 +76,18 @@ def DBGetEventField(conn, cur, fieldname, eid):
         return res[0]
     return None
 
-# unused
 def DBSetEventStatus(conn, cur, eid, newstatus):
-    update_q = '''UPDATE events SET status = %d WHERE eventid = '%s';''' % (newstatus, eid)
-    print update_q
-    cur.execute(update_q)
+    update_q = '''UPDATE events SET status = ? WHERE eventid = ?;'''
+    print update_q, eid, newstatus
+    cur.execute(update_q, (newstatus, eid))
     conn.commit()
 
+def DBUpdateVoteStatus(conn, cur, eid, upvotechange, downvotechange):
+    update_q = '''UPDATE events SET upvotes = upvotes + ?, downvotes = downvotes + ? WHERE eventid = ?'''
+    print update_q, eid, upvotechange, downvotechange
+    cur.execute(update_q, (upvotechange, downvotechange, eid))
+    conn.commit()
+    
 def DBGetAllActiveEvents(conn, cur):
     attribsToReturn = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration']
     select_q = 'SELECT ' + ', '.join(attribsToReturn) + ' FROM events WHERE status = 1' 

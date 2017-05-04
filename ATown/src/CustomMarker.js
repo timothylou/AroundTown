@@ -13,6 +13,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import React, {Component} from 'react';
 
+const markerCircle = '#E91E63';
+const markerIcon = 'white';
 export default class CustomMarker extends Component {
 
   constructor(props){
@@ -20,21 +22,24 @@ export default class CustomMarker extends Component {
     this.state= {icon: null}
   }
 
-  componentWillMount() {
-        Icon.getImageSource(this.props.marker.icon, 32, '#d32f2f').then((source) => this.setState({ icon: source }));
-}
+//   componentWillMount() {
+//         Icon.getImageSource(this.props.marker.icon, 32, '#d32f2f').then((source) => this.setState({ icon: source}));
+// }
 
   render(){
 
-    var content =  !this.state.icon ? null: (
+    var content =  this.state.icon ? null: (
       <Marker
       coordinate={
         this.props.marker.coordinate
       }
       key = {this.props.marker.key}
-      image = {this.state.icon}
       title={this.props.marker.view.title}
       >
+      <View style={{height: 26, width: 26, borderRadius: 13, backgroundColor: markerCircle , alignItems: 'center', justifyContent: 'center'}}>
+        <Icon name={this.props.marker.icon} size={18} color={markerIcon} />
+
+      </View>
         <Callout
           onPress={() => this.props.onCalloutPressed(this.props.marker.modal)}>
           <View >

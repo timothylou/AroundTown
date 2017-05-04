@@ -27,7 +27,7 @@ def DBInitResetTables(conn, cur):
     print create_q
     cur.execute(create_q)
     create_q2 = '''CREATE TABLE events(eventid varchar(36), longitude double, latitude double,
-    title varchar(30), description text, category int, ownerid varchar(36), netid varchar(20), starttime datetime, duration int, status int)'''
+    title varchar(30), description text, category varchar(20), ownerid varchar(36), netid varchar(20), starttime datetime, duration int, status int)'''
     print create_q2
     cur.execute(create_q2)
     #create_q3 = '''CREATE TABLE preferences(userid varchar(50), freefood boolean, facility boolean, recruiting boolean, studybreak boolean, 
@@ -38,7 +38,7 @@ def DBInitResetTables(conn, cur):
 
 def DBAddEvent(conn, cur, lon, lat, title, desc, cat, oid, netid, stime, dur):
     eventid = str(uuid.uuid4())
-    insert_q = '''INSERT INTO events VALUES('%s', %f, %f, '%s', '%s', %d, '%s', '%s', '%s', %d, 1)''' % (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur)
+    insert_q = '''INSERT INTO events VALUES('%s', %f, %f, '%s', '%s', '%s', '%s', '%s', '%s', %d, 1)''' % (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur)
     insert_q_actual = 'INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)' 
     print insert_q
     cur.execute(insert_q_actual, (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur))

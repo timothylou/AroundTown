@@ -16,7 +16,7 @@ def OSPutTags(appid, auth, deviceid, userid, tagsdict):
 def OSPushNotification(appid, auth, oid, lat, lon, title, tagslist):
     rurl = 'https://onesignal.com/api/v1/notifications'
     rheaders = {'Content-Type': 'application/json; charset=utf-8', 'Authorization': auth}
-    rdata = {'app_id': appid, 'filters': [{'field': 'location', 'lat': str(lat), 'long': str(lon), 'radius': str(1000)}], 'contents': {'en': 'Nearby: ' + title}}
+    rdata = {'app_id': appid, 'android_group': 'atown', 'android_group_message': {'en': '$[notif_count] new hoots'}, 'filters': [{'field': 'location', 'lat': str(lat), 'long': str(lon), 'radius': str(1000)}], 'contents': {'en': 'Nearby: ' + title}}
     #rdata = {'app_id': appid, 'filters': [], 'contents': {'en': 'Nearby:' + title}}
     #rdata = {'app_id': appid, 'filters': [{'field': 'location', 'lat': str(lat), 'long': str(lon), 'radius': str(1000)}], 'contents': {'en': 'Nearby: ' + title}}
     rdata['filters'].append({'field': 'tag', 'key': 'uid', 'relation': '!=', 'value': oid})

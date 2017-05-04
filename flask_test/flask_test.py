@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, url_for
 from apscheduler.schedulers.background import BackgroundScheduler
-
 import requests
 from werkzeug.contrib.fixers import ProxyFix
-import cloudutils.DBUtils as dbu
-import cloudutils.OneSignalUtils as osu
 import json
-from config import dbpath
 import logging
 
+import cloudutils.DBUtils as dbu
+import cloudutils.OneSignalUtils as osu
+from config import dbpath
 
 # Create the application.
 app = Flask(__name__)
@@ -30,6 +29,7 @@ app.config['DB_USERS_REQD_FIELDS'] = ['uid', 'fname', 'lname', 'cyear', 'netid',
 app.config['DB_USERS_VALID_FIELDS'] = ['userid', 'firstname', 'lastname', 'classyear', 'netid', 'email']
 app.config['DB_EVENTS_REQD_FIELDS'] = ['latitude', 'longitude', 'title', 'description', 'cat', 'oid', 'netid', 'stime', 'dur']
 app.config['DB_EVENTS_VALID_FIELDS'] = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'status']
+app.config['DB_DELETEEVENT_REQD_FIELDS'] = ['eventid']
 app.config['OS_TAGS_REQD_FIELDS'] = ['deviceid', 'userid', 'tags']
 app.config['OS_LOGOUT_REQD_FIELDS'] = ['deviceid']
 
@@ -70,14 +70,6 @@ def index():
     """
     #return render_template('index.html')
     return "hi"
-
-# testing function
-@app.route('/post/', methods=['POST'])
-def postcall():
-    #return request.form['key1'] + request.form['key2']
-    print request.get_json()
-    print request.url
-    return "You posted: " + request.get_json()
 
 @app.route('/post/newuser/', methods=['POST'])
 def postnewuser():
@@ -198,6 +190,19 @@ def geteventinfo():
 def getallactiveevents():
     return app.config['EVENTS_LIST']
 
+@app.route('/post/deleteevent/', methods=['POST'])
+def deleteevent():
+    postedjson = request.data
+    deletedict = json.loads(postedjson)
+    for attrib in app.config['DB_DELETEEVENT_REQD_FIELDS']:
+        if attrib not in deletedict:
+            return 'ERROR: no %s value received!' % (attrib)
+    eventid = deletedict['eventid']
+    dbu.DBSetEventStatus(app.config['DB_CONN'], app.config['DB_CUR'], eventid, 0)
+    eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
+    app.config['EVENTS_LIST'] = json.dumps(eventlst)
+    return "Success"
+    
 @app.route('/logout/', methods=['POST'])
 def loguserout():
     postedjson = request.data
@@ -210,9 +215,22 @@ def loguserout():
     osu.OSDeactivateStatus(app.config['OS_APP_ID'], app.config['OS_AUTH'], deviceid)
     return "Success"
 
-@app.route('/user/<username>')
-def varcall(username):
-    return 'Your username: ' + username
+@app.route('/vote/', methods=['POST'])
+def voteevent():
+    postedjson = request.data
+    votedict = json.loads(postedjson)
+    for attrib in app.config['DB_EVENTVOTE_REQD_FIELDS']:
+        if attrib not in votedict:
+            return 'ERROR: no %s value received' % (attrib)
+    eventid = votedict['eventid']
+    upvotechange = votedict['upvotechange']
+    downvotechange = votedict['downvotechange']
+    dbu.DBUpdateVoteStatus(app.config['DB_CONN'], app.config['DB_CUR'], eventid, upvotechange, downvotechange)
+    # is this really necessary? only one thing changes... maybe can just edit that one event?
+    eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
+    app.config['EVENTS_LIST'] = json.dumps(eventlst)
+    return "Success"
+    
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
