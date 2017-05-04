@@ -1,6 +1,6 @@
 ## Welcome to AroundTown -- A Princeton COS333 Project
 
-AroundTown is a mobile app for Princeton students that integrates all live event information, crowdsourced from users who drop “pins," onto a single campus map. Using location services and push notifications, only potentially interested people will get notifications about a certain event, freeing others from annoying emails or alerts and making sure you never miss out.
+Hoot (originally AroundTown) is a mobile app for Princeton students that integrates all live event information, crowdsourced from users who drop “pins," onto a single campus map. Using location services and push notifications, only potentially interested people will get notifications about a certain event, freeing others from annoying emails or alerts and making sure you never miss out.
 
 Project Members:    
 * Hrishikesh Khandeparkar         hrk@princeton.edu
