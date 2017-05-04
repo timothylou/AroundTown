@@ -3,8 +3,10 @@ import React, {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import Colors from './Colors';
+
 const background = 'white';
-const primary = '#00897b';
+const primary = Colors.PRIMARY;
 let windowWidth = Dimensions.get('window').width
 let windowHeight = Dimensions.get('window').height
 
@@ -90,7 +92,7 @@ var SignupStyle = StyleSheet.create({
   },
 
   logoFont:{
-    color: '#2196F3',
+    color: Colors.PRIMARY,
     fontFamily: 'Calibri',
     alignSelf: 'center',
     fontSize: 30,

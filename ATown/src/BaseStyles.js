@@ -2,6 +2,7 @@
 import React, {
   StyleSheet
 } from 'react-native';
+import Colors from './Colors';
 
 var BaseStyle = StyleSheet.create({
   container: {
@@ -13,11 +14,11 @@ var BaseStyle = StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: Colors.WHITE,
   },
   toolbar: {
         height: 56,
-    backgroundColor: '#e9eaed',
+    backgroundColor: Colors.LIGHT_GREY,
   },
   textInput: {
     flex: 1,
@@ -38,12 +39,12 @@ var BaseStyle = StyleSheet.create({
   primaryButton: {
     margin: 10,
     padding: 15,
-    backgroundColor: '#529ecc'
+    backgroundColor: Colors.PRIMARY,
   },
   primaryButtonText: {
-    color: '#FFF',
+    color: Colors.WHITE,
     textAlign: 'center',
-    fontSize: 18
+    fontSize: 20,
   },
   image: {
     width: 100,

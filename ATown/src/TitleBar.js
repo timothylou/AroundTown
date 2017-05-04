@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import React, {Component} from 'react';
 
+import Colors from './Colors';
+
 import GiftedSpinner from 'react-native-gifted-spinner';
 
 export default class TitleBar extends Component {

@@ -9,6 +9,7 @@ TouchableHighlight,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import Colors from './Colors';
 
 export default class SideButton extends Component{
 render() {
@@ -16,10 +17,10 @@ render() {
      <View>
       <TouchableHighlight
         style={{paddingVertical:10}}
-        underlayColor = '#DDDDDD'
+        underlayColor = {Colors.UNDERLAY_GREY}
         onPress={this.props.onPress}>
           <View style={{flexDirection: 'row'}}>
-            <Icon name={this.props.icon} size={30} color="#1976D2" />
+            <Icon name={this.props.icon} size={30} color={Colors.PRIMARY_DARK} />
             <Text style = {styles.drawerButton}>{this.props.buttonText}</Text>
           </View>
         </TouchableHighlight>

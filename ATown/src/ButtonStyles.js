@@ -2,8 +2,9 @@
 import React, {
   StyleSheet
 } from 'react-native';
+import Colors from './Colors';
 
-const checkButtonColor = "#3F51B5";
+const checkButtonColor = Colors.PRIMARY_DARK;
 
 var ButtonStyle = StyleSheet.create({
   RadioButtonOuter:{
@@ -11,7 +12,7 @@ var ButtonStyle = StyleSheet.create({
       width: 30,
       borderRadius: 15,
       borderWidth: 2,
-      borderColor: '#FF00FF',
+      borderColor: Colors.PRIMARY_DARK,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -20,7 +21,7 @@ var ButtonStyle = StyleSheet.create({
       height: 20,
       width: 20,
       borderRadius: 10,
-      backgroundColor: '#FF00FF',
+      backgroundColor: Colors.PRIMARY_DARK,
     },
 
   RadioButtonListContainer:{
@@ -39,7 +40,7 @@ var ButtonStyle = StyleSheet.create({
 
   RadioButtonTitle:{
     fontSize: 8,
-    color: 'blue',
+    color: Colors.PRIMARY_DARK,
     textAlign:'center',
   },
 
@@ -80,7 +81,7 @@ var ButtonStyle = StyleSheet.create({
 
   CheckButtonTitle:{
     fontSize: 15,
-    color: 'blue',
+    color: Colors.PRIMARY_DARK,
   },
 
   CheckButtonTouchable:{
@@ -140,6 +141,23 @@ var ButtonStyle = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white'
   },
+
+  CategoryButton: {
+    flex:1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    padding: 8,
+  },
+
+  CategoryButtonText : {
+    flex: 1,
+    fontSize: 18,
+    color: Colors.BLACK,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 10,
+  }
 
 });
 
