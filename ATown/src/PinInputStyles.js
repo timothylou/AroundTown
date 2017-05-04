@@ -21,7 +21,7 @@ var PinInputStyle = StyleSheet.create({
   TitleInputTextBox:{},
 
   DescriptionInputContainer:{
-    flex:4,
+    flex:2,
   },
   DescriptionInputTitle:{
     flex:1,
@@ -33,13 +33,14 @@ var PinInputStyle = StyleSheet.create({
   InputTitleText:{},
 
   TimerBarContainer:{
-    flex:1,
+    flex:1.5,
+    justifyContent: 'center',
+    alignItems: 'stretch',
   },
 
   TimerText:{
-    flex:1,
     fontSize: 15,
-    color: '#000000'
+    color: '#000000',
   },
 
   TimerSlider:{},
@@ -49,7 +50,7 @@ var PinInputStyle = StyleSheet.create({
   },
 
   RadioButtonListContainer:{
-    flex: 1,
+    flex: 1.3,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

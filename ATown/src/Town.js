@@ -32,7 +32,8 @@ import SideButton from './SideButton';
 import CheckButton from './CheckButton';
 import RadioButton from './RadioButton';
 import ClickButton from './ClickButton';
-import FilterButton from './FilterButton'
+import FilterButton from './FilterButton';
+import CategoryButton from './CategoryButton';
 // Pages imports
 import Preferences from './Preferences';
 import About from './About';
@@ -144,19 +145,21 @@ export default class Town extends Component{
                   filterPicked: buttonsCatTest,
 
                   currRegion: {
-                    latitude: 40.3474,
-                    longitude: - 74.6617,
+                    latitude: 40.3503,
+                    longitude: - 74.6526,
                     latitudeDelta: 0.0022,
                     longitudeDelta: 0.0021,
                   },
+
+                  regionSet: false,
                 };
 
 
 
     // Princeton's co-ordinates
     this.defaultLocation = {
-      latitude: 40.3474,
-      longitude: - 74.6617,
+      latitude: 40.3503,
+      longitude: - 74.6526,
       latitudeDelta: 0.0022,
       longitudeDelta: 0.0021,
     };
@@ -178,6 +181,9 @@ export default class Town extends Component{
     this._showFilters = this._showFilters.bind(this);
     this._hideFilters = this._hideFilters.bind(this);
     this._viewButtonPressed = this._viewButtonPressed.bind(this);
+    this._getDistanceFromLatLonInKm = this._getDistanceFromLatLonInKm.bind(this);
+    this._deg2rad = this._deg2rad.bind(this);
+    this._getSelectedLabel = this._getSelectedLabel.bind(this);
 
 
     // Set timer for refreshing
@@ -254,7 +260,8 @@ export default class Town extends Component{
             sidebarRef={()=>this._setDrawer()}/>
           <View style={TownStyle.mapContainer}>
             <CustomMapView
-              initialRegion={this.defaultLocation}
+              regionSet={this.state.regionSet}
+              initialRegion={this.state.currRegion}
               onPressHandler = {this._showFilters}
               onLongPressHandler={this._handleMarkerPress}
               markersList={this.state.markersList}
@@ -289,7 +296,7 @@ export default class Town extends Component{
                     onChangeText={(text) => this.setState({inputDesc: text})}
 
                     multiline = {true}
-                    numberOfLines = {8}
+                    numberOfLines = {4}
                     textAlignVertical = "top"
                   />
                 </View>
@@ -305,20 +312,21 @@ export default class Town extends Component{
                     >
                   </Slider>
                 </View>
+                <Text style = {{color: 'black', flex:0.7}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
                 <View style={PinInputStyle.RadioButtonListContainer}>
                   {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
                 </View>
                 <View style={PinInputStyle.ConfirmationButtonsContainer}>
                   <View style={ButtonStyle.HorizontalButtonListContainer}>
                     <ClickButton
-                      onPress={this._handleNewMarker}
-                      label="Submit"
-                      color="#2196F3"
-                    />
-                    <ClickButton
                       onPress={this._handleCancelMarker}
                       label="Cancel"
                       color="#FF5722"
+                    />
+                    <ClickButton
+                      onPress={this._handleNewMarker}
+                      label="Submit"
+                      color="#2196F3"
                     />
                   </View>
                 </View>
@@ -505,7 +513,15 @@ export default class Town extends Component{
 
   }
 
+  _getSelectedLabel(buttonsList) {
+    if (this.state.selectedCategory === null){
+      return " ";
+    }
+    return buttonsCatTest[this.state.selectedCategory].label;
+  }
+
   _renderRadioButtons(buttonsList, onPress){
+
     let buttons = [];
     if (buttonsList == null){
       buttonsList = [];
@@ -515,20 +531,23 @@ export default class Town extends Component{
     var currId = null;
     var currIndex = null;
     var curronPress = null;
+    var currIcon = null;
     for (var b = 0; b < buttonsList.length; b++){
 
       currLabel = buttonsList[b].label;
       currIndex = buttonsList[b].index;
-      currId = buttonsList[b].id;
       currSelected = currIndex == this.state.selectedCategory ? true:false;
+      currId = buttonsList[b].id;
+      currIcon = buttonsList[b].icon;
       curronPress = onPress.bind(null,currIndex);
 
       buttons.push(
-        <RadioButton
+        <CategoryButton
           label = {currLabel}
           selected = {currSelected}
           onPress = {curronPress}
           index = {currIndex}
+          icon = {currIcon}
           key = {currId}/>
       );
     }
@@ -657,6 +676,30 @@ export default class Town extends Component{
                     }
                   ).start();
 
+    // await navigator.geolocation.getCurrentPosition(
+    //   (position) => {
+    //     this.setState({
+    //       currRegion:{
+    //         latitude: position.coords.latitude,
+    //         longitude: position.coords.longitude,
+    //         latitudeDelta: 0.0022,
+    //         longitudeDelta: 0.0021,
+    //       }
+    //     });
+    //   },
+    //   (error) => {console.log(error.message)},
+    //   { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
+    // );
+
+    if (this._getDistanceFromLatLonInKm(this.state.currRegion.latitude,
+                                        this.state.currRegion.longitude,
+                                        e.nativeEvent.coordinate.latitude,
+                                        e.nativeEvent.coordinate.longitude) > 0.2)
+    {
+      alert("Sorry, you are too far away from that location to drop a pin there!")
+      return;
+    }
+
     this.setState({ incMarker: {
                     coordinate: e.nativeEvent.coordinate,
                     title: "blahblah",
@@ -665,6 +708,24 @@ export default class Town extends Component{
 
     // Make modal visible for user input.
     this.setState({markerInputVisible: true});
+  }
+
+  _getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = this._deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = this._deg2rad(lon2-lon1);
+    var a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(this._deg2rad(lat1)) * Math.cos(this._deg2rad(lat2)) *
+      Math.sin(dLon/2) * Math.sin(dLon/2)
+      ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  _deg2rad(deg) {
+    return deg * (Math.PI/180)
   }
 
   // Evaluates inputted values on Modal
@@ -765,17 +826,20 @@ export default class Town extends Component{
       user: userData,
     });
 
-    navigator.geolocation.getCurrentPosition(
+    await navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
           currRegion:{
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-          }
+            latitudeDelta: 0.0022,
+            longitudeDelta: 0.0021,
+          },
+
+          regionSet: true,
         });
       },
-      (error) => {console.log(error.message)},
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      (error) => {alert(error.message)},
     );
 
 
