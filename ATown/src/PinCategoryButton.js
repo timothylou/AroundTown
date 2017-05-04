@@ -7,23 +7,22 @@ import {
   Image,
 } from 'react-native';
 import Style from './Style';
-import Colors from './Colors';
 
 import ButtonStyle from './ButtonStyles.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default class FilterButton extends Component{
+export default class PinCategoryButton extends Component{
 
   render(){
     return(
-      <View style={ButtonStyle.RadioButtonContainer}>
+      <View style={ButtonStyle.CheckButtonContainer}>
         <TouchableWithoutFeedback style={ButtonStyle.CheckButtonTouchable}
           onPress={this.props.onPress}>
 
             {
               this.props.selected ?
-              <Icon name={this.props.icon} size={30} color={Colors.PRIMARY_DARK} />
-              : <Icon style = {{opacity: 0.35}} name={this.props.icon} size={28} color={Colors.PRIMARY_DARK} />
+              <Icon name={this.props.icon} size={35} color="#3F51B5" />
+              : <Icon style = {{opacity: 0.35}} name={this.props.icon} size={32} color="#3F51B5" />
             }
 
         </TouchableWithoutFeedback>

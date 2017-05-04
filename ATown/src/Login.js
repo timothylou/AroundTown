@@ -19,6 +19,7 @@ import BaseStyle from './BaseStyles';
 import Firebase from './Firebase';
 import SignupStyle from './SignupStyles';
 import TextInputBox from './TextInputBox';
+import Colors from './Colors';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -57,7 +58,7 @@ export default class Login extends Component {
           secure = {true} />
 
         <TouchableHighlight onPress={this.login.bind(this)} style={SignupStyle.primaryButton}
-        underlayColor= {"#00695c"}>
+        underlayColor= {Colors.PRIMARY_DARK}>
           <Text style={SignupStyle.primaryButtonText}>Login</Text>
         </TouchableHighlight>
         <TouchableHighlight onPress={this.goToSignup.bind(this)} style={SignupStyle.transparentButton}
@@ -106,7 +107,6 @@ export default class Login extends Component {
         loading: false
       });
 
-      alert("Welcome! " + currUser.uid);
       this.props.navigator.replace({
         component: Town
       });

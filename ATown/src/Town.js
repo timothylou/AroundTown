@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modalbox';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
+import Colors from './Colors';
 
 // Custom Utils import
 import Firebase from './Firebase';
@@ -33,7 +33,7 @@ import CheckButton from './CheckButton';
 import RadioButton from './RadioButton';
 import ClickButton from './ClickButton';
 import FilterButton from './FilterButton';
-import CategoryButton from './CategoryButton';
+import PinCategoryButton from './PinCategoryButton';
 // Pages imports
 import Preferences from './Preferences';
 import About from './About';
@@ -108,8 +108,8 @@ const filterTime = 4000;
 const filterDuration = 550;
 
 
-const markerCircle = '#E91E63';
-const markerIcon = 'white';
+const markerCircle = Colors.ACCENT;
+const markerIcon = Colors.WHITE;
 
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
@@ -221,11 +221,10 @@ export default class Town extends Component{
         <View style = {Style.drawerHeader}>
           <TouchableWithoutFeedback onPress={() => alert("Hoooot!")}>
             <Image
-              source={require('./icons/hoot2.png')}
+              source={require('./icons/hootclear.png')}
               style={{width: 90, height: 90, padding: 10}}
             />
           </TouchableWithoutFeedback>
-
           <Text style = {Style.drawerHeaderText}>{'Hi, ' + this.state.name + '!'}</Text>
         </View>
         <View style = {Style.sideButtonContainer}>
@@ -294,6 +293,9 @@ export default class Town extends Component{
                 <View style={PinInputStyle.inputContainer}>
                   <View style={PinInputStyle.TitleInputContainer}>
                     <TextInput
+                      selectionColor= {Colors.PRIMARY}
+                      underlineColorAndroid = {Colors.PRIMARY_DARK}
+                      placeholderTextColor = {Colors.DARK_GREY}
                       placeholder= {"Enter pin title here!"}
                       onChangeText={(text) => this.setState({inputTitle: text})}
                     />
@@ -301,6 +303,9 @@ export default class Town extends Component{
 
                   <View style={PinInputStyle.DescriptionInputContainer}>
                     <TextInput
+                      selectionColor= {Colors.PRIMARY}
+                      underlineColorAndroid = {Colors.PRIMARY_DARK}
+                      placeholderTextColor = {Colors.DARK_GREY}
                       value={this.state.descInput}
                       placeholder= {"Enter pin description here!"}
                       onChangeText={(text) => this.setState({inputDesc: text})}
@@ -314,6 +319,8 @@ export default class Town extends Component{
                   <View style={PinInputStyle.TimerBarContainer}>
                     <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
                     <Slider
+                      maximumTrackTintColor={Colors.PRIMARY_DARK}
+                      thumbTintColor = {Colors.PRIMARY_DARK}
                       maximumValue={180}
                       minimumValue={0}
                       onValueChange={(time)=> this.setState({timer: time})}
@@ -332,7 +339,7 @@ export default class Town extends Component{
                       <ClickButton
                         onPress={this._handleNewMarker}
                         label="Submit"
-                        color="#2196F3"
+                        color={Colors.PRIMARY}
                       />
                     </View>
                   </View>
@@ -358,25 +365,25 @@ export default class Town extends Component{
                     <Text style={PinInputStyle.disptopBarText}> Event information</Text>
                   </View>
                   <View style={PinInputStyle.displayContainer}>
-                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',backgroundColor: '#81d4fa', padding: 10}}>
-                      <View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: markerCircle , alignItems: 'center', justifyContent: 'center', padding:10, elevation: 10}}>
+                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',backgroundColor: Colors.WHITE, padding: 10}}>
+                      <View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.PRIMARY_DARK , alignItems: 'center', justifyContent: 'center', padding:10, elevation: 10}}>
                         <Icon name={this.state.markerInfo.icon} size={30} color={markerIcon} />
                       </View>
                       <View style={{paddingLeft:10, alignItems: 'stretch', justifyContent:'center', flex: 4,}}>
-                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 30, fontWeight: '300', color: 'white'}}>{this.state.markerInfo.title}</Text>
+                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 30, fontWeight: '300', color:Colors.BLACK }}>{this.state.markerInfo.title}</Text>
                       </View>
                     </View>
                     <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10}}>
-                      <Text style={{flex:1, fontSize: 24, fontWeight: '100'}}>{this.state.markerInfo.description}</Text>
+                      <Text style={{flex:1, fontSize: 24, fontWeight: '100', color: Colors.DARK_GREY}}>{this.state.markerInfo.description}</Text>
                       {this.state.markerInfo.owner != this.state.user.uid ? (<Text>{"Dropped by " + this.state.markerInfo.netid}</Text>) :
                       (
                         <View style={{flex:1}}>
-                          <Text style={{flex:1}}>{"Do you want to delete this pin?"}</Text>
+                          <Text style={{flex:1, color: Colors.DARK_GREY}}>{"Do you want to delete this pin?"}</Text>
                           <ClickButton
                             style={{flex:2}}
                             onPress={() => this._deletePin(this.state.markerInfo.eventid)}
                             label="Delete marker"
-                            color="#2196F3"
+                            color={Colors.PRIMARY}
                           />
                         </View>)}
                     </View>
@@ -593,7 +600,7 @@ export default class Town extends Component{
       curronPress = onPress.bind(null,currIndex);
 
       buttons.push(
-        <CategoryButton
+        <PinCategoryButton
           label = {currLabel}
           selected = {currSelected}
           onPress = {curronPress}

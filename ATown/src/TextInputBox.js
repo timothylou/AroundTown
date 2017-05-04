@@ -9,6 +9,7 @@ TextInput,
 } from 'react-native';
 
 import SignupStyle from './SignupStyles';
+import Colors from './Colors';
 
 export default class TextInputBox extends Component{
 render() {
@@ -17,11 +18,12 @@ render() {
        <Text style = {SignupStyle.textField}> {this.props.title}</Text>
        <TextInput
          style={SignupStyle.textInput}
-         selectionColor= {"#00897b"}
+         selectionColor= {Colors.PRIMARY}
+         underlineColorAndroid = {Colors.PRIMARY}
+         placeholderTextColor = {Colors.DARK_GREY}
          onChangeText={this.props.onChangeText}
          value={this.props.value}
          placeholder={this.props.placeholder}
-         placeholderTextColor = {'#757575'}
          secureTextEntry = {this.props.secure}/>
       </View>
     );

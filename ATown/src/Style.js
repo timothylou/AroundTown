@@ -1,15 +1,17 @@
 import { StyleSheet } from 'react-native';
 
+import Colors from './Colors';
+
 var Style = StyleSheet.create({
     rootContainer: {
         flex: 1,
-        backgroundColor: '#193441'
+        backgroundColor: Colors.MAP_COLOR
         // flexDirection: 'row'
     },
 
     prefsContainer: {
       flex: 15,
-      backgroundColor: '#FFF',
+      backgroundColor: Colors.WHITE,
     },
 
 
@@ -77,14 +79,14 @@ var Style = StyleSheet.create({
 
     sideDrawer: {
       flex: 1,
-      backgroundColor: '#00897b',
+      backgroundColor: Colors.WHITE,
     },
 
     drawerHeader: {
-      backgroundColor: '#3F51B5',
+      backgroundColor: Colors.PRIMARY,
       flex: 0.2,
-      flexDirection: 'column',
-      alignItems: 'flex-start',
+      flexDirection: 'row',
+      alignItems: 'center',
       paddingLeft: 15,
       paddingBottom: 10,
       paddingTop: 10,
@@ -93,15 +95,16 @@ var Style = StyleSheet.create({
 
     drawerHeaderText: {
       fontSize: 26,
-      color: 'white',
+      color: Colors.WHITE,
       textAlign: 'left',
       textAlignVertical: 'center',
+      padding: 15
     },
 
     sideButtonContainer: {
       padding: 15,
       flex: 0.8,
-      backgroundColor: '#EEEEEE',
+      backgroundColor: Colors.WHITE,
     }
 });
 

@@ -3,6 +3,8 @@ import React, {
   StyleSheet
 } from 'react-native';
 
+import Colors from './Colors';
+
 var PinInputStyle = StyleSheet.create({
   MainContainer:{
     flex:1,
@@ -19,14 +21,14 @@ var PinInputStyle = StyleSheet.create({
   inputContainer:{
     padding: 10,
     flex:9,
-    backgroundColor: 'white',
+    backgroundColor: Colors.WHITE,
     justifyContent: 'center',
     alignItems: 'stretch',
   },
 
   displayContainer:{
     flex:6,
-    backgroundColor: 'white',
+    backgroundColor: Colors.WHITE,
     justifyContent: 'center',
     alignItems: 'stretch',
   },
@@ -35,8 +37,8 @@ var PinInputStyle = StyleSheet.create({
     flex:1,
     fontSize: 20,
     fontWeight: "400",
-    backgroundColor: '#E91E63',
-    color: 'white',
+    backgroundColor: Colors.ACCENT,
+    color: Colors.WHITE,
     textAlignVertical: 'center',
 
   },
@@ -46,8 +48,8 @@ var PinInputStyle = StyleSheet.create({
     flex:1,
     fontSize: 20,
     fontWeight: "400",
-    backgroundColor: '#303F9F',
-    color: 'white',
+    backgroundColor: Colors.ACCENT,
+    color: Colors.WHITE,
     textAlignVertical: 'center',
 
   },
@@ -59,7 +61,7 @@ var PinInputStyle = StyleSheet.create({
   TitleInputTitle:{
     flex:1,
     fontSize: 20,
-    color: '#000000'
+    color: Colors.BLACK,
   },
   TitleInputTextBox:{},
 
@@ -69,7 +71,7 @@ var PinInputStyle = StyleSheet.create({
   DescriptionInputTitle:{
     flex:1,
     fontSize: 20,
-    color: '#000000'
+    color: Colors.BLACK,
   },
   DecriptionInputTextBox:{},
 
@@ -83,7 +85,7 @@ var PinInputStyle = StyleSheet.create({
 
   TimerText:{
     fontSize: 15,
-    color: '#000000',
+    color: Colors.BLACK,
   },
 
   TimerSlider:{},
@@ -109,7 +111,7 @@ var PinInputStyle = StyleSheet.create({
 
   ViewButtonListContainer:{
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: Colors.TRANSPARENT_GREY,
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',

@@ -27,7 +27,9 @@ import CheckButton from './CheckButton';
 import RadioButton from './RadioButton';
 import TopBar from './TopBar';
 import SideButton from './SideButton';
-
+import CategoryButton from './CategoryButton';
+import LocationButton from './LocationButton';
+import Colors from './Colors';
 // Pages import
 import About from './About';
 import Login from './Login';
@@ -47,27 +49,44 @@ const buttonsLocationTest = [
   { label: "Rocky",
   id: "rocky",
   index: 0,
-  selected: true,},
+  selected: false,
+  icon: require('./icons/rescollege_rocky.png'),
+},
+
   {label: "Mathey",
   id: "mathey",
   index: 1,
-  selected: false},
+  selected: false,
+  icon: require('./icons/rescollege_mathey.png'),
+},
+
   {label: "Wilson",
   id: "wilson",
   index: 2,
-  selected: false},
+  selected: false,
+  icon: require('./icons/rescollege_wilson.png'),
+},
+
   {label: "Butler",
   id: "butler",
   index: 3,
-  selected: false},
+  selected: false,
+  icon: require('./icons/rescollege_butler.png'),
+},
+
   {label: "Whitman",
   id: "whitman",
   index: 4,
-  selected: false},
+  selected: false,
+  icon: require('./icons/rescollege_whitman.png'),
+},
+
   {label: "Forbes",
   id: "forbes",
   index: 5,
-  selected: false},
+  selected: false,
+  icon: require('./icons/rescollege_forbes.png'),
+},
 
 ];
 
@@ -75,38 +94,51 @@ const buttonsCatTest = [
   { label: "Free Food",
   id: "freefood",
   index: 0,
-  selected: false,},
+  selected: false,
+  icon: 'food',
+  },
 
   {label: "Broken Facility",
   id: "brokenfacility",
   index: 1,
-  selected: false,},
+  selected: false,
+  icon: 'vlc',
+  },
 
   {label: "Recruiting",
   id: "recruiting",
   index: 2,
-  selected: false,},
+  selected: false,
+  icon: 'account-multiple',
+  },
 
   {label: "Study Break",
   id: "studybreak",
   index: 3,
-  selected: false,},
+  selected: false,
+  icon: 'pencil-off',
+  },
 
   {label: "Movie Screening",
   id: "movie",
   index: 4,
-  selected: false,},
+  selected: false,
+  icon: 'filmstrip',
+  },
 
   {label: "Busy",
   id: "busy",
   index: 5,
-  selected: false,},
+  selected: false,
+  icon: 'do-not-disturb',
+  },
 
   {label: "Fire Safety",
   id: "firesafety",
   index: 6,
-  selected: false,},
-
+  selected: false,
+  icon: 'alert',
+  },
 ];
 
 let windowWidth = Dimensions.get('window').width
@@ -144,6 +176,8 @@ export default class Preferences extends Component{
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
     this._closeAbout = this._closeAbout.bind(this);
+    this._renderCategoryButtons = this._renderCategoryButtons.bind(this);
+    this._renderLocationButtons = this._renderLocationButtons.bind(this);
 
   }
 
@@ -214,7 +248,7 @@ export default class Preferences extends Component{
 
     console.log("Done with posting to tim");
 
-    alert('Your preferences have been set!');
+    alert("Your preferences have been set!");
 
     // reset states and navigate to Town screen
     this.setState({
@@ -237,7 +271,7 @@ export default class Preferences extends Component{
         <View style = {Style.drawerHeader}>
           <TouchableWithoutFeedback onPress={() => alert("Hoooot!")}>
             <Image
-              source={require('./icons/hoot2.png')}
+              source={require('./icons/hootclear.png')}
               style={{width: 90, height: 90, padding: 10}}
             />
           </TouchableWithoutFeedback>
@@ -273,15 +307,15 @@ export default class Preferences extends Component{
 
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
       (<ScrollView>
-        <Text style = {Style.genericText}>Select one or more home bases</Text>
-        <View>
-          {this._renderCheckButtons(this.state.locations, this.handleHomeLocationChange)}
+        <Text style = {Style.genericText}>Subscribe to one or more home bases:</Text>
+        <View style = {{padding: 20}}>
+          {this._renderLocationButtons(this.state.locations, this.handleHomeLocationChange)}
         </View>
-        <Text style = {Style.genericText}>Which type of event would you like to receive notifications for?</Text>
-        <View>
-          {this._renderCheckButtons(this.state.categories, this.handleCategoryChange)}
+        <Text style = {Style.genericText}>Subscribe to the types of event would you like to receive notifications for:</Text>
+        <View style = {{padding: 20}}>
+          {this._renderCategoryButtons(this.state.categories, this.handleCategoryChange)}
         </View>
-        <TouchableHighlight onPress={this.setPreferences.bind(this)} style={BaseStyle.primaryButton}>
+        <TouchableHighlight onPress={this.setPreferences.bind(this)} style={BaseStyle.primaryButton} underlayColor = {Colors.PRIMARY_DARK}>
           <Text style={BaseStyle.primaryButtonText}>Set Preferences</Text>
         </TouchableHighlight>
       </ScrollView>);
@@ -327,36 +361,72 @@ export default class Preferences extends Component{
     );
   }
 
-  _renderCheckButtons(buttonsList, onPress){
+  _renderCategoryButtons(buttonsList, onSwitch){
+
     let buttons = [];
     if (buttonsList == null){
       buttonsList = [];
     }
     var currLabel = null;
-    var currSelected = null;
     var currId = null;
+    var currIcon = null;
     var currIndex = null;
-    var curronPress = null;
+    var currSelected = null;
+    var currOnSwitch = null;
     for (var b = 0; b < buttonsList.length; b++){
 
       currLabel = buttonsList[b].label;
-      currSelected = buttonsList[b].selected;
       currId = buttonsList[b].id;
+      currIcon = buttonsList[b].icon;
       currIndex = buttonsList[b].index;
-      curronPress = onPress.bind(null,currIndex);
+      currSelected = buttonsList[b].selected;
+      currOnSwitch = onSwitch.bind(null,currIndex);
 
       buttons.push(
-        <CheckButton
+        <CategoryButton
           label = {currLabel}
-          selected = {currSelected}
-          onPress = {curronPress}
+          icon = {currIcon}
           index = {currIndex}
+          onSwitch = {currOnSwitch}
           key = {currId}/>
       );
     }
 
     return buttons;
 
+  }
+
+  _renderLocationButtons(buttonsList, onSwitch){
+    let buttons = [];
+    if (buttonsList == null){
+      buttonsList = [];
+    }
+    var currLabel = null;
+    var currId = null;
+    var currIcon = null;
+    var currIndex = null;
+    var currSelected = null;
+    var currOnSwitch = null;
+    for (var b = 0; b < buttonsList.length; b++){
+
+      currLabel = buttonsList[b].label;
+      currId = buttonsList[b].id;
+      currIcon = buttonsList[b].icon;
+      currIndex = buttonsList[b].index;
+      currSelected = buttonsList[b].selected;
+      currOnSwitch = onSwitch.bind(null,currIndex);
+
+      buttons.push(
+        <LocationButton
+          label = {currLabel}
+          icon = {currIcon}
+          index = {currIndex}
+          onSwitch = {currOnSwitch}
+          key = {currId}/>
+      );
+    }
+
+    return buttons;
   }
 
   _onPressPrefsButton() {
@@ -411,7 +481,7 @@ export default class Preferences extends Component{
     var currentCategories = this.state.categories;
     currentCategories[currIndex].selected = ! currentCategories[currIndex].selected
     this.setState({categories: currentCategories});
-
+//alert("category change!" + currIndex + currentCategories[currIndex].selected);
   }
 
   // on location checked box

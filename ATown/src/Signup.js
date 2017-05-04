@@ -19,6 +19,7 @@ import Preferences from './Preferences';
 import Firebase from './Firebase';
 import React, {Component} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Colors from './Colors';
 
 export default class Signup extends Component {
   constructor(props) {

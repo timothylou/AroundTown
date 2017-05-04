@@ -9,6 +9,8 @@ ToolbarAndroid,
 Image
 } from 'react-native';
 
+import Colors from './Colors';
+
 var Icon = require('react-native-vector-icons/MaterialCommunityIcons');
 
 export default class TopBar extends Component{
@@ -19,7 +21,7 @@ render() {
      title={this.props.title}
      navIcon = {require('./icons/ic_menu_white_18dp.png')}
      style = {styles.toolbar}
-     titleColor={'white'}
+     titleColor={Colors.WHITE}
      onIconClicked={this.props.sidebarRef}/>
     );
  }
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
     height: 55,
-    backgroundColor: "#2196F3",
+    backgroundColor: Colors.PRIMARY,
     elevation:10
   }
 });

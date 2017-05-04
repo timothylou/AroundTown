@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import TownStyle from './TownStyles';
+import Colors from './Colors';
 
 import React, {Component} from 'react';
 
@@ -19,7 +20,7 @@ const mapStyle = [
     "elementType": "geometry.stroke",
     "stylers": [
       {
-        "color": "#856d5a"
+        "color": Colors.MAP_COLOR
       },
       {
         "visibility": "on"

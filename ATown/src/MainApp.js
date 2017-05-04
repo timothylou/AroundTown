@@ -18,6 +18,7 @@ import Signup from './Signup';
 import Login from './Login';
 import Town from './Town';
 import Preferences from './Preferences';
+import Colors from './Colors';
 
 // Firebase utils
 import Firebase from './Firebase';
@@ -100,7 +101,7 @@ class ATown extends Component {
       return (
         <View style={{flex:1}}>
           <StatusBar
-            backgroundColor="#1976D2"
+            backgroundColor={Colors.PRIMARY_DARK}
             barStyle="light-content"
           />
           <Navigator

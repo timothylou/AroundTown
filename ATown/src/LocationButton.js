@@ -5,7 +5,7 @@ import {
   View,
   TouchableWithoutFeedback,
   Image,
-  Switch,
+  Switch
 } from 'react-native';
 import Style from './Style';
 import Colors from './Colors';
@@ -14,7 +14,8 @@ import ButtonStyle from './ButtonStyles.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default class CategoryButton extends Component{
-  constructor(props) {
+  constructor(props)
+  {
     super(props);
     this.state = {selected: false};
     this.switchChange = this.switchChange.bind(this);
@@ -23,9 +24,7 @@ export default class CategoryButton extends Component{
   render(){
     return(
       <View style = {ButtonStyle.CategoryButton}>
-        <View style={{height: 40, width: 40, borderRadius: 20, backgroundColor: Colors.PRIMARY_DARK , alignItems: 'center', justifyContent: 'center', elevation: 5}}>
-          <Icon name={this.props.icon} size={25} color={Colors.WHITE} />
-        </View>
+        <Image style = {{width: 40, height: 40}} source = {this.props.icon}/>
         <Text style = {ButtonStyle.CategoryButtonText}>{this.props.label}</Text>
         <Switch
         onValueChange={(value) => this.switchChange(value)}
@@ -41,9 +40,3 @@ export default class CategoryButton extends Component{
     this.props.onSwitch();
   }
 }
-
-// <Switch
-//   onValueChange={(value) => this.setState({selected: value})}
-//   style={{marginBottom: 10}}
-//   value={this.state.selected}
-// />

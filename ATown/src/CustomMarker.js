@@ -10,11 +10,12 @@ import {
 import { Marker, Callout} from 'react-native-maps';
 import Style from './Style';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Colors from './Colors';
 
 import React, {Component} from 'react';
 
-const markerCircle = '#E91E63';
-const markerIcon = 'white';
+const markerCircle = Colors.ACCENT;
+const markerIcon = Colors.WHITE;
 export default class CustomMarker extends Component {
 
   constructor(props){
