@@ -107,6 +107,10 @@ var buttonsCatTest = [
 const filterTime = 4000;
 const filterDuration = 550;
 
+
+const markerCircle = '#E91E63';
+const markerIcon = 'white';
+
 // dimensions used for animations
 let windowWidth = Dimensions.get('window').width
 let windowHeight = Dimensions.get('window').height
@@ -139,7 +143,9 @@ export default class Town extends Component{
                   inputDesc: "",
 
                   markerInfoVisbile: false, // modalVisibility flag
-                  markerInfo: "", // temp var for description of pin. Always "" when not making new pin
+                  markerInfo: {
+                    icon: 'owl',
+                  }, // temp var for description of pin. Always "" when not making new pin
 
                   filterVisible: false, // variable for filters being displayed or not
                   filterPicked: buttonsCatTest,
@@ -183,6 +189,7 @@ export default class Town extends Component{
     this._viewButtonPressed = this._viewButtonPressed.bind(this);
     this._getDistanceFromLatLonInKm = this._getDistanceFromLatLonInKm.bind(this);
     this._deg2rad = this._deg2rad.bind(this);
+    this._deletePin = this._deletePin.bind(this);
     this._getSelectedLabel = this._getSelectedLabel.bind(this);
 
 
@@ -274,60 +281,60 @@ export default class Town extends Component{
                 alignItems: 'stretch',
                 height: windowHeight*0.45,
                 width: windowWidth*0.8,
-                padding: 10,
-                borderRadius : 10,
+                borderRadius : 5,
                 elevation: 5,
               }}
               onClosed = {() => {this.setState({markerInputVisible: false}); this._handleCancelMarker();}}
               isOpen = {this.state.markerInputVisible}
             >
               <KeyboardAwareScrollView contentContainerStyle={PinInputStyle.MainContainer}>
-                <View style={PinInputStyle.TitleInputContainer}>
-                  <TextInput
-                    placeholder= {"Enter pin title here!"}
-                    onChangeText={(text) => this.setState({inputTitle: text})}
-                  />
+                <View style={PinInputStyle.topBar}>
+                  <Text style={PinInputStyle.topBarText}> Create new event</Text>
                 </View>
-
-                <View style={PinInputStyle.DescriptionInputContainer}>
-                  <TextInput
-                    value={this.state.descInput}
-                    placeholder= {"Enter pin description here!"}
-                    onChangeText={(text) => this.setState({inputDesc: text})}
-
-                    multiline = {true}
-                    numberOfLines = {4}
-                    textAlignVertical = "top"
-                  />
-                </View>
-
-                <View style={PinInputStyle.TimerBarContainer}>
-                  <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
-                  <Slider
-                    maximumValue={180}
-                    minimumValue={0}
-                    onValueChange={(time)=> this.setState({timer: time})}
-                    step={1}
-                    value={this.state.timer}
-                    >
-                  </Slider>
-                </View>
-                <Text style = {{color: 'black', flex:0.7}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
-                <View style={PinInputStyle.RadioButtonListContainer}>
-                  {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
-                </View>
-                <View style={PinInputStyle.ConfirmationButtonsContainer}>
-                  <View style={ButtonStyle.HorizontalButtonListContainer}>
-                    <ClickButton
-                      onPress={this._handleCancelMarker}
-                      label="Cancel"
-                      color="#FF5722"
+                <View style={PinInputStyle.inputContainer}>
+                  <View style={PinInputStyle.TitleInputContainer}>
+                    <TextInput
+                      placeholder= {"Enter pin title here!"}
+                      onChangeText={(text) => this.setState({inputTitle: text})}
                     />
-                    <ClickButton
-                      onPress={this._handleNewMarker}
-                      label="Submit"
-                      color="#2196F3"
+                  </View>
+
+                  <View style={PinInputStyle.DescriptionInputContainer}>
+                    <TextInput
+                      value={this.state.descInput}
+                      placeholder= {"Enter pin description here!"}
+                      onChangeText={(text) => this.setState({inputDesc: text})}
+
+                      multiline = {true}
+                      numberOfLines = {4}
+                      textAlignVertical = "top"
                     />
+                  </View>
+
+                  <View style={PinInputStyle.TimerBarContainer}>
+                    <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
+                    <Slider
+                      maximumValue={180}
+                      minimumValue={0}
+                      onValueChange={(time)=> this.setState({timer: time})}
+                      step={1}
+                      value={this.state.timer}
+                      >
+                    </Slider>
+                  </View>
+                  <Text style = {{color: 'black', flex:0.7}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
+                  <View style={PinInputStyle.RadioButtonListContainer}>
+                    {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
+                  </View>
+                  <View style={PinInputStyle.ConfirmationButtonsContainer}>
+                    <View style={ButtonStyle.HorizontalButtonListContainer}>
+
+                      <ClickButton
+                        onPress={this._handleNewMarker}
+                        label="Submit"
+                        color="#2196F3"
+                      />
+                    </View>
                   </View>
                 </View>
               </KeyboardAwareScrollView>
@@ -338,7 +345,6 @@ export default class Town extends Component{
                 alignItems: 'stretch',
                 height: windowHeight*0.4,
                 width: windowWidth*0.8,
-                padding: 10,
                 borderRadius : 10,
                 elevation: 5,
               }}
@@ -346,11 +352,37 @@ export default class Town extends Component{
               onClosed = {() => this.setState({markerInfoVisbile: false})}
               isOpen = {this.state.markerInfoVisbile}
               >
-              <KeyboardAwareScrollView style={{flex:1, backgroundColor: '#EEEEEE'}}>
-                    <Text style={{flex:1}}>{this.state.markerInfo.title}</Text>
-                    <Text style={{flex:1}}>{this.state.markerInfo.description}</Text>
-                    <Text style={{flex:1}}>{this.state.markerInfo.netid}</Text>
-              </KeyboardAwareScrollView>
+
+                <View style={PinInputStyle.MainContainer}>
+                  <View style={PinInputStyle.topBar}>
+                    <Text style={PinInputStyle.disptopBarText}> Event information</Text>
+                  </View>
+                  <View style={PinInputStyle.displayContainer}>
+                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',backgroundColor: '#81d4fa', padding: 10}}>
+                      <View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: markerCircle , alignItems: 'center', justifyContent: 'center', padding:10, elevation: 10}}>
+                        <Icon name={this.state.markerInfo.icon} size={30} color={markerIcon} />
+                      </View>
+                      <View style={{paddingLeft:10, alignItems: 'stretch', justifyContent:'center', flex: 4,}}>
+                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 30, fontWeight: '300', color: 'white'}}>{this.state.markerInfo.title}</Text>
+                      </View>
+                    </View>
+                    <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10}}>
+                      <Text style={{flex:1, fontSize: 24, fontWeight: '100'}}>{this.state.markerInfo.description}</Text>
+                      {this.state.markerInfo.owner != this.state.user.uid ? (<Text>{"Dropped by " + this.state.markerInfo.netid}</Text>) :
+                      (
+                        <View style={{flex:1}}>
+                          <Text style={{flex:1}}>{"Do you want to delete this pin?"}</Text>
+                          <ClickButton
+                            style={{flex:2}}
+                            onPress={() => this._deletePin(this.state.markerInfo.eventid)}
+                            label="Delete marker"
+                            color="#2196F3"
+                          />
+                        </View>)}
+                    </View>
+                  </View>
+                </View>
+
             </Modal>
             <Modal
               animationType = {'slide'}
@@ -444,6 +476,25 @@ export default class Town extends Component{
   }
 
 
+  async _deletePin(deleventid){
+
+    await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/deleteevent/',
+      {
+        method: 'POST',
+
+        headers:{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+
+        body: JSON.stringify({eventid: deleventid})
+      });
+
+      alert("Deleted your event!");
+      this.setState({markerInfoVisbile: false});
+
+
+  }
   _openAbout() {
     this.refs['DRAWER'].closeDrawer();
     this.setState({aboutVisible: true})
@@ -586,6 +637,8 @@ export default class Town extends Component{
                 title: marker.title,
                 description: marker.description,
                 owner: marker.ownerid,
+                icon: buttonsCatTest[parseInt(marker.category)].icon,
+                eventid: marker.eventid,
               },
 
               icon: buttonsCatTest[parseInt(marker.category)].icon,

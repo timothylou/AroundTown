@@ -8,11 +8,54 @@ var PinInputStyle = StyleSheet.create({
     flex:1,
     justifyContent: 'center',
     alignItems: 'stretch',
+    borderRadius: 5,
+  },
+
+  topBar:{
+    flex:1,
+    justifyContent: 'center',
+  },
+
+  inputContainer:{
+    padding: 10,
+    flex:9,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+  },
+
+  displayContainer:{
+    flex:6,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+  },
+
+  topBarText:{
+    flex:1,
+    fontSize: 20,
+    fontWeight: "400",
+    backgroundColor: '#E91E63',
+    color: 'white',
+    textAlignVertical: 'center',
+
+  },
+
+
+  disptopBarText:{
+    flex:1,
+    fontSize: 20,
+    fontWeight: "400",
+    backgroundColor: '#303F9F',
+    color: 'white',
+    textAlignVertical: 'center',
+
   },
 
   TitleInputContainer:{
     flex:1,
   },
+
   TitleInputTitle:{
     flex:1,
     fontSize: 20,
