@@ -34,6 +34,7 @@ import Colors from './Colors';
 import About from './About';
 import Login from './Login';
 import Town from './Town';
+import UserDetails from './UserDetails'
 
 // Style imports
 import BaseStyle from './BaseStyles.js';
@@ -88,6 +89,20 @@ var buttonsLocationTest = [
   icon: require('./icons/rescollege_forbes.png'),
 },
 
+  {label: "Upperclass Housing",
+  id: "upperclass",
+  index: 6,
+  selected: false,
+  icon: require('./icons/upperclass.png'),
+  },
+
+  {label: "Graduate College",
+  id: "graduate",
+  index: 7,
+  selected: false,
+  icon: require('./icons/graduate.png'),
+  },
+
 ];
 
 var buttonsCatTest = [
@@ -126,7 +141,7 @@ var buttonsCatTest = [
   icon: 'filmstrip',
   },
 
-  {label: "Busy",
+  {label: "Crowded ",
   id: "busy",
   index: 5,
   selected: false,
@@ -172,6 +187,7 @@ export default class Preferences extends Component{
     this._setDrawer = this._setDrawer.bind(this);
     this._onPressTownButton = this._onPressTownButton.bind(this);
     this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
+    this._onPressUserButton = this._onPressUserButton.bind(this);
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
     this._closeAbout = this._closeAbout.bind(this);
@@ -188,7 +204,7 @@ export default class Preferences extends Component{
     var userName = detsnapshot.val().fname;
 
     const prefsnap = await Firebase.database().ref('/users/' + currentUser.uid+ '/details/prefs/tags').once('value');
-    if(!prefsnap){
+    if(prefsnap.val() != null){
       var locs = prefsnap.val().location;
       var cats = prefsnap.val().category;
 
@@ -307,6 +323,11 @@ export default class Preferences extends Component{
             icon= {"settings"}
             onPress = {this._onPressPrefsButton}
             buttonText = {'Preferences'}
+          />
+          <SideButton
+            icon= {"account-settings-variant"}
+            onPress = {this._onPressUserButton}
+            buttonText = {'User Details'}
           />
           <SideButton
             icon= {"logout"}
@@ -495,7 +516,13 @@ export default class Preferences extends Component{
 
   }
 
+  _onPressUserButton() {
+    this.setState({userData: null, loading: false});
+    this.props.navigator.replace({
+      component: UserDetails
+    });
 
+  }
 
   // on category checked box
   handleCategoryChange(currIndex){

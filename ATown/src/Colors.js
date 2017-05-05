@@ -9,5 +9,7 @@ module.exports =
   LIGHT_GREY: '#BDBDBD',
   MAP_COLOR: '#856d5a',
   TRANSPARENT_GREY: 'rgba(0,0,0,0.2)',
+  TRANSPARENTER_GREY: 'rgba(0,0,0,0.1)',
+  TRANSPARENT: 'rgba(0,0,0,0)',
   UNDERLAY_GREY: '#DDDDDD',
 }

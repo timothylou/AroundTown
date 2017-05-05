@@ -43,8 +43,9 @@ var Style = StyleSheet.create({
     },
     genericText: {
       fontSize: 22,
-      fontWeight: 'bold',
-      color: 'black'
+      color: 'black',
+      paddingHorizontal: 20,
+      paddingTop: 20,
     },
 
     displayContainer: {

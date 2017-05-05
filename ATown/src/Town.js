@@ -39,6 +39,7 @@ import Preferences from './Preferences';
 import About from './About';
 import Login from './Login';
 import Signup from './Signup';
+import UserDetails from './UserDetails';
 
 // Style imports
 import Style from './Style';
@@ -88,7 +89,7 @@ var buttonsCatTest = [
   icon: 'filmstrip',
 },
 
-  {label: "Busy",
+  {label: "Crowded",
   id: "busy",
   index: 5,
   selected: true,
@@ -181,6 +182,7 @@ export default class Town extends Component{
     this._setDrawer = this._setDrawer.bind(this);
     this._onPressTownButton = this._onPressTownButton.bind(this);
     this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
+    this._onPressUserButton = this._onPressUserButton.bind(this);
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
     this._closeAbout = this._closeAbout.bind(this);
@@ -255,6 +257,11 @@ export default class Town extends Component{
             icon= {"settings"}
             onPress = {this._onPressPrefsButton}
             buttonText = {'Preferences'}
+          />
+          <SideButton
+            icon= {"account-settings-variant"}
+            onPress = {this._onPressUserButton}
+            buttonText = {'User Details'}
           />
           <SideButton
             icon= {"logout"}
@@ -565,8 +572,25 @@ export default class Town extends Component{
     });
   }
 
+  _onPressUserButton() {
+    clearTimeout(this.filterTimeout);
+    this.props.navigator.replace({
+      component: UserDetails
+    });
+  }
+
   _setDrawer() {
     this.refs['DRAWER'].openDrawer();
+    clearTimeout(this.filterTimeout);
+
+    this.filterTimeout = setTimeout(() => {
+      this.setState({ filterVisible: false })
+      Animated.timing( this.animatedValue,
+                      {
+                        toValue: windowWidth,
+                        duration: filterDuration,
+                      }
+                    ).start()}, filterTime);
   }
 
 
@@ -834,6 +858,7 @@ export default class Town extends Component{
         'title': this.state.inputTitle,
         'description': description,
         'cat': this.state.selectedCategory.toString(),
+        'catname': buttonsCatTest[this.state.selectedCategory].id,
         'oid': this.state.user.uid,
         'netid': this.state.netid,
         'stime': new Date().getTime(),

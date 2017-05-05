@@ -155,9 +155,38 @@ var ButtonStyle = StyleSheet.create({
     fontSize: 18,
     color: Colors.BLACK,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignContent: 'center',
     paddingLeft: 10,
-  }
+    paddingTop: 10,
+  },
+
+  UserButton: {
+    flex:1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    padding: 8,
+  },
+
+  UserButtonText : {
+    flex: 1,
+    flexDirection: 'row',
+    fontSize: 18,
+    color: Colors.BLACK,
+    justifyContent: 'center',
+    alignContent: 'center',
+    paddingLeft: 10,
+    paddingTop: 8,
+  },
+
+  UserInfoText : {
+    flex: 2,
+    flexDirection: 'row',
+    fontSize: 18,
+    color: Colors.LIGHT_GREY,
+    justifyContent: 'flex-start',
+    textAlign: 'left',
+    paddingTop: 8,
+  },
 
 });
 
