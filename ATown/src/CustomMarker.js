@@ -18,10 +18,7 @@ const markerCircle = Colors.ACCENT;
 const markerIcon = Colors.WHITE;
 export default class CustomMarker extends Component {
 
-  constructor(props){
-    super(props);
-    this.state= {icon: null}
-  }
+
 
 //   componentWillMount() {
 //         Icon.getImageSource(this.props.marker.icon, 32, '#d32f2f').then((source) => this.setState({ icon: source}));
@@ -29,7 +26,7 @@ export default class CustomMarker extends Component {
 
   render(){
 
-    var content =  this.state.icon ? null: (
+    var content = (
       <Marker
       coordinate={
         this.props.marker.coordinate
