@@ -22,16 +22,12 @@ export default class UserDetailButton extends Component{
         <Text style = {ButtonStyle.UserButtonText}>{this.props.label}</Text>
         <Text style = {ButtonStyle.UserInfoText} >{this.props.info}</Text>
         { this.props.editable ?
-        <TouchableHighlight onPress={this._onPressButton} underlayColor = {Colors.TRANSPARENTER_GREY}>
+        <TouchableHighlight onPress={this.props.onPress} underlayColor = {Colors.TRANSPARENTER_GREY}>
           <Icon name = "pencil" size = {25} color = {Colors.LIGHT_GREY}/>
         </TouchableHighlight>  : <Icon name = "pencil" size = {25} color = {Colors.TRANSPARENT}/>
         }
       </View>
     );
-  }
-
-  _onPressButton() {
-    alert("edit button pressed!")
   }
 
 }
