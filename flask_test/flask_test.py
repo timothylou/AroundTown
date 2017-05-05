@@ -4,10 +4,13 @@ import requests
 from werkzeug.contrib.fixers import ProxyFix
 import json
 import logging
+from geopy.distance import vincenty
 
 import cloudutils.DBUtils as dbu
 import cloudutils.OneSignalUtils as osu
 from config import dbpath
+from config import coord_to_college_map
+from config import radius_college_map
 
 # Create the application.
 app = Flask(__name__)
@@ -114,8 +117,15 @@ def postnewevent():
     # update eventlist
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
+    taglist = [cat]
+    # add res colleges if new event falls under any
+    for college, coord in coord_to_college_map.iteritems():
+        print "dist between", college, "and pin is", vincenty(coord, (lat, lon)).meters
+        if vincenty(coord, (lat, lon)).meters < radius_college_map[college]:
+            taglist.append(college)
+            print college, "appended to taglist"
     # send notification to correct audience
-    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, [cat])
+    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, taglist)
     return "%s" % (eventid)
 
 @app.route('/post/prefs/', methods=['POST'])
@@ -198,7 +208,9 @@ def deleteevent():
         if attrib not in deletedict:
             return 'ERROR: no %s value received!' % (attrib)
     eventid = deletedict['eventid']
+    print "Deleting event with eid %s" % (eventid)
     dbu.DBSetEventStatus(app.config['DB_CONN'], app.config['DB_CUR'], eventid, 0)
+    print "Done"
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
     return "Success"
