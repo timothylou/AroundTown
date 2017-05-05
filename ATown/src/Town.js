@@ -157,7 +157,7 @@ export default class Town extends Component{
                     latitudeDelta: 0.0022,
                     longitudeDelta: 0.0021,
                   },
-
+                  vote: '0',
                   regionSet: false,
                 };
 
@@ -402,7 +402,26 @@ export default class Town extends Component{
                     </View>
                     <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10}}>
                       <Text style={{flex:1, fontSize: 24, fontWeight: '100', color: Colors.DARK_GREY}}>{this.state.markerInfo.description}</Text>
-                      {this.state.markerInfo.owner != this.state.user.uid ? (<Text>{"Dropped by " + this.state.markerInfo.netid}</Text>) :
+                      <View style={{flex: 1, flexDirection: 'row'}}>
+                        <Text>{this.state.vote}</Text>
+                        <View style={ButtonStyle.RadioButtonContainer}>
+                          <TouchableWithoutFeedback style={ButtonStyle.CheckButtonTouchable}
+                            onPress={() => this._upvotePressed(this.state.markerInfo.eventid)}>
+                            <Icon name={'thumb-up'} size={30} color={Colors.PRIMARY_DARK} />
+                          </TouchableWithoutFeedback>
+                        </View>
+                        <View style={ButtonStyle.RadioButtonContainer}>
+                          <TouchableWithoutFeedback style={ButtonStyle.CheckButtonTouchable}
+                            onPress={()=> this._downvotePressed(this.state.markerInfo.eventid)}>
+                            <Icon name={'thumb-down'} size={30} color={Colors.PRIMARY_DARK} />
+                          </TouchableWithoutFeedback>
+                        </View>
+
+                      </View>
+                      {this.state.markerInfo.owner != this.state.user.uid ?
+                      (<View>
+                        <Text>{"Dropped by " + this.state.markerInfo.netid}</Text>
+                      </View>) :
                       (
                         <View style={{flex:1}}>
                           <Text style={{flex:1, color: Colors.DARK_GREY}}>{"Do you want to delete this pin?"}</Text>
@@ -416,7 +435,6 @@ export default class Town extends Component{
                     </View>
                   </View>
                 </View>
-
             </Modal>
             <Animated.View
               style={{
@@ -538,9 +556,13 @@ export default class Town extends Component{
     this.setState({aboutVisible: false});
   }
 
-  _onPressLogoutButton() {
+  async _onPressLogoutButton() {
     clearInterval(this.timerId);
     clearInterval(this.locTimerId);
+    var voted = "";
+    // await AsyncStorage.getItem("eventsVoted").then((eventVoted) => voted = eventVoted);
+    // voted = voted.split(',');
+    AsyncStorage.clear();
     var ret = fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/logout/',
       {
         method: 'POST',
@@ -755,8 +777,149 @@ export default class Town extends Component{
 
     }
 
-  _onCalloutPress(markerDescription){
 
+
+  async _upvotePressed(eventId){
+    if(this.state.vote == '1'){
+      AsyncStorage.setItem(eventId,'0');
+      this.setState({vote: '0'});
+      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
+        {
+          method: 'POST',
+
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+
+          body: JSON.stringify(
+                  { eventid: eventId,
+                    upvotechange: -1,
+                    downvotechange: 0,
+                  }
+                )
+        });
+      return;
+    }
+
+    if(this.state.vote == '0'){
+      AsyncStorage.setItem(eventId,'1');
+      this.setState({vote: '1'});
+      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
+        {
+          method: 'POST',
+
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+
+          body: JSON.stringify(
+                  { eventid: eventId,
+                    upvotechange: 1,
+                    downvotechange: 0,
+                  }
+                )
+        });
+      return;
+    }
+
+    if(this.state.vote == '-1'){
+      AsyncStorage.setItem(eventId,'1');
+      this.setState({vote: '1'});
+      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
+        {
+          method: 'POST',
+
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+
+          body: JSON.stringify(
+                  { eventid: eventId,
+                    upvotechange: 1,
+                    downvotechange: -1,
+                  }
+                )
+        });
+      return;
+    }
+
+  }
+
+  async _downvotePressed(eventId){
+    if(this.state.vote == '-1'){
+      AsyncStorage.setItem(eventId,'0');
+      this.setState({vote: '0'});
+      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
+        {
+          method: 'POST',
+
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+
+          body: JSON.stringify(
+                  { eventid: eventId,
+                    upvotechange: 0,
+                    downvotechange: -1,
+                  }
+                )
+        });
+      return;
+    }
+
+    if(this.state.vote == '0'){
+      AsyncStorage.setItem(eventId,'-1');
+      this.setState({vote: '-1'});
+      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
+        {
+          method: 'POST',
+
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+
+          body: JSON.stringify(
+                  { eventid: eventId,
+                    upvotechange: 0,
+                    downvotechange: 1,
+                  }
+                )
+        });
+      return;
+    }
+
+    if(this.state.vote == '1'){
+      AsyncStorage.setItem(eventId,'-1');
+      this.setState({vote: '-1'});
+      var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
+        {
+          method: 'POST',
+
+          headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+
+          body: JSON.stringify(
+                  { eventid: eventId,
+                    upvotechange: -1,
+                    downvotechange: 1,
+                  }
+                )
+        });
+      return;
+    }
+
+  }
+
+  async _onCalloutPress(markerDescription){
+
+    var eventid = markerDescription.eventid;
     clearTimeout(this.filterTimeout);
     this.setState({ filterVisible: false })
     Animated.timing( this.animatedValue,
@@ -765,6 +928,20 @@ export default class Town extends Component{
                       duration: filterDuration,
                     }
                   ).start();
+    var vote = "";
+    await AsyncStorage.getItem(eventid).then((eventVote)=> vote = eventVote).catch((error) => alert(error.message));
+    console.log("wtf",vote);
+    if(vote == null){
+      vote = '0';
+    }
+    this.setState({vote: vote});
+    AsyncStorage.setItem(eventid, vote);
+    // var votes = "";
+    // // await AsyncStorage.getItem('eventsVoted').then((eventsVoted) => votes = eventsVoted).catch((error) => alert(error.message));
+    // console.log(votes);
+    // votes = votes + eventid + ",";
+    // // AsyncStorage.setItem('eventsVoted',votes);
+    // console.log(votes);
 
     this.setState({markerInfoVisbile: true,
       markerInfo: markerDescription})
