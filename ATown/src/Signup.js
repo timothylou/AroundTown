@@ -89,7 +89,7 @@ export default class Signup extends Component {
             }).then().catch( (error)=> console.log("Done with fetching from tim       " + error.message));
           console.log("Done with fetching from tim");
 
-          alert('Your account was created!' + userData.uid);
+          alert('Your account was created!');
 
 
           // Firebase.child("users").child(userData.uid).set({
