@@ -23,7 +23,7 @@ def DBInitResetTables(conn, cur):
     cur.execute(drop_q3)
     conn.commit()
     create_q = '''CREATE TABLE users(userid varchar(50), firstname varchar(20), 
-    lastname varchar(20), classyear int, netid varchar(20), email varchar(30))'''
+    lastname varchar(20), classyear varchar(15), netid varchar(20), email varchar(30))'''
     print create_q
     cur.execute(create_q)
     create_q2 = '''CREATE TABLE events(eventid varchar(36), longitude double, latitude double,
@@ -47,7 +47,7 @@ def DBAddEvent(conn, cur, lon, lat, title, desc, cat, oid, netid, stime, dur):
 
 def DBAddUser(conn, cur, uid, fname, lname, cyear, netid, email):
     #uid = str(uuid.uuid4())
-    insert_q = '''INSERT INTO users VALUES('%s', '%s', '%s', %d, '%s', '%s')''' % (uid, fname, lname, cyear, netid, email)
+    insert_q = '''INSERT INTO users VALUES('%s', '%s', '%s', '%s', '%s', '%s')''' % (uid, fname, lname, cyear, netid, email)
     insert_q_actual = 'INSERT INTO users VALUES(?, ?, ?, ?, ?, ?)'
     print insert_q
     cur.execute(insert_q_actual, (uid, fname, lname, cyear, netid, email))
