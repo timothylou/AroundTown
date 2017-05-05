@@ -582,15 +582,15 @@ export default class Town extends Component{
   _setDrawer() {
     this.refs['DRAWER'].openDrawer();
     clearTimeout(this.filterTimeout);
+    this.setState({ filterVisible: false })
+    Animated.timing( this.animatedValue,
+                    {
+                      toValue: windowWidth,
+                      duration: filterDuration,
+                    }
+                  ).start();
+    return;
 
-    this.filterTimeout = setTimeout(() => {
-      this.setState({ filterVisible: false })
-      Animated.timing( this.animatedValue,
-                      {
-                        toValue: windowWidth,
-                        duration: filterDuration,
-                      }
-                    ).start()}, filterTime);
   }
 
 
