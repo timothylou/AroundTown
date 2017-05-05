@@ -45,7 +45,7 @@ import Modal from 'react-native-modalbox';
 
 
 // defaultState
-const buttonsLocationTest = [
+var buttonsLocationTest = [
   { label: "Rocky",
   id: "rocky",
   index: 0,
@@ -90,7 +90,7 @@ const buttonsLocationTest = [
 
 ];
 
-const buttonsCatTest = [
+var buttonsCatTest = [
   { label: "Free Food",
   id: "freefood",
   index: 0,
@@ -169,7 +169,6 @@ export default class Preferences extends Component{
     this.defaultState = this.state;
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
     this.handleHomeLocationChange = this.handleHomeLocationChange.bind(this);
-    this.convertBoolToText = this.convertBoolToText.bind(this);
     this._setDrawer = this._setDrawer.bind(this);
     this._onPressTownButton = this._onPressTownButton.bind(this);
     this._onPressPrefsButton = this._onPressPrefsButton.bind(this);
@@ -185,8 +184,28 @@ export default class Preferences extends Component{
   // A method to passs the username and password to firebase and make a new user account
   async componentWillMount(){
     const currentUser = await Firebase.auth().currentUser;
-    const snapshot = await Firebase.database().ref('/users/' + currentUser.uid+ '/details').once('value');
-    var userName = snapshot.val().fname;
+    const detsnapshot = await Firebase.database().ref('/users/' + currentUser.uid+ '/details').once('value');
+    var userName = detsnapshot.val().fname;
+
+    const prefsnap = await Firebase.database().ref('/users/' + currentUser.uid+ '/details/prefs/tags').once('value');
+    if(!prefsnap){
+      var locs = prefsnap.val().location;
+      var cats = prefsnap.val().category;
+
+      var statelocs = this.state.locations;
+      var statecats = this.state.categories;
+
+      for (var c = 0; c < statecats.length; c++){
+        statecats[c].selected = (cats[statecats[c].id] == 'true');
+      }
+
+      for (var l = 0; l < statelocs.length; l++){
+        statelocs[l].selected = (locs[statelocs[l].id] == 'true');
+      }
+
+      this.setState({locations: statelocs, categories: statecats});
+    }
+
     this.setState({userData: currentUser});
     this.setState({name: userName});
     this.setState({loading: false});
@@ -229,6 +248,7 @@ export default class Preferences extends Component{
           tags: setPreferences,
         };
     var userDatabase = await Firebase.database().ref(userMobilePath);
+    console.log(fireBasePayload);
     userDatabase.set(fireBasePayload);
 
     var payload = {
@@ -255,7 +275,7 @@ export default class Preferences extends Component{
       loading: false
     });
 
-    this.setState({userData: null, locations: buttonsLocationTest, categories: buttonsCatTest, loading: false});
+    this.setState({userData: null, loading: false});
     this.props.navigator.replace({
       component: Town
     });
@@ -387,6 +407,7 @@ export default class Preferences extends Component{
           label = {currLabel}
           icon = {currIcon}
           index = {currIndex}
+          selected = {currSelected}
           onSwitch = {currOnSwitch}
           key = {currId}/>
       );
@@ -421,6 +442,7 @@ export default class Preferences extends Component{
           label = {currLabel}
           icon = {currIcon}
           index = {currIndex}
+          selected = {currSelected}
           onSwitch = {currOnSwitch}
           key = {currId}/>
       );
@@ -468,18 +490,18 @@ export default class Preferences extends Component{
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
 
-  _onPressTownButton() {
-    this.props.navigator.replace({
-      component: Town
-    });
+  async _onPressTownButton() {
+    await this.setPreferences();
+
   }
 
 
 
   // on category checked box
   handleCategoryChange(currIndex){
+
     var currentCategories = this.state.categories;
-    currentCategories[currIndex].selected = ! currentCategories[currIndex].selected
+    currentCategories[currIndex].selected = ! currentCategories[currIndex].selected;
     this.setState({categories: currentCategories});
 //alert("category change!" + currIndex + currentCategories[currIndex].selected);
   }
@@ -487,13 +509,8 @@ export default class Preferences extends Component{
   // on location checked box
   handleHomeLocationChange(currIndex) {
     var currentLocations = this.state.locations;
-    currentLocations[currIndex].selected = ! currentLocations[currIndex].selected
+    currentLocations[currIndex].selected = ! currentLocations[currIndex].selected;
     this.setState({locations: currentLocations});
-}
-  // change true to yes and false to no
-  convertBoolToText(bool) {
-    const text = bool ? 'yes' : 'no';
-    return text;
   }
 
 }

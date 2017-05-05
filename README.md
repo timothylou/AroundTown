@@ -15,7 +15,7 @@ Advisor:
 
 ### Timeline
 
-Below is the timeline for our project (last updated 3.27.17)
+Below is the timeline for our project (last updated 5.4.17)
 
 ```markdown
 March 19 - 25 -- COMPLETED
