@@ -9,6 +9,7 @@ coord_to_college_map['forbes'] = (40.342034, -74.660744)
 coord_to_college_map['wilson'] = (40.345252, -74.656287)
 coord_to_college_map['butler'] = (40.344492, -74.655873)
 coord_to_college_map['upperclass'] = (40.346086, -74.658714)
+coord_to_college_map['graduate'] = (40.340796, -74.665763)
 
 radius_college_map = {}
 radius_college_map['mathey'] = 120 # meters
@@ -18,3 +19,4 @@ radius_college_map['forbes'] = 120
 radius_college_map['wilson'] = 100
 radius_college_map['butler'] = 100
 radius_college_map['upperclass'] = 200
+radius_college_map['graduate'] = 140
