@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   ToolbarAndroid,
   ActivityIndicator,
+  AsyncStorage,
   ScrollView,
   Image
 } from 'react-native';
@@ -108,7 +109,7 @@ export default class Login extends Component {
         var fname = snapshot.val().fname;
         alert("Welcome back, " + fname+ "!");
       }).catch((error)=> console.log(error.message));
-
+      AsyncStorage.setItem("eventsVoted", ",");
       this.setState({
         loading: false
       });
