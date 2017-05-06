@@ -64,8 +64,8 @@ ATown details
 - Supports login with info via Firebase
 - Adds user to Firebase, with details, and preferences
 - Supports dropping pins, with user inputs, and category
-- Updates pins on Flask App running on Heroku+Gunicorn
-- Backend DB is on PostgreSQL
+- Updates pins on Flask App running on Apache
+- Backend DB is on SQLite
 - Push notifs implemented with OneSignal+Firebase
 
 ```
