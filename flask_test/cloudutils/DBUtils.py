@@ -23,7 +23,7 @@ def DBInitResetTables(conn, cur):
     cur.execute(drop_q3)
     conn.commit()
     create_q = '''CREATE TABLE users(userid varchar(50), firstname varchar(20), 
-    lastname varchar(20), classyear varchar(15), netid varchar(20), email varchar(30))'''
+    lastname varchar(20), classyear varchar(15), netid varchar(20), email varchar(40))'''
     print create_q
     cur.execute(create_q)
     create_q2 = '''CREATE TABLE events(eventid varchar(36), longitude double, latitude double,
@@ -38,7 +38,7 @@ def DBInitResetTables(conn, cur):
 
 def DBAddEvent(conn, cur, lon, lat, title, desc, cat, oid, netid, stime, dur):
     eventid = str(uuid.uuid4())
-    insert_q = '''INSERT INTO events VALUES('%s', %f, %f, '%s', '%s', '%s', '%s', '%s', '%s', %d,0, 0, 1)''' % (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur)
+    insert_q = '''INSERT INTO events VALUES('%s', %f, %f, '%s', '%s', '%s', '%s', '%s', '%s', %d,0, 0, 1)''' % (eventid, lon, lat, title.encode('ascii','replace'), desc.encode('ascii','replace'), cat, oid, netid, stime, dur)
     insert_q_actual = 'INSERT INTO events VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 1)' 
     print insert_q
     cur.execute(insert_q_actual, (eventid, lon, lat, title, desc, cat, oid, netid, stime, dur))
@@ -89,7 +89,7 @@ def DBUpdateVoteStatus(conn, cur, eid, upvotechange, downvotechange):
     conn.commit()
     
 def DBGetAllActiveEvents(conn, cur):
-    attribsToReturn = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration']
+    attribsToReturn = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'upvotes', 'downvotes']
     select_q = 'SELECT ' + ', '.join(attribsToReturn) + ' FROM events WHERE status = 1' 
     #select_q = '''SELECT eventid, latitude, longitude, title, description, category, ownerid, netid, starttime, duration FROM events WHERE status = 1'''
     print select_q
