@@ -189,7 +189,7 @@ export default class Signup extends Component {
             <Picker.Item label = "Graduate" value = "grad" />
           </Picker>
           <TouchableHighlight onPress={this.signup.bind(this)} style={SignupStyle.primaryButton}
-          underlayColor= {"#00695c"}>
+          underlayColor= {Colors.UNDERLAY_GREY}>
             <Text style={SignupStyle.primaryButtonText}>Signup</Text>
           </TouchableHighlight>
           <TouchableHighlight onPress={this.goToLogin.bind(this)} style={SignupStyle.transparentButton}

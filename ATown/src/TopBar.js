@@ -5,13 +5,12 @@ import {
 StyleSheet,
 View,
 Text,
-ToolbarAndroid,
-Image
-} from 'react-native';
+Image,
 
+} from 'react-native';
+import {ToolbarAndroid} from 'react-native-vector-icons/Ionicons';
 import Colors from './Colors';
 
-var Icon = require('react-native-vector-icons/MaterialCommunityIcons');
 
 export default class TopBar extends Component{
 render() {
@@ -19,9 +18,10 @@ render() {
    return (
     <ToolbarAndroid
      title={this.props.title}
-     navIcon = {require('./icons/ic_menu_white_18dp.png')}
      style = {styles.toolbar}
-     titleColor={Colors.WHITE}
+     logoName	= "md-map"
+     navIconName="ios-menu"
+     titleColor={Colors.SECONDARY}
      onIconClicked={this.props.sidebarRef}/>
     );
  }
@@ -29,8 +29,7 @@ render() {
 
 const styles = StyleSheet.create({
   toolbar: {
-    padding: 10,
-
+    padding: 5,
     flexDirection: 'row',
     height: 55,
     backgroundColor: Colors.PRIMARY,

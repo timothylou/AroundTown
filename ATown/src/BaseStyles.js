@@ -32,7 +32,7 @@ var BaseStyle = StyleSheet.create({
     padding: 15
   },
   transparentButtonText: {
-    color: '#0485A9',
+    color: Colors.TRANSP_BUTTON_TEXT,
     textAlign: 'center',
     fontSize: 16
   },
@@ -40,9 +40,10 @@ var BaseStyle = StyleSheet.create({
     margin: 10,
     padding: 15,
     backgroundColor: Colors.PRIMARY,
+    borderRadius: 4,
   },
   primaryButtonText: {
-    color: Colors.WHITE,
+    color: Colors.SECONDARY,
     textAlign: 'center',
     fontSize: 20,
   },
