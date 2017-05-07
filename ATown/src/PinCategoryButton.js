@@ -7,6 +7,7 @@ import {
   Image,
 } from 'react-native';
 import Style from './Style';
+import Colors from './Colors';
 
 import ButtonStyle from './ButtonStyles.js';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,8 +22,8 @@ export default class PinCategoryButton extends Component{
 
             {
               this.props.selected ?
-              <Icon name={this.props.icon} size={35} color="#3F51B5" />
-              : <Icon style = {{opacity: 0.35}} name={this.props.icon} size={32} color="#3F51B5" />
+              <Icon name={this.props.icon} size={35} color={Colors.SECONDARY} />
+              : <Icon style = {{opacity: 0.35}} name={this.props.icon} size={32} color={Colors.LIGHT_GREY}/>
             }
 
         </TouchableWithoutFeedback>

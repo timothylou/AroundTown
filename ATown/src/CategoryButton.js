@@ -19,14 +19,18 @@ export default class CategoryButton extends Component{
   render(){
     return(
       <View style = {ButtonStyle.CategoryButton}>
-        <View style={{height: 40, width: 40, borderRadius: 20, backgroundColor: Colors.PRIMARY_DARK , alignItems: 'center', justifyContent: 'center', elevation: 5}}>
-          <Icon name={this.props.icon} size={25} color={Colors.WHITE} />
+        <View style={{height: 40, width: 40, borderRadius: 20, backgroundColor: this.props.selected ? Colors.PRIMARY: Colors.PRIMARY, alignItems: 'center', justifyContent: 'center', elevation: 5}}>
+          <Icon name={this.props.icon} size={25} color={this.props.selected ? Colors.SECONDARY: Colors.LIGHTER_GREY} />
         </View>
         <Text style = {ButtonStyle.CategoryButtonText}>{this.props.label}</Text>
         <Switch
         onValueChange={this.props.onSwitch}
           style={{marginBottom: 10}}
+          onTintColor={Colors.SECONDARY_DARK}
+          thumbTintColor={Colors.SECONDARY}
+          tintColor={Colors.PRIMARY_LIGHT}
           value={this.props.selected}
+
         />
       </View>
     );

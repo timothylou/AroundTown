@@ -139,7 +139,7 @@ var ButtonStyle = StyleSheet.create({
   ClickButtonText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: 'white'
+    color: Colors.SECONDARY,
   },
 
   CategoryButton: {
@@ -153,7 +153,7 @@ var ButtonStyle = StyleSheet.create({
   CategoryButtonText : {
     flex: 1,
     fontSize: 18,
-    color: Colors.BLACK,
+    color: Colors.LIGHTER_GREY,
     justifyContent: 'center',
     alignContent: 'center',
     paddingLeft: 10,

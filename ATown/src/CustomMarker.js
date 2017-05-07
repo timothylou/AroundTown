@@ -14,15 +14,13 @@ import Colors from './Colors';
 
 import React, {Component} from 'react';
 
-const markerCircle = Colors.ACCENT;
+const markerCircle = Colors.PRIMARY;
 const markerIcon = Colors.WHITE;
 export default class CustomMarker extends Component {
 
 
 
-//   componentWillMount() {
-//         Icon.getImageSource(this.props.marker.icon, 32, '#d32f2f').then((source) => this.setState({ icon: source}));
-// }
+
 
   render(){
 
