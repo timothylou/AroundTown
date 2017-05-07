@@ -1,10 +1,14 @@
 'use strict';
 import React, {
-  StyleSheet
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 import Colors from './Colors';
 
 const checkButtonColor = Colors.PRIMARY_DARK;
+
+let windowWidth = Dimensions.get('window').width;
+let windowHeight = Dimensions.get('window').height;
 
 var ButtonStyle = StyleSheet.create({
   RadioButtonOuter:{
@@ -161,17 +165,16 @@ var ButtonStyle = StyleSheet.create({
   },
 
   UserButton: {
-    flex:1,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    padding: 8,
+    width: 0.9*windowWidth,
+    height: 0.1*windowHeight,
   },
 
   UserButtonText : {
     flex: 1,
     flexDirection: 'row',
     fontSize: 18,
-    color: Colors.BLACK,
+    color: Colors.WHITE,
     justifyContent: 'center',
     alignContent: 'center',
     paddingLeft: 10,
@@ -187,6 +190,12 @@ var ButtonStyle = StyleSheet.create({
     textAlign: 'left',
     paddingTop: 8,
   },
+
+  UserContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  }
 
 });
 
