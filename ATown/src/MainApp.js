@@ -17,6 +17,7 @@ import {
 import Signup from './Signup';
 import Login from './Login';
 import Town from './Town';
+import UserDetails from './UserDetails';
 import Preferences from './Preferences';
 import Colors from './Colors';
 

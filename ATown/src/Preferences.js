@@ -511,8 +511,16 @@ export default class Preferences extends Component{
     }).catch((error)=> console.log("Done with fetching from tim" + error.message));
   }
 
-  async _onPressTownButton() {
-    await this.setPreferences();
+  // async _onPressTownButton() {
+  //   await this.setPreferences();
+  //
+  // }
+
+  _onPressTownButton() {
+    this.setState({userData: null, loading: false});
+    this.props.navigator.replace({
+      component: Town
+    });
 
   }
 
