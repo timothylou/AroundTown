@@ -30,7 +30,7 @@ app.config['OS_AUTH'] = 'Basic NzgwMWI2OTEtMjZmMS00OGViLWFkZTgtNDc3ZWNmZTI0MDEx'
 # Configure valid fields
 app.config['DB_USERS_REQD_FIELDS'] = ['uid', 'fname', 'lname', 'cyear', 'netid', 'email']
 app.config['DB_USERS_VALID_FIELDS'] = ['userid', 'firstname', 'lastname', 'classyear', 'netid', 'email']
-app.config['DB_EVENTS_REQD_FIELDS'] = ['latitude', 'longitude', 'title', 'description', 'cat', 'catname', 'oid', 'netid', 'stime', 'dur']
+app.config['DB_EVENTS_REQD_FIELDS'] = ['latitude', 'longitude', 'title', 'description', 'cat', 'catname', 'catdisplayname', 'oid', 'netid', 'stime', 'dur']
 app.config['DB_EVENTS_VALID_FIELDS'] = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'status']
 app.config['DB_EVENTVOTE_REQD_FIELDS'] = ['eventid', 'upvotechange', 'downvotechange']
 app.config['DB_DELETEEVENT_REQD_FIELDS'] = ['eventid']
@@ -109,6 +109,7 @@ def postnewevent():
     desc = eventdict['description']
     cat = eventdict['cat']
     catname = eventdict['catname']
+    catdisplayname = eventdict['catdisplayname']
     oid = eventdict['oid']
     netid = eventdict['netid']
     stime = eventdict['stime']
@@ -127,7 +128,7 @@ def postnewevent():
             taglist.append(college)
             print college, "appended to taglist"
     # send notification to correct audience
-    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, taglist)
+    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, catdisplayname, taglist)
     return "%s" % (eventid)
 
 @app.route('/post/prefs/', methods=['POST'])

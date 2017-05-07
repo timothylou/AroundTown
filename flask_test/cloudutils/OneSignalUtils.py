@@ -12,10 +12,10 @@ def OSPutTags(appid, auth, deviceid, userid, tagsdict):
     print req.url
     print req.reason, req.status_code
 
-def OSPushNotification(appid, auth, oid, lat, lon, title, tagslist):
+def OSPushNotification(appid, auth, oid, lat, lon, title, catdisplayname, tagslist):
     rurl = 'https://onesignal.com/api/v1/notifications'
     rheaders = {'Content-Type': 'application/json; charset=utf-8', 'Authorization': auth}
-    rdata = {'app_id': appid, 'android_group': 'atown', 'android_group_message': {'en': '$[notif_count] new hoots'}, 'filters': [{'field': 'location', 'lat': str(lat), 'long': str(lon), 'radius': str(200)}], 'contents': {'en': 'Nearby: ' + title}}
+    rdata = {'app_id': appid, 'android_group': 'atown', 'android_group_message': {'en': '$[notif_count] new hoots'}, 'filters': [{'field': 'location', 'lat': str(lat), 'long': str(lon), 'radius': str(200)}], 'contents': {'en': catdisplayname + ' nearby: ' + title}}
     rdata['filters'].append({'field': 'tag', 'key': 'uid', 'relation': '!=', 'value': oid})
     rdata['filters'].append({'field': 'tag', 'key': 'active_status', 'relation': '=', 'value': 'true'})
     for tag in tagslist:
