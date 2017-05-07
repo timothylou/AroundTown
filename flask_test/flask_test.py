@@ -4,10 +4,13 @@ import requests
 from werkzeug.contrib.fixers import ProxyFix
 import json
 import logging
+from geopy.distance import vincenty
 
 import cloudutils.DBUtils as dbu
 import cloudutils.OneSignalUtils as osu
 from config import dbpath
+from config import coord_to_college_map
+from config import radius_college_map
 
 # Create the application.
 app = Flask(__name__)
@@ -27,8 +30,9 @@ app.config['OS_AUTH'] = 'Basic NzgwMWI2OTEtMjZmMS00OGViLWFkZTgtNDc3ZWNmZTI0MDEx'
 # Configure valid fields
 app.config['DB_USERS_REQD_FIELDS'] = ['uid', 'fname', 'lname', 'cyear', 'netid', 'email']
 app.config['DB_USERS_VALID_FIELDS'] = ['userid', 'firstname', 'lastname', 'classyear', 'netid', 'email']
-app.config['DB_EVENTS_REQD_FIELDS'] = ['latitude', 'longitude', 'title', 'description', 'cat', 'oid', 'netid', 'stime', 'dur']
+app.config['DB_EVENTS_REQD_FIELDS'] = ['latitude', 'longitude', 'title', 'description', 'cat', 'catname', 'catdisplayname', 'oid', 'netid', 'stime', 'dur']
 app.config['DB_EVENTS_VALID_FIELDS'] = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'status']
+app.config['DB_EVENTVOTE_REQD_FIELDS'] = ['eventid', 'upvotechange', 'downvotechange']
 app.config['DB_DELETEEVENT_REQD_FIELDS'] = ['eventid']
 app.config['OS_TAGS_REQD_FIELDS'] = ['deviceid', 'userid', 'tags']
 app.config['OS_LOGOUT_REQD_FIELDS'] = ['deviceid']
@@ -104,6 +108,8 @@ def postnewevent():
     title = eventdict['title']
     desc = eventdict['description']
     cat = eventdict['cat']
+    catname = eventdict['catname']
+    catdisplayname = eventdict['catdisplayname']
     oid = eventdict['oid']
     netid = eventdict['netid']
     stime = eventdict['stime']
@@ -114,8 +120,15 @@ def postnewevent():
     # update eventlist
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
+    taglist = [catname]
+    # add res colleges if new event falls under any
+    for college, coord in coord_to_college_map.iteritems():
+        print "dist between", college, "and pin is", vincenty(coord, (lat, lon)).meters
+        if vincenty(coord, (lat, lon)).meters < radius_college_map[college]:
+            taglist.append(college)
+            print college, "appended to taglist"
     # send notification to correct audience
-    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, [cat])
+    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, catdisplayname, taglist)
     return "%s" % (eventid)
 
 @app.route('/post/prefs/', methods=['POST'])
@@ -186,6 +199,18 @@ def geteventinfo():
         return "ERROR: %s not a valid eid" % (eid)
     return res
 
+@app.route('/get/eventvotes/', methods=['GET'])
+def geteventvotes():
+    eid = request.args.get('eid','')
+    if eid == '':
+        return "ERROR: no eventid provided"
+    print "Getting event vote info for eid", eid
+    upvotes = dbu.DBGetEventField(app.config['DB_CONN'], app.config['DB_CUR'], 'upvotes', eid)
+    downvotes = dbu.DBGetEventField(app.config['DB_CONN'], app.config['DB_CUR'], 'downvotes', eid)
+    votedict = {'upvotes': upvotes, 'downvotes': downvotes}
+    print votedict
+    return json.dumps(votedict)
+
 @app.route('/get/allactive/', methods=['GET'])
 def getallactiveevents():
     return app.config['EVENTS_LIST']
@@ -198,7 +223,9 @@ def deleteevent():
         if attrib not in deletedict:
             return 'ERROR: no %s value received!' % (attrib)
     eventid = deletedict['eventid']
+    print "Deleting event with eid %s" % (eventid)
     dbu.DBSetEventStatus(app.config['DB_CONN'], app.config['DB_CUR'], eventid, 0)
+    print "Done"
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
     return "Success"
