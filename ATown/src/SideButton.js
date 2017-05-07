@@ -20,7 +20,7 @@ render() {
         underlayColor = {Colors.UNDERLAY_GREY}
         onPress={this.props.onPress}>
           <View style={{flexDirection: 'row'}}>
-            <Icon name={this.props.icon} size={30} color={Colors.PRIMARY_DARK} />
+            <Icon name={this.props.icon} size={30} color={Colors.SECONDARY} />
             <Text style = {styles.drawerButton}>{this.props.buttonText}</Text>
           </View>
         </TouchableHighlight>
@@ -35,6 +35,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'left',
     textAlignVertical: 'center',
-    color: '#212121',
+    color: Colors.SECONDARY,
   }
 });

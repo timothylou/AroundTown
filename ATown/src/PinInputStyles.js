@@ -10,18 +10,20 @@ var PinInputStyle = StyleSheet.create({
     flex:1,
     justifyContent: 'center',
     alignItems: 'stretch',
-    borderRadius: 5,
+    borderRadius: 10,
   },
 
   topBar:{
     flex:1,
     justifyContent: 'center',
+    borderRadius: 10,
   },
 
   inputContainer:{
     paddingHorizontal: 10,
     flex:9,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.PRIMARY,
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'stretch',
   },
@@ -35,10 +37,10 @@ var PinInputStyle = StyleSheet.create({
 
   topBarText:{
     flex:1,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "400",
-    backgroundColor: Colors.ACCENT,
-    color: Colors.WHITE,
+    backgroundColor: Colors.PRIMARY_DARK,
+    color: Colors.SECONDARY,
     textAlignVertical: 'center',
 
   },
@@ -48,8 +50,8 @@ var PinInputStyle = StyleSheet.create({
     flex:1,
     fontSize: 20,
     fontWeight: "400",
-    backgroundColor: Colors.ACCENT,
-    color: Colors.WHITE,
+    backgroundColor: Colors.PRIMARY_DARK,
+    color: Colors.SECONDARY,
     textAlignVertical: 'center',
 
   },
@@ -85,7 +87,7 @@ var PinInputStyle = StyleSheet.create({
 
   TimerText:{
     fontSize: 15,
-    color: Colors.BLACK,
+    color: Colors.LIGHTER_GREY,
   },
 
   TimerSlider:{},

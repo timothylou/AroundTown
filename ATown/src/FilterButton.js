@@ -22,8 +22,8 @@ export default class FilterButton extends Component{
 
             {
               this.props.selected ?
-              <Icon name={this.props.icon} size={30} color={Colors.PRIMARY_DARK} />
-              : <Icon style = {{opacity: 0.35}} name={this.props.icon} size={28} color={Colors.PRIMARY_DARK} />
+              <Icon name={this.props.icon} size={30} color={Colors.SECONDARY} />
+              : <Icon style = {{opacity: 0.35}} name={this.props.icon} size={28} color={Colors.PRIMARY} />
             }
 
         </TouchableWithoutFeedback>

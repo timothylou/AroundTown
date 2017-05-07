@@ -251,7 +251,7 @@ export default class Town extends Component{
           <SideButton
             icon={"map-marker-radius"}
             onPress = {this._onPressTownButton}
-            buttonText = {'Town View'}
+            buttonText = {'Town'}
           />
           <SideButton
             icon= {"settings"}
@@ -286,7 +286,7 @@ export default class Town extends Component{
           renderNavigationView={() => navigationView}
           ref={'DRAWER'}>
           <TopBar
-            title={'Town View'}
+            title={' Town'}
             navigator={this.props.navigator}
             sidebarRef={()=>this._setDrawer()}/>
           <View style={TownStyle.mapContainer}>
@@ -306,6 +306,7 @@ export default class Town extends Component{
                 height: windowHeight*0.45,
                 width: windowWidth*0.8,
                 borderRadius : 5,
+                backgroundColor: Colors.PRIMARY,
                 elevation: 5,
               }}
               onClosed = {() => {this.setState({markerInputVisible: false}); this._handleCancelMarker();}}
@@ -319,10 +320,11 @@ export default class Town extends Component{
                   <View style={PinInputStyle.TitleInputContainer}>
                     <TextInput
                       selectionColor= {Colors.PRIMARY}
-                      underlineColorAndroid = {Colors.PRIMARY_DARK}
+                      underlineColorAndroid = {Colors.PRIMARY_LIGHT}
                       placeholderTextColor = {Colors.DARK_GREY}
+                      selectionColor = {Colors.SECONDARY_DARK}
                       maxLength = {30}
-                      style={{flex:1}}
+                      style={{flex:1, color: Colors.SECONDARY_DARK}}
 
                       placeholder= {"Enter pin title here!"}
                       onChangeText={(text) => this.setState({inputTitle: text})}
@@ -332,12 +334,15 @@ export default class Town extends Component{
                   <View style={PinInputStyle.DescriptionInputContainer}>
                     <TextInput
                       selectionColor= {Colors.PRIMARY}
-                      underlineColorAndroid = {Colors.PRIMARY_DARK}
+                      underlineColorAndroid = {Colors.PRIMARY_LIGHT}
                       placeholderTextColor = {Colors.DARK_GREY}
+                      selectionColor = {Colors.SECONDARY_DARK}
                       value={this.state.descInput}
+                      style={{color: Colors.SECONDARY_DARK}}
                       placeholder= {"Enter pin description here!"}
                       onChangeText={(text) => this.setState({inputDesc: text})}
                       multiline = {true}
+                      maxLength= {60}
                       numberOfLines = {4}
                       textAlignVertical = "top"
                     />
@@ -356,7 +361,7 @@ export default class Town extends Component{
                       >
                     </Slider>
                   </View>
-                  <Text style = {{color: 'black', flex:0.5}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
+                  <Text style = {{color: Colors.LIGHTER_GREY, flex:0.5}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
                   <View style={PinInputStyle.RadioButtonListContainer}>
                     {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
                   </View>
@@ -367,6 +372,7 @@ export default class Town extends Component{
                         onPress={this._handleNewMarker}
                         label="Submit"
                         color={Colors.PRIMARY}
+
                       />
                     </View>
                   </View>
@@ -392,7 +398,7 @@ export default class Town extends Component{
                     <Text style={PinInputStyle.disptopBarText}> Event information</Text>
                   </View>
                   <View style={PinInputStyle.displayContainer}>
-                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',backgroundColor: Colors.WHITE, padding: 10}}>
+                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',backgroundColor: Colors.SECONDARY, padding: 10}}>
                       <View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.PRIMARY_DARK , alignItems: 'center', justifyContent: 'center', padding:10, elevation: 10}}>
                         <Icon name={this.state.markerInfo.icon} size={30} color={markerIcon} />
                       </View>
@@ -400,20 +406,21 @@ export default class Town extends Component{
                         <Text style={{flex:1, textAlignVertical: 'center', fontSize: 20, fontWeight: '300', color:Colors.BLACK }}>{this.state.markerInfo.title}</Text>
                       </View>
                     </View>
-                    <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10}}>
-                      <Text style={{flex:1, fontSize: 24, fontWeight: '100', color: Colors.DARK_GREY}}>{this.state.markerInfo.description}</Text>
+                    <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10, backgroundColor: Colors.DARKEST_GREY}}>
+                      <Text style={{flex:1, fontSize: 24, fontWeight: '100', color: Colors.LIGHTER_GREY}}>{this.state.markerInfo.description}</Text>
                       <View style={{flex: 1, flexDirection: 'row'}}>
-                        <Text>{this.state.vote}</Text>
                         <View style={ButtonStyle.RadioButtonContainer}>
+                          <Text style={{color: Colors.SECONDARY}}>{this.state.markerInfo.up}</Text>
                           <TouchableWithoutFeedback style={ButtonStyle.CheckButtonTouchable}
                             onPress={() => this._upvotePressed(this.state.markerInfo.eventid)}>
-                            <Icon name={'thumb-up'} size={30} color={Colors.PRIMARY_DARK} />
+                            <Icon name={'thumb-up'} size={30} color={(this.state.vote == '1' ? Colors.SECONDARY: Colors.LIGHT_GREY)} />
                           </TouchableWithoutFeedback>
                         </View>
                         <View style={ButtonStyle.RadioButtonContainer}>
+                          <Text style={{color: Colors.RED}}>{this.state.markerInfo.down}</Text>
                           <TouchableWithoutFeedback style={ButtonStyle.CheckButtonTouchable}
                             onPress={()=> this._downvotePressed(this.state.markerInfo.eventid)}>
-                            <Icon name={'thumb-down'} size={30} color={Colors.PRIMARY_DARK} />
+                            <Icon name={'thumb-down'} size={30} color={(this.state.vote == '-1' ? Colors.RED: Colors.LIGHT_GREY)} />
                           </TouchableWithoutFeedback>
                         </View>
 
@@ -460,6 +467,7 @@ export default class Town extends Component{
                 width: windowWidth*0.9,
                 padding: 5,
                 borderRadius : 3,
+                backgroundColor :Colors.PRIMARY,
                 elevation: 5,
               }}
               onClosed = {() => this._closeAbout()}
@@ -713,6 +721,8 @@ export default class Town extends Component{
                 owner: marker.ownerid,
                 icon: buttonsCatTest[parseInt(marker.category)].icon,
                 eventid: marker.eventid,
+                up: marker.upvotes,
+                down: marker.downvotes,
               },
 
               icon: buttonsCatTest[parseInt(marker.category)].icon,
@@ -780,9 +790,13 @@ export default class Town extends Component{
 
 
   async _upvotePressed(eventId){
+    var upvotes = this.state.markerInfo.up;
+    var downvotes = this.state.markerInfo.down;
+    var marker = this.state.markerInfo;
     if(this.state.vote == '1'){
       AsyncStorage.setItem(eventId,'0');
-      this.setState({vote: '0'});
+      marker.up = (upvotes-1);
+      this.setState({vote: '0', markerInfo: {...marker, up: (upvotes - 1)}});
       var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
         {
           method: 'POST',
@@ -804,7 +818,7 @@ export default class Town extends Component{
 
     if(this.state.vote == '0'){
       AsyncStorage.setItem(eventId,'1');
-      this.setState({vote: '1'});
+      this.setState({vote: '1', markerInfo: {...marker, up: (upvotes + 1)}});
       var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
         {
           method: 'POST',
@@ -826,7 +840,7 @@ export default class Town extends Component{
 
     if(this.state.vote == '-1'){
       AsyncStorage.setItem(eventId,'1');
-      this.setState({vote: '1'});
+      this.setState({vote: '1', markerInfo: {...marker, up: (upvotes+1), down: (downvotes - 1)}});
       var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
         {
           method: 'POST',
@@ -849,9 +863,12 @@ export default class Town extends Component{
   }
 
   async _downvotePressed(eventId){
+    var upvotes = this.state.markerInfo.up;
+    var downvotes = this.state.markerInfo.down;
+    var marker = this.state.markerInfo;
     if(this.state.vote == '-1'){
       AsyncStorage.setItem(eventId,'0');
-      this.setState({vote: '0'});
+      this.setState({vote: '0', markerInfo:{...marker, down: (downvotes-1)}});
       var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
         {
           method: 'POST',
@@ -873,7 +890,7 @@ export default class Town extends Component{
 
     if(this.state.vote == '0'){
       AsyncStorage.setItem(eventId,'-1');
-      this.setState({vote: '-1'});
+      this.setState({vote: '-1', markerInfo:{...marker, down: (downvotes+1)}});
       var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
         {
           method: 'POST',
@@ -895,7 +912,7 @@ export default class Town extends Component{
 
     if(this.state.vote == '1'){
       AsyncStorage.setItem(eventId,'-1');
-      this.setState({vote: '-1'});
+      this.setState({vote: '-1', markerInfo:{...marker, up: (upvotes-1),down:(downvotes+1)}});
       var ret = await fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/vote/',
         {
           method: 'POST',
@@ -1036,6 +1053,7 @@ export default class Town extends Component{
         'description': description,
         'cat': this.state.selectedCategory.toString(),
         'catname': buttonsCatTest[this.state.selectedCategory].id,
+        'catdisplayname': buttonsCatTest[this.state.selectedCategory].label,
         'oid': this.state.user.uid,
         'netid': this.state.netid,
         'stime': new Date().getTime(),

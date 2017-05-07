@@ -24,7 +24,11 @@ export default class CategoryButton extends Component{
         <Switch
         onValueChange={this.props.onSwitch}
           style={{marginBottom: 10}}
+          onTintColor={Colors.SECONDARY_DARK}
+          thumbTintColor={Colors.SECONDARY}
+          tintColor={Colors.PRIMARY_LIGHT}
           value={this.props.selected}
+
         />
       </View>
     );

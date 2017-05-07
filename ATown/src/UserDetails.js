@@ -56,11 +56,7 @@ export default class UserDetails extends Component{
       loading:true,
       userData: null,
       aboutVisible: false,
-      fname: null,
-      lname: null,
-      netid: null,
-      cyear: null,
-
+      name: null,
     };
     this.defaultState = this.state;
     this._setDrawer = this._setDrawer.bind(this);
@@ -70,10 +66,6 @@ export default class UserDetails extends Component{
     this._onPressLogoutButton = this._onPressLogoutButton.bind(this);
     this._openAbout = this._openAbout.bind(this);
     this._closeAbout = this._closeAbout.bind(this);
-    this._editFname = this._editFname.bind(this);
-    this._editLname = this._editLname.bind(this);
-    this._editNetid = this._editNetid.bind(this);
-    this._editCyear = this._editCyear.bind(this);
 
   }
 
@@ -82,17 +74,10 @@ export default class UserDetails extends Component{
   async componentWillMount(){
     const currentUser = await Firebase.auth().currentUser;
     const detsnapshot = await Firebase.database().ref('/users/' + currentUser.uid+ '/details').once('value');
-    var fname = detsnapshot.val().fname;
-    var lname = detsnapshot.val().lname;
-    var netid = detsnapshot.val().netid;
-    var cyear = detsnapshot.val().cyear;
+    var userName = detsnapshot.val().fname;
 
     this.setState({userData: currentUser});
-    this.setState({fname: fname});
-    this.setState({lname: lname});
-    this.setState({netid: netid});
-    this.setState({cyear: cyear});
-
+    this.setState({name: userName});
     this.setState({loading: false});
 
   }
@@ -149,32 +134,34 @@ export default class UserDetails extends Component{
       (<ScrollView>
         <Text style = {Style.genericText}>Update your user details here:</Text>
         <UserDetailButton
+          label = "Email"
+          info = "kz7@princeton.edu"
+          editable = {false}
+          hidden = {false}
+        />
+        <UserDetailButton
           label = "First Name"
-          info = {this.state.fname}
+          info = "karen"
           editable = {true}
           hidden = {false}
-          onPress = {this._editFname}
         />
         <UserDetailButton
           label = "Last Name"
-          info = {this.state.lname}
+          info = "zhang"
           editable = {true}
           hidden = {false}
-          onPress = {this._editLname}
         />
         <UserDetailButton
           label = "Net ID"
-          info = {this.state.netid}
+          info = "kz7"
           editable = {true}
           hidden = {false}
-          onPress = {this._editNetid}
         />
         <UserDetailButton
           label = "Class Year"
-          info = {this.state.cyear}
+          info = "2019"
           editable = {true}
           hidden = {false}
-          onPress = {this._editCyear}
         />
       </ScrollView>);
 
@@ -219,21 +206,6 @@ export default class UserDetails extends Component{
     );
   }
 
-  _editFname() {
-    alert("edit fname");
-  }
-
-  _editLname() {
-    alert("edit lname");
-  }
-
-  _editNetid() {
-    alert("edit netid");
-  }
-
-  _editCyear() {
-    alert("edit cyear");
-  }
 
   _onPressPrefsButton() {
     this.setState({userData: null, loading: false});

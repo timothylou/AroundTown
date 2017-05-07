@@ -5,13 +5,13 @@ import Colors from './Colors';
 var Style = StyleSheet.create({
     rootContainer: {
         flex: 1,
-        backgroundColor: Colors.MAP_COLOR
+        backgroundColor: Colors.PRIMARY
         // flexDirection: 'row'
     },
 
     prefsContainer: {
       flex: 15,
-      backgroundColor: Colors.WHITE,
+      backgroundColor: Colors.PRIMARY_DARK,
     },
 
 
@@ -42,8 +42,8 @@ var Style = StyleSheet.create({
 
     },
     genericText: {
-      fontSize: 22,
-      color: 'black',
+      fontSize: 18,
+      color: Colors.WHITE,
       paddingHorizontal: 20,
       paddingTop: 20,
     },
@@ -80,11 +80,11 @@ var Style = StyleSheet.create({
 
     sideDrawer: {
       flex: 1,
-      backgroundColor: Colors.WHITE,
+      backgroundColor: Colors.PRIMARY,
     },
 
     drawerHeader: {
-      backgroundColor: Colors.PRIMARY,
+      backgroundColor: Colors.PRIMARY_DARK,
       flex: 0.2,
       flexDirection: 'row',
       alignItems: 'center',
@@ -105,7 +105,7 @@ var Style = StyleSheet.create({
     sideButtonContainer: {
       padding: 15,
       flex: 0.8,
-      backgroundColor: Colors.WHITE,
+      backgroundColor: Colors.PRIMARY,
     }
 });
 
