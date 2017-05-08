@@ -50,13 +50,14 @@ Apr 23 - 30 Alpha test -- COMPLETED
 - Implement user location updates
 - Implement location-specific notifications
 
-May 1 - 7 Beta test -- UPCOMING
+May 1 - 7 Beta test -- COMPLETED
 - Users can comment/give feedback to existing pins
 - Add “home base” notification capabilities
 - No more adding features after the end of this week
 
-May 8 - 12 Demo days -- UPCOMING		
+May 10 Demo day -- UPCOMING		
 - Debug and look for ways to clean up
+- Create and prepare presentation
 
 May 14 Submission
 

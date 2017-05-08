@@ -14,6 +14,11 @@ var Style = StyleSheet.create({
       backgroundColor: Colors.PRIMARY_DARK,
     },
 
+    usersContainer: {
+      flex: 1,
+      backgroundColor: Colors.PRIMARY_DARK,
+    },
+
 
     mapContainer: {
       flex:20,
