@@ -15,7 +15,7 @@ var PinInputStyle = StyleSheet.create({
   },
 
   topBar:{
-    flex:1.5,
+    flex:1.3,
     justifyContent: 'center',
     borderRadius: 10,
   },
