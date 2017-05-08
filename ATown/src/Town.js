@@ -300,6 +300,10 @@ export default class Town extends Component{
             />
             <Modal
               animationType = {'slide'}
+              backdropPressToClose = {false}
+              swipeToClose = {true}
+              swipeThreshold = {10}
+              backButtonClose = {true}
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
@@ -324,7 +328,7 @@ export default class Town extends Component{
                       placeholderTextColor = {Colors.DARK_GREY}
                       selectionColor = {Colors.SECONDARY_DARK}
                       maxLength = {30}
-                      style={{flex:1, color: Colors.SECONDARY_DARK}}
+                      style={{flex:1, color: Colors.WHITE}}
 
                       placeholder= {"Enter pin title here!"}
                       onChangeText={(text) => this.setState({inputTitle: text})}
@@ -338,7 +342,7 @@ export default class Town extends Component{
                       placeholderTextColor = {Colors.DARK_GREY}
                       selectionColor = {Colors.SECONDARY_DARK}
                       value={this.state.descInput}
-                      style={{color: Colors.SECONDARY_DARK}}
+                      style={{color: Colors.WHITE}}
                       placeholder= {"Enter pin description here!"}
                       onChangeText={(text) => this.setState({inputDesc: text})}
                       multiline = {true}
@@ -351,8 +355,9 @@ export default class Town extends Component{
                   <View style={PinInputStyle.TimerBarContainer}>
                     <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
                     <Slider
-                      maximumTrackTintColor={Colors.PRIMARY_DARK}
-                      thumbTintColor = {Colors.PRIMARY_DARK}
+                      maximumTrackTintColor={Colors.SECONDARY}
+                      thumbTintColor = {Colors.SECONDARY}
+                      minimumTrackTintColor={Colors.SECONDARY_DARK}
                       maximumValue={180}
                       minimumValue={0}
                       onValueChange={(time)=> this.setState({timer: time})}
@@ -380,6 +385,7 @@ export default class Town extends Component{
               </KeyboardAwareScrollView>
             </Modal>
             <Modal
+              backButtonClose = {true}
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
