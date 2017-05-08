@@ -307,7 +307,7 @@ export default class Town extends Component{
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: windowHeight*0.45,
+                height: windowHeight*0.55,
                 width: windowWidth*0.8,
                 borderRadius : 5,
                 backgroundColor: Colors.PRIMARY,
@@ -389,7 +389,7 @@ export default class Town extends Component{
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: windowHeight*0.4,
+                height: windowHeight*0.55,
                 width: windowWidth*0.8,
                 borderRadius : 10,
                 elevation: 5,
@@ -400,20 +400,18 @@ export default class Town extends Component{
               >
 
                 <View style={PinInputStyle.MainContainer}>
-                  <View style={PinInputStyle.topBar}>
-                    <Text style={PinInputStyle.disptopBarText}> Event information</Text>
-                  </View>
+
                   <View style={PinInputStyle.displayContainer}>
-                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',backgroundColor: Colors.SECONDARY, padding: 10}}>
-                      <View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.PRIMARY_DARK , alignItems: 'center', justifyContent: 'center', padding:10, elevation: 10}}>
-                        <Icon name={this.state.markerInfo.icon} size={30} color={markerIcon} />
+                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',backgroundColor: Colors.SECONDARY_DARK, padding: 10}}>
+                      <View style={{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.PRIMARY, alignItems: 'center', justifyContent: 'center', padding:10, elevation: 10}}>
+                        <Icon name={this.state.markerInfo.icon} size={30} color={Colors.WHITE} />
                       </View>
                       <View style={{paddingLeft:10, alignItems: 'stretch', justifyContent:'center', flex: 4,}}>
-                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 20, fontWeight: '300', color:Colors.BLACK }}>{this.state.markerInfo.title}</Text>
+                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 25, fontWeight: '300', color:Colors.WHITE}}>{this.state.markerInfo.title}</Text>
                       </View>
                     </View>
-                    <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10, backgroundColor: Colors.DARKEST_GREY}}>
-                      <Text style={{flex:1, fontSize: 24, fontWeight: '100', color: Colors.LIGHTER_GREY}}>{this.state.markerInfo.description}</Text>
+                    <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10, backgroundColor: Colors.PRIMARY}}>
+                      <Text style={{flex:1, fontSize: 20, fontWeight: '100', color: Colors.LIGHTER_GREY}}>{this.state.markerInfo.description}</Text>
                       <View style={{flex: 1, flexDirection: 'row'}}>
                         <View style={ButtonStyle.RadioButtonContainer}>
                           <Text style={{color: Colors.SECONDARY}}>{this.state.markerInfo.up}</Text>
@@ -442,7 +440,8 @@ export default class Town extends Component{
                             style={{flex:2}}
                             onPress={() => this._deletePin(this.state.markerInfo.eventid)}
                             label="Delete marker"
-                            color={Colors.PRIMARY}
+                            color={Colors.PRIMARY_LIGHT}
+                            textcolor = {Colors.RED}
                           />
                         </View>)}
                     </View>
