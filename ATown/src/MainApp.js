@@ -19,6 +19,7 @@ import Login from './Login';
 import Town from './Town';
 import UserDetails from './UserDetails';
 import Preferences from './Preferences';
+import Tutorial from './Tutorial'
 import Colors from './Colors';
 
 // Firebase utils

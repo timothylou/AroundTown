@@ -11,10 +11,11 @@ var PinInputStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'stretch',
     borderRadius: 10,
+
   },
 
   topBar:{
-    flex:1,
+    flex:1.5,
     justifyContent: 'center',
     borderRadius: 10,
   },
@@ -30,17 +31,17 @@ var PinInputStyle = StyleSheet.create({
 
   displayContainer:{
     flex:6,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.PRIMARY,
     justifyContent: 'center',
     alignItems: 'stretch',
   },
 
   topBarText:{
     flex:1,
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "400",
-    backgroundColor: Colors.PRIMARY_DARK,
-    color: Colors.SECONDARY,
+    backgroundColor: Colors.SECONDARY_DARK,
+    color: Colors.PRIMARY,
     textAlignVertical: 'center',
 
   },

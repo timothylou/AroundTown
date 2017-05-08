@@ -16,6 +16,7 @@ import TextInputBox from './TextInputBox';
 import Login from './Login';
 import Town from './Town';
 import Preferences from './Preferences';
+import Tutorial from './Tutorial';
 import Firebase from './Firebase';
 import React, {Component} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -104,7 +105,7 @@ export default class Signup extends Component {
                 loading: false
               });
               this.props.navigator.replace({
-                component: Preferences
+                component: Tutorial
               });
             }
           ).catch((error) =>
