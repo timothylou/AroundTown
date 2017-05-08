@@ -113,11 +113,11 @@ var buttonsCatTest = [
   icon: 'food',
   },
 
-  {label: "Broken Facility",
+  {label: "Broken Printer",
   id: "brokenfacility",
   index: 1,
   selected: false,
-  icon: 'vlc',
+  icon: 'printer-alert',
   },
 
   {label: "Recruiting",

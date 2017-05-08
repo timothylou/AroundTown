@@ -36,10 +36,15 @@ export default class CustomMarker extends Component {
         <Icon name={this.props.marker.icon} size={16} color={markerIcon} />
       </View>
         <Callout
-          style={{width: this.props.marker.view.title.length*8}}
+          style={{width: (this.props.marker.view.title.length*10 > 70 ? this.props.marker.view.title.length*10  : 70)}}
           onPress={() => this.props.onCalloutPressed(this.props.marker.modal)}>
           <View >
-            <Text style={{textAlign: 'center'}} >{this.props.marker.view.title}</Text>
+            <Text style={{textAlign: 'center', fontSize: 16,}} >{this.props.marker.view.title}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Icon name="timer" size={12} color={Colors.BLACK}/>
+              <Text style={{fontSize: 10, textAlign: 'left', }}>{" " + (Math.floor(this.props.marker.modal.timeremaining/60) > 0 ? Math.floor(this.props.marker.modal.timeremaining/60).toString() + "h " : "") + (this.props.marker.modal.timeremaining%60).toString()+"m left"}</Text>
+
+            </View>
           </View>
         </Callout>
       </Marker>

@@ -61,11 +61,11 @@ var buttonsCatTest = [
   icon: 'food',
 },
 
-  {label: "Broken Facility",
+  {label: "Broken Printer",
   id: "brokenfacility",
   index: 1,
   selected: true,
-  icon: 'vlc',
+  icon: 'printer-alert',
 },
 
   {label: "Recruiting",
@@ -205,7 +205,7 @@ export default class Town extends Component{
         var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
         this.setState({markersList: tempmarkersList});
         console.log("Fetched list of events from backed");
-        // console.log(tempmarkersList);
+        console.log(tempmarkersList);
 
       }).catch( (error)=> console.log("Error while fetching from backend: " + error.message));
 
@@ -307,7 +307,7 @@ export default class Town extends Component{
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: windowHeight*0.55,
+                height: windowHeight*0.60,
                 width: windowWidth*0.8,
                 borderRadius : 5,
                 backgroundColor: Colors.PRIMARY,
@@ -353,20 +353,23 @@ export default class Town extends Component{
                   </View>
 
                   <View style={PinInputStyle.TimerBarContainer}>
-                    <Text style = {PinInputStyle.TimerText}>{Math.floor(this.state.timer/60).toString()+ " hrs " + (this.state.timer%60).toString()+"mins"}</Text>
-                    <Slider
+                  <View style={{flexDirection: 'row'}}>
+                    <Icon name="timer" size={18} color={Colors.WHITE}/>
+                    <Text style={{fontSize: 14, textAlign: 'left', color: Colors.WHITE }}>{" " + (Math.floor(this.state.timer/60) > 0 ? Math.floor(this.state.timer/60).toString() + "h " : "") + (this.state.timer%60).toString() + "m"}</Text>
+                  </View>
+                  <Slider
                       maximumTrackTintColor={Colors.SECONDARY}
                       thumbTintColor = {Colors.SECONDARY}
                       minimumTrackTintColor={Colors.SECONDARY_DARK}
                       maximumValue={180}
-                      minimumValue={0}
+                      minimumValue={10}
                       onValueChange={(time)=> this.setState({timer: time})}
-                      step={1}
+                      step={10}
                       value={this.state.timer}
                       >
                     </Slider>
                   </View>
-                  <Text style = {{color: Colors.LIGHTER_GREY, flex:0.5}}>{"Select a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
+                  <Text style = {{color: Colors.LIGHTER_GREY, flex:0.5}}>{"Pick a Category: " + this._getSelectedLabel(buttonsCatTest)}</Text>
                   <View style={PinInputStyle.RadioButtonListContainer}>
                     {this._renderRadioButtons(buttonsCatTest, this._radioButtonPressed)}
                   </View>
@@ -376,7 +379,8 @@ export default class Town extends Component{
                       <ClickButton
                         onPress={this._handleNewMarker}
                         label="Submit"
-                        color={Colors.PRIMARY}
+                        color={Colors.PRIMARY_LIGHT}
+                        textcolor={Colors.SECONDARY}
 
                       />
                     </View>
@@ -431,11 +435,11 @@ export default class Town extends Component{
                       </View>
                       {this.state.markerInfo.owner != this.state.user.uid ?
                       (<View>
-                        <Text>{"Dropped by " + this.state.markerInfo.netid}</Text>
+                        <Text style={{color: Colors.LIGHTER_GREY}}>{"Dropped by " + this.state.markerInfo.netid}</Text>
                       </View>) :
                       (
                         <View style={{flex:1}}>
-                          <Text style={{flex:1, color: Colors.DARK_GREY}}>{"Do you want to delete this pin?"}</Text>
+                          <Text style={{flex:1, color: Colors.LIGHTER_GREY}}>{"Do you want to delete this pin?"}</Text>
                           <ClickButton
                             style={{flex:2}}
                             onPress={() => this._deletePin(this.state.markerInfo.eventid)}
@@ -728,6 +732,8 @@ export default class Town extends Component{
                 eventid: marker.eventid,
                 up: marker.upvotes,
                 down: marker.downvotes,
+                timeago: marker.timeago,
+                timeremaining: marker.timeremaining,
               },
 
               icon: buttonsCatTest[parseInt(marker.category)].icon,
