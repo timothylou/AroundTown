@@ -315,7 +315,7 @@ export default class Preferences extends Component{
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
-            icon={"map-marker-radius"}
+            icon={"map"}
             onPress = {this._onPressTownButton}
             buttonText = {'Town View'}
           />
@@ -373,6 +373,7 @@ export default class Preferences extends Component{
 
           <TopBar
             title={'Set Preferences'}
+            logoName = {'settings'}
             navigator={this.props.navigator}
             sidebarRef={()=>this._setDrawer()}/>
 
