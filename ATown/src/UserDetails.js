@@ -151,7 +151,7 @@ export default class UserDetails extends Component{
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
-            icon={"map-marker-radius"}
+            icon={"map"}
             onPress = {this._onPressTownButton}
             buttonText = {'Town View'}
           />
@@ -287,6 +287,7 @@ export default class UserDetails extends Component{
 
           <TopBar
             title={'User Details'}
+            logoName = {'account-settings-variant'}
             navigator={this.props.navigator}
             sidebarRef={()=>this._setDrawer()}/>
 

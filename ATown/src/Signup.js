@@ -105,7 +105,7 @@ export default class Signup extends Component {
                 loading: false
               });
               this.props.navigator.replace({
-                component: Tutorial
+                component: Preferences
               });
             }
           ).catch((error) =>
