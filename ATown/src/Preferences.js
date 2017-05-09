@@ -44,6 +44,7 @@ import Style from './Style'
 import OneSignal from 'react-native-onesignal';
 import Modal from 'react-native-modalbox';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // defaultState
 var buttonsLocationTest = [
@@ -284,6 +285,8 @@ export default class Preferences extends Component{
 
     console.log("Done with posting to tim");
 
+    alert("Your preferences have been set!");
+
     // reset states and navigate to Town screen
     this.setState({
       loading: false
@@ -346,11 +349,25 @@ export default class Preferences extends Component{
 
     const content = this.state.loading ? <ActivityIndicator size="large"/> :
       (<ScrollView>
-        <Text style = {Style.genericText}>Subscribe to one or more home bases:</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{flex:9}}>
+            <Text style = {Style.genericText }>Subscribe to one or more home bases:</Text>
+          </View>
+          <View style={{paddingTop:20, alignSelf:'flex-end', flex:1}}>
+            <Icon name="help-circle" size={20} color={Colors.WHITE}/>
+          </View>
+        </View>
         <View style = {{padding: 20}}>
           {this._renderLocationButtons(this.state.locations, this.handleHomeLocationChange)}
         </View>
-        <Text style = {Style.genericText}>Subscribe to the types of event would you like to receive notifications for:</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{flex:9}}>
+            <Text style = {Style.genericText}>Subscribe to categories of events:</Text>
+          </View>
+          <View style={{paddingTop:20, alignSelf:'flex-end', flex:1}}>
+            <Icon name="help-circle" size={20} color={Colors.WHITE}/>
+          </View>
+        </View>
         <View style = {{padding: 20}}>
           {this._renderCategoryButtons(this.state.categories, this.handleCategoryChange)}
         </View>

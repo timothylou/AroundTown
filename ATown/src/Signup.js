@@ -34,11 +34,10 @@ export default class Signup extends Component {
       fname: '',
       lname: '',
       netid: '',
-      cyear: null,
+      cyear: '2020',
       uid: null
     }
   }
-
 
   // A method to passs the username and password to firebase and make a new user account
   signup() {
@@ -195,7 +194,6 @@ export default class Signup extends Component {
             secure = {false}/>
 
           <TextInputBox
-            title = {" Password"}
             onChangeText={(text) => this.setState({password: text})}
             value={this.state.password}
             placeholder={" Enter a password"}
@@ -233,7 +231,6 @@ export default class Signup extends Component {
             <Picker.Item label = "Graduate" value = "grad" />
           </Picker>
           <TouchableHighlight onPress={this.signup.bind(this)} style={SignupStyle.primaryButton}
-          underlayColor= {Colors.UNDERLAY_GREY}>
             <Text style={SignupStyle.primaryButtonText}>Signup</Text>
           </TouchableHighlight>
           <TouchableHighlight onPress={this.goToLogin.bind(this)} style={SignupStyle.transparentButton}

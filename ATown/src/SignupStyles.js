@@ -38,6 +38,7 @@ var SignupStyle = StyleSheet.create({
   contentView: {
     backgroundColor: background,
     alignItems: 'stretch',
+    justifyContent: 'center',
   },
 
   body: {

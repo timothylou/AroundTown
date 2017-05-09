@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   AsyncStorage,
   ScrollView,
-  Image
+  Image,
+  Dimensions
 } from 'react-native';
 import React, {Component} from 'react';
 import Signup from './Signup';
@@ -23,6 +24,9 @@ import TextInputBox from './TextInputBox';
 import Colors from './Colors';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+let windowWidth = Dimensions.get('window').width
+let windowHeight = Dimensions.get('window').height
 
 export default class Login extends Component {
 
@@ -38,7 +42,10 @@ export default class Login extends Component {
   render() {
     // The content of the screen should be inputs for a username, password and submit button.
     // If we are loading then we display an ActivityIndicator.
-    const content = this.state.loading ? <ActivityIndicator size="large"/> :
+    const content = this.state.loading ?
+    <View style = {{height: windowHeight, width: windowWidth, justifyContent: 'center', alignItems: 'stretch'}}>
+      <ActivityIndicator size="large"/>
+    </View> :
       <View style = {SignupStyle.loginContainer}>
         <Image
           source={require('./icons/hoot2.png')}

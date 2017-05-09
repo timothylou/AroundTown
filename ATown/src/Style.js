@@ -12,7 +12,7 @@ var Style = StyleSheet.create({
     prefsContainer: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'stretch',
       backgroundColor: Colors.PRIMARY_DARK,
     },
 

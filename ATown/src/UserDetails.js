@@ -303,7 +303,7 @@ export default class UserDetails extends Component{
               padding: 5,
               borderRadius : 10,
               elevation: 5,
-              backgroundColor: Colors.PRIMARY,
+              backgroundColor: Colors.PRIMARY
             }}
             onClosed = {() => {this._closeAbout()}}
             isOpen = {this.state.aboutVisible}
@@ -346,7 +346,7 @@ export default class UserDetails extends Component{
   }
 
   _onPressedok() {
-    if (/\S/.test(this.state.input)){
+    if (/\S/.test(this.state.input) && this.state.input){
 
       var uid = this.state.uid;
       var ref = this.state.details[this.state.currentEditidx].ref;
