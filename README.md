@@ -61,7 +61,7 @@ May 10 Demo day -- UPCOMING
 
 May 14 Submission
 
-ATown details
+Owl technical details
 - Supports login with info via Firebase
 - Adds user to Firebase, with details, and preferences
 - Supports dropping pins, with user inputs, and category
