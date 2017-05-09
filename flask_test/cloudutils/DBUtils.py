@@ -95,6 +95,12 @@ def DBUpdateVoteStatus(conn, cur, eid, upvotechange, downvotechange):
     print update_q, eid, upvotechange, downvotechange
     cur.execute(update_q, (upvotechange, downvotechange, eid))
     conn.commit()
+    # if more than certain number of downvotes, remove event
+    if downvotechange > 0:
+        numdownvotes = DBGetEventField(conn, cur, 'downvotes', eid)
+        if numdownvotes >= 2:
+            print "Too many downvotes. Deactivating event."
+            DBSetEventStatus(conn, cur, eid, 0)
     
 def DBGetAllActiveEvents(conn, cur):
     attribsToReturn = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'upvotes', 'downvotes']
@@ -113,7 +119,6 @@ def DBGetAllActiveEvents(conn, cur):
         curreventdict['timeago'] = math.ceil((currt - ev[8])/60000)
         curreventdict['timeremaining'] = math.ceil((ev[8] + ev[9]*60000 - currt)/60000)
         res.append(curreventdict)
-    #print res
     return res
 
 def DBRefreshStatus(conn, cur):
