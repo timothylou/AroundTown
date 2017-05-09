@@ -16,8 +16,8 @@ render() {
    return (
      <View>
       <TouchableHighlight
-        style={{paddingVertical:10}}
-        underlayColor = {Colors.UNDERLAY_GREY}
+        style={{padding:15}}
+        underlayColor = {Colors.PRIMARY_DARK}
         onPress={this.props.onPress}>
           <View style={{flexDirection: 'row'}}>
             <Icon name={this.props.icon} size={30} color={Colors.SECONDARY} />

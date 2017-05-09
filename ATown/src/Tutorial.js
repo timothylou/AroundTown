@@ -71,7 +71,7 @@ var buttonsCatTest1 = [
   icon: 'pencil-off',
   },
 
-  {label: "Movie Screening",
+  {label: "Performance",
   id: "movie",
   index: 4,
   selected: false,
