@@ -36,7 +36,7 @@ export default class CustomMarker extends Component {
         <Icon name={this.props.marker.icon} size={16} color={markerIcon} />
       </View>
         <Callout
-          style={{width: (this.props.marker.view.title.length*10 > 70 ? this.props.marker.view.title.length*10  : 70)}}
+          style={{width: (this.props.marker.view.title.length*10 > 80 ? this.props.marker.view.title.length*10  : 80)}}
           onPress={() => this.props.onCalloutPressed(this.props.marker.modal)}>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
             <View>
