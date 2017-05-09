@@ -1,6 +1,7 @@
 import sqlite3
 import uuid
 from datetime import datetime
+import math
 
 USERS_COLUMNS = ['userid', 'firstname', 'lastname', 'classyear', 'netid', 'email']
 EVENTS_COLUMNS = ['eventid', 'latitude', 'longitude', 'title', 'description', 'category', 'ownerid', 'netid', 'starttime', 'duration', 'upvotes', 'downvotes', 'status']
@@ -54,6 +55,13 @@ def DBAddUser(conn, cur, uid, fname, lname, cyear, netid, email):
     conn.commit()
     return uid
 
+def DBEditUser(conn, cur, uid, fname, lname, cyear, netid, email):
+    update_q = 'UPDATE users SET firstname = ?, lastname = ?, classyear = ?, netid = ?, email = ? WHERE userid = ?'
+    print update_q, netid, email
+    cur.execute(update_q, (fname, lname, cyear, netid, email, uid))
+    conn.commit()
+    return uid
+
 # unused
 def DBGetUserField(conn, cur, fieldname, uid):
     if fieldname in USERS_COLUMNS:
@@ -96,10 +104,14 @@ def DBGetAllActiveEvents(conn, cur):
     cur.execute(select_q)
     rows = cur.fetchall()
     res = []
+    beg = datetime.utcfromtimestamp(0)
+    currt = (datetime.utcnow()-beg).total_seconds()*1000
     for ev in rows:
         curreventdict = {}
         for i in range(len(attribsToReturn)):
             curreventdict[attribsToReturn[i]] = ev[i]
+        curreventdict['timeago'] = math.ceil((currt - ev[8])/60000)
+        curreventdict['timeremaining'] = math.ceil((ev[8] + ev[9]*60000 - currt)/60000)
         res.append(curreventdict)
     #print res
     return res
