@@ -137,7 +137,7 @@ export default class Tutorial extends Component{
                 width: windowWidth*0.3,
               }}
               source = {require('./icons/hootclear.png')} />
-              <Text style={styles.textTitle}>Welcome to Hoot!</Text>
+              <Text style={styles.textTitle}>Welcome to Owl!</Text>
               <Text style={styles.textSubTitle}>Here are some tips and tricks to help you get started.</Text>
               <Text style={styles.textSubTitleBold}>{"Let's get hooting! ›"}</Text>
             </View>

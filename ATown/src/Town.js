@@ -1142,23 +1142,22 @@ export default class Town extends Component{
     this.setState({
       user: userData,
     });
-    navigator.geolocation.getCurrentPosition(
+
+    await navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log("Here!!");
         this.setState({
           currRegion:{
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             latitudeDelta: 0.0022,
             longitudeDelta: 0.0021,
-          },
-
-        });
+          }});
       },
       (error) => {alert("Please turn on your location!")},
     );
     this.setState({regionSet: true});
     console.log(this.state.currRegion)
+
     // var userId = firebaseApp.auth().currentUser.uid;
 
     // alert(JSON.stringify(this.state.user));
