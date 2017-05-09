@@ -110,7 +110,7 @@ var Style = StyleSheet.create({
     },
 
     sideButtonContainer: {
-      padding: 15,
+      paddingVertical: 15,
       flex: 0.8,
       backgroundColor: Colors.PRIMARY,
     }

@@ -82,7 +82,7 @@ var buttonsCatTest = [
   icon: 'pencil-off',
 },
 
-  {label: "Movie Screening",
+  {label: "Performance",
   id: "movie",
   index: 4,
   selected: true,
@@ -225,7 +225,7 @@ export default class Town extends Component{
             regionSet: true,
           });
         },
-        (error) => {alert(error.message)},
+        (error) => {},
       );
     }, 60000);
 
@@ -1142,9 +1142,9 @@ export default class Town extends Component{
     this.setState({
       user: userData,
     });
-
-    await navigator.geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition(
       (position) => {
+        console.log("Here!!");
         this.setState({
           currRegion:{
             latitude: position.coords.latitude,
@@ -1153,13 +1153,12 @@ export default class Town extends Component{
             longitudeDelta: 0.0021,
           },
 
-          regionSet: true,
         });
       },
-      (error) => {alert(error.message)},
+      (error) => {alert("Please turn on your location!")},
     );
-
-
+    this.setState({regionSet: true});
+    console.log(this.state.currRegion)
     // var userId = firebaseApp.auth().currentUser.uid;
 
     // alert(JSON.stringify(this.state.user));
