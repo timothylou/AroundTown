@@ -92,7 +92,25 @@ def postnewuser():
     if not app.config['DB_INIT']:
         dbinit()
     dbu.DBAddUser(app.config['DB_CONN'], app.config['DB_CUR'], uid, fname, lname, cyear, netid, email)
-    return "%s" % (uid)
+    return "Success"
+
+@app.route('/edit/existinguser/', methods=['POST'])
+def editexistinguser():
+    postedjson = request.data
+    usrdict = json.loads(postedjson)
+    for attrib in app.config['DB_USERS_REQD_FIELDS']:
+        if attrib not in usrdict:
+            return 'ERROR: no %s value received' % (attrib)
+    uid = usrdict['uid']
+    fname = usrdict['fname']
+    lname = usrdict['lname']
+    cyear = usrdict['cyear']
+    netid = usrdict['netid']
+    email = usrdict['email']
+    if not app.config['DB_INIT']:
+        dbinit()
+    dbu.DBEditUser(app.config['DB_CONN'], app.config['DB_CUR'], uid, fname, lname, cyear, netid, email)
+    return "Success"
 
 @app.route('/post/newevent/', methods=['POST'])
 def postnewevent():
@@ -128,7 +146,7 @@ def postnewevent():
             taglist.append(college)
             print college, "appended to taglist"
     # send notification to correct audience
-    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, catdisplayname, taglist)
+    osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, catdisplayname, dur, taglist)
     return "%s" % (eventid)
 
 @app.route('/post/prefs/', methods=['POST'])
