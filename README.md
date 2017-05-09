@@ -1,6 +1,6 @@
 ## Welcome to AroundTown -- A Princeton COS333 Project
 
-Hoot (originally AroundTown) is a mobile app for Princeton students that integrates all live event information, crowdsourced from users who drop “pins," onto a single campus map. Using location services and push notifications, only potentially interested people will get notifications about a certain event, freeing others from annoying emails or alerts and making sure you never miss out.
+Owl (originally AroundTown) is a mobile app for Princeton students that integrates all live event information, crowdsourced from users who drop “pins," onto a single campus map. Using location services and push notifications, only potentially interested people will get notifications about a certain event, freeing others from annoying emails or alerts and making sure you never miss out.
 
 Project Members:    
 * Hrishikesh Khandeparkar         hrk@princeton.edu
@@ -71,4 +71,4 @@ ATown details
 
 ```
 
-WARNING: The node_modules arent uploaded to the git, so dont forget to npm install. If react-native-maps is being buggy use locally copied react-native-maps package (update messes up rnpm linking).
+WARNING: The node_modules aren't uploaded to the git, so don't forget to npm install. If react-native-maps is being buggy, use locally copied react-native-maps package (update messes up rnpm linking).
