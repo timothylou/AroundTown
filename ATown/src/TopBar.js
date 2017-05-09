@@ -8,7 +8,7 @@ Text,
 Image,
 
 } from 'react-native';
-import {ToolbarAndroid} from 'react-native-vector-icons/Ionicons';
+import {ToolbarAndroid} from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from './Colors';
 
 
@@ -19,8 +19,8 @@ render() {
     <ToolbarAndroid
      title={this.props.title}
      style = {styles.toolbar}
-     logoName	= "md-map"
-     navIconName="ios-menu"
+     logoName	= {this.props.logoName}
+     navIconName="menu"
      titleColor={Colors.SECONDARY}
      onIconClicked={this.props.sidebarRef}/>
     );

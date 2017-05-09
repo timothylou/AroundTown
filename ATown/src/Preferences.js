@@ -134,7 +134,7 @@ var buttonsCatTest = [
   icon: 'pencil-off',
   },
 
-  {label: "Movie Screening",
+  {label: "Performance",
   id: "movie",
   index: 4,
   selected: false,
@@ -284,8 +284,6 @@ export default class Preferences extends Component{
 
     console.log("Done with posting to tim");
 
-    alert("Your preferences have been set!");
-
     // reset states and navigate to Town screen
     this.setState({
       loading: false
@@ -315,7 +313,7 @@ export default class Preferences extends Component{
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
-            icon={"map-marker-radius"}
+            icon={"map"}
             onPress = {this._onPressTownButton}
             buttonText = {'Town View'}
           />
@@ -373,6 +371,7 @@ export default class Preferences extends Component{
 
           <TopBar
             title={'Set Preferences'}
+            logoName = {'settings'}
             navigator={this.props.navigator}
             sidebarRef={()=>this._setDrawer()}/>
 
@@ -388,6 +387,7 @@ export default class Preferences extends Component{
               padding: 5,
               borderRadius : 10,
               elevation: 5,
+              backgroundColor: Colors.PRIMARY,
             }}
             onClosed = {() => this._closeAbout()}
             isOpen = {this.state.aboutVisible}

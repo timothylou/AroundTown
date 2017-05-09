@@ -151,7 +151,7 @@ export default class UserDetails extends Component{
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
-            icon={"map-marker-radius"}
+            icon={"map"}
             onPress = {this._onPressTownButton}
             buttonText = {'Town View'}
           />
@@ -287,6 +287,7 @@ export default class UserDetails extends Component{
 
           <TopBar
             title={'User Details'}
+            logoName = {'account-settings-variant'}
             navigator={this.props.navigator}
             sidebarRef={()=>this._setDrawer()}/>
 
@@ -302,6 +303,7 @@ export default class UserDetails extends Component{
               padding: 5,
               borderRadius : 10,
               elevation: 5,
+              backgroundColor: Colors.PRIMARY,
             }}
             onClosed = {() => {this._closeAbout()}}
             isOpen = {this.state.aboutVisible}
@@ -344,29 +346,34 @@ export default class UserDetails extends Component{
   }
 
   _onPressedok() {
-    var uid = this.state.uid;
-    var ref = this.state.details[this.state.currentEditidx].ref;
-    Firebase.database().ref('/users/' + uid + '/details/'+ref).set(this.state.input).catch( (error)=> alert(error.message));
-    //
-    // fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newuser/', {
-    //     method: 'POST',
-    //     headers: {
-    //     },
-    //     body: JSON.stringify({
-    //       fname: this.state.fname,
-    //       lname: this.state.lname,
-    //       cyear: this.state.cyear,
-    //       netid: this.state.netid,
-    //     })
-    //   }).then().catch( (error)=> console.log("Done with fetching from tim       " + error.message));
-    console.log("Done with fetching from tim");
-    var currDetails = this.state.details;
-    currDetails[this.state.currentEditidx].value = this.state.input;
-    if (this.state.currentEditidx == 1)
-    {
-      this.setState({name: this.state.input});
+    if (/\S/.test(this.state.input)){
+
+      var uid = this.state.uid;
+      var ref = this.state.details[this.state.currentEditidx].ref;
+      Firebase.database().ref('/users/' + uid + '/details/'+ref).set(this.state.input).catch( (error)=> alert(error.message));
+      //
+      // fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/newuser/', {
+      //     method: 'POST',
+      //     headers: {
+      //     },
+      //     body: JSON.stringify({
+      //       fname: this.state.fname,
+      //       lname: this.state.lname,
+      //       cyear: this.state.cyear,
+      //       netid: this.state.netid,
+      //     })
+      //   }).then().catch( (error)=> console.log("Done with fetching from tim       " + error.message));
+      console.log("Done with fetching from tim");
+      var currDetails = this.state.details;
+      currDetails[this.state.currentEditidx].value = this.state.input;
+      if (this.state.currentEditidx == 1)
+      {
+        this.setState({name: this.state.input});
+      }
+      this.setState({details: currDetails});
     }
-    this.setState({editModalVisible: false, details: currDetails});
+
+    this.setState({editModalVisible: false, input: null});
 
   }
 

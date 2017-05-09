@@ -44,7 +44,7 @@ export default class Login extends Component {
           source={require('./icons/hoot2.png')}
           style={SignupStyle.logo}
         />
-        <Text style={SignupStyle.logoFont}>Hoot</Text>
+        <Text style={SignupStyle.logoFont}>Owl</Text>
         <TextInputBox
           title = {" Email"}
           onChangeText={(text) => this.setState({email: text})}

@@ -39,6 +39,7 @@ export default class Signup extends Component {
     }
   }
 
+
   // A method to passs the username and password to firebase and make a new user account
   signup() {
     this.setState({
@@ -67,6 +68,32 @@ export default class Signup extends Component {
             uid: userData.uid
 
           }).catch( (error)=> console.log("Done with fetching from Firebase        " + error.message));
+          var setPreferences = {
+            "category" : {
+              "brokenfacility" : "false",
+              "busy" : "false",
+              "firesafety" : "false",
+              "freefood" : "false",
+              "movie" : "false",
+              "recruiting" : "false",
+              "studybreak" : "false"
+            },
+            "location" : {
+              "butler" : "false",
+              "forbes" : "false",
+              "mathey" : "false",
+              "rocky" : "false",
+              "whitman" : "false",
+              "wilson" : "false"
+            }
+          };
+          var fireBasePayload = {
+            userid: userData.uid,
+            // deviceid: this.props.deviceInfo.userId,
+            tags: setPreferences,
+          };
+
+          Firebase.database().ref(userMobilePath +"/prefs").set(fireBasePayload);
 
           console.log("done with firebase");
 
@@ -88,6 +115,22 @@ export default class Signup extends Component {
                 // uid: '4m8124kOXAcN5qCpFYY9dtHIrpH2'
               })
             }).then().catch( (error)=> console.log("Done with fetching from tim       " + error.message));
+
+
+          var payload = {
+            userid: userData.uid,
+            deviceid: this.props.deviceInfo.userId,
+            tags: setPreferences,
+          };
+          console.log("done with firebase");
+
+
+          fetch('http://ec2-54-167-219-88.compute-1.amazonaws.com/post/prefs/', {
+            method: 'POST',
+            headers: {
+                      },
+              body: JSON.stringify(payload),
+          }).then().catch( (error)=> console.log("BACKEND POST ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " + error.message));
           console.log("Done with fetching from tim");
 
           alert('Your account was created!');
@@ -105,7 +148,7 @@ export default class Signup extends Component {
                 loading: false
               });
               this.props.navigator.replace({
-                component: Tutorial
+                component: Preferences
               });
             }
           ).catch((error) =>

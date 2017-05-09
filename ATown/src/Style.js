@@ -10,7 +10,9 @@ var Style = StyleSheet.create({
     },
 
     prefsContainer: {
-      flex: 15,
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
       backgroundColor: Colors.PRIMARY_DARK,
     },
 
@@ -108,7 +110,7 @@ var Style = StyleSheet.create({
     },
 
     sideButtonContainer: {
-      padding: 15,
+      paddingVertical: 15,
       flex: 0.8,
       backgroundColor: Colors.PRIMARY,
     }

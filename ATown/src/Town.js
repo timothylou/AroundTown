@@ -82,7 +82,7 @@ var buttonsCatTest = [
   icon: 'pencil-off',
 },
 
-  {label: "Movie Screening",
+  {label: "Performance",
   id: "movie",
   index: 4,
   selected: true,
@@ -225,7 +225,7 @@ export default class Town extends Component{
             regionSet: true,
           });
         },
-        (error) => {alert(error.message)},
+        (error) => {},
       );
     }, 60000);
 
@@ -249,7 +249,7 @@ export default class Town extends Component{
         </View>
         <View style = {Style.sideButtonContainer}>
           <SideButton
-            icon={"map-marker-radius"}
+            icon={"map"}
             onPress = {this._onPressTownButton}
             buttonText = {'Town'}
           />
@@ -287,6 +287,7 @@ export default class Town extends Component{
           ref={'DRAWER'}>
           <TopBar
             title={' Town'}
+            logoName = {'map'}
             navigator={this.props.navigator}
             sidebarRef={()=>this._setDrawer()}/>
           <View style={TownStyle.mapContainer}>
@@ -393,7 +394,7 @@ export default class Town extends Component{
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
-                height: windowHeight*0.55,
+                height: windowHeight*0.5,
                 width: windowWidth*0.8,
                 borderRadius : 10,
                 elevation: 5,
@@ -414,8 +415,12 @@ export default class Town extends Component{
                         <Text style={{flex:1, textAlignVertical: 'center', fontSize: 25, fontWeight: '300', color:Colors.WHITE}}>{this.state.markerInfo.title}</Text>
                       </View>
                     </View>
-                    <View style={{padding: 10, flex:3, alignItems: 'stretch', justifyContent: 'center', padding: 10, backgroundColor: Colors.PRIMARY}}>
+                    <View style={{padding: 10, flex:4, alignItems: 'stretch', justifyContent: 'center', padding: 10, backgroundColor: Colors.PRIMARY}}>
                       <Text style={{flex:1, fontSize: 20, fontWeight: '100', color: Colors.LIGHTER_GREY}}>{this.state.markerInfo.description}</Text>
+                      <View style={{flexDirection: 'row', justifyContent: 'flex-start', flex:1, alignItems: 'center'}}>
+                        <Icon name="timer" size={20} color={Colors.WHITE}/>
+                        <Text style={{fontSize: 18, textAlign: 'left', color: Colors.WHITE}} >{" " + (Math.floor(this.state.markerInfo.timeremaining/60) > 0 ? Math.floor(this.state.markerInfo.timeremaining/60).toString() + "h " : "") + (this.state.markerInfo.timeremaining%60).toString()+"m left"}</Text>
+                      </View>
                       <View style={{flex: 1, flexDirection: 'row'}}>
                         <View style={ButtonStyle.RadioButtonContainer}>
                           <Text style={{color: Colors.SECONDARY}}>{this.state.markerInfo.up}</Text>
@@ -431,8 +436,8 @@ export default class Town extends Component{
                             <Icon name={'thumb-down'} size={30} color={(this.state.vote == '-1' ? Colors.RED: Colors.LIGHT_GREY)} />
                           </TouchableWithoutFeedback>
                         </View>
-
                       </View>
+
                       {this.state.markerInfo.owner != this.state.user.uid ?
                       (<View>
                         <Text style={{color: Colors.LIGHTER_GREY}}>{"Dropped by " + this.state.markerInfo.netid}</Text>
@@ -1137,9 +1142,9 @@ export default class Town extends Component{
     this.setState({
       user: userData,
     });
-
-    await navigator.geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition(
       (position) => {
+        console.log("Here!!");
         this.setState({
           currRegion:{
             latitude: position.coords.latitude,
@@ -1148,13 +1153,12 @@ export default class Town extends Component{
             longitudeDelta: 0.0021,
           },
 
-          regionSet: true,
         });
       },
-      (error) => {alert(error.message)},
+      (error) => {alert("Please turn on your location!")},
     );
-
-
+    this.setState({regionSet: true});
+    console.log(this.state.currRegion)
     // var userId = firebaseApp.auth().currentUser.uid;
 
     // alert(JSON.stringify(this.state.user));
