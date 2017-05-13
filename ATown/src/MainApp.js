@@ -1,5 +1,6 @@
 'use strict';
 
+// Generic Components
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -13,26 +14,26 @@ import {
   StatusBar,
 } from 'react-native';
 
+// Custom Component
+import TitleBar from './components/TitleBar'
+
 // Pages
-import Signup from './Signup';
-import Login from './Login';
-import Town from './Town';
-import UserDetails from './UserDetails';
-import Preferences from './Preferences';
-import Tutorial from './Tutorial'
-import Colors from './Colors';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Town from './pages/Town';
 
 // Firebase utils
-import Firebase from './Firebase';
+import Firebase from './utils/Firebase';
 
-// OneSignal import
+// OneSignal utils
 import OneSignal from 'react-native-onesignal';
 
-// Styles and titles
-import Style from './Style'
-import BaseStyle from './BaseStyles.js';
+// Styles
+import Style from './styles/Style'
+import BaseStyle from './styles/BaseStyles.js';
+import Colors from './styles/Colors';
 
-import TitleBar from './TitleBar'
+
 
 
 /* ------------------------------------------------------------------------- */
@@ -55,7 +56,7 @@ class ATown extends Component {
     this.onIds = this.onIds.bind(this);
   }
 
-  // push notifications
+  // Push notifications
   async componentDidMount() {
     var device = await AsyncStorage.getItem('device');
     this.setState({deviceInfo: JSON.parse(device)})
@@ -84,6 +85,8 @@ class ATown extends Component {
     });
   }
 
+
+  // Don't keep listening for deviceId for notifs if app isnt mounted
   componentWillUnmount() {
    OneSignal.removeEventListener('ids', this.onIds);
    console.log('RemovedEventListener!!');
@@ -104,7 +107,7 @@ class ATown extends Component {
         <View style={{flex:1}}>
           <StatusBar
             backgroundColor={Colors.PRIMARY_DARK}
-            barStyle="light-content"
+            barStyle='light-content'
           />
           <Navigator
             initialRoute={{component: this.state.page}}
@@ -114,7 +117,7 @@ class ATown extends Component {
             }}
             renderScene={(route, navigator) => {
               if(route.component){
-                // Pass the navigator to the component so it can navigate as well.
+                // Pass the navigator+DeviceInfo to the component so it can navigate, and push notifs as well.
                 return React.createElement(route.component, { navigator, deviceInfo,});
               }
           }} />
@@ -126,7 +129,7 @@ class ATown extends Component {
       return(
         <View style={BaseStyle.container}>
           <View style={BaseStyle.body}>
-            <ActivityIndicator size="large"/>
+            <ActivityIndicator size='large'/>
           </View>
         </View>
       );
