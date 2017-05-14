@@ -55,7 +55,7 @@ May 1 - 7 Beta test -- COMPLETED
 - Add “home base” notification capabilities
 - No more adding features after the end of this week
 
-May 10 Demo day -- UPCOMING		
+May 10 Demo day -- COMPLETED	
 - Debug and look for ways to clean up
 - Create and prepare presentation
 
