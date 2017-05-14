@@ -1,6 +1,7 @@
-
+# Path to database
 dbpath = '/home/ubuntu/flask_test/atown.db'
 
+# Center of circle corresponding to each college
 coord_to_college_map = {}
 coord_to_college_map['mathey'] = (40.348004, -74.661272)
 coord_to_college_map['rocky'] = (40.348004, -74.661272)
@@ -11,6 +12,7 @@ coord_to_college_map['butler'] = (40.344492, -74.655873)
 coord_to_college_map['upperclass'] = (40.346086, -74.658714)
 coord_to_college_map['graduate'] = (40.340796, -74.665763)
 
+# Radius of circle corresponding to each college
 radius_college_map = {}
 radius_college_map['mathey'] = 120 # meters
 radius_college_map['rocky'] = 150 

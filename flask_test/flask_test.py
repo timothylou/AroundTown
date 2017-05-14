@@ -1,3 +1,4 @@
+# External module imports
 from flask import Flask, render_template, request, url_for
 from apscheduler.schedulers.background import BackgroundScheduler
 import requests
@@ -6,6 +7,7 @@ import json
 import logging
 from geopy.distance import vincenty
 
+# Internal module imports
 import cloudutils.DBUtils as dbu
 import cloudutils.OneSignalUtils as osu
 from config import dbpath
@@ -46,7 +48,7 @@ def dbinit():
         dbu.DBInitResetTables(app.config['DB_CONN'], app.config['DB_CUR'])
         print "Database initialized."
 
-# Function to run in background
+# Event-refreshing job to run periodically in background
 def refreshRecache(conn, cur):
     dbu.DBRefreshStatus(conn, cur)
     eventlst = dbu.DBGetAllActiveEvents(conn, cur)
@@ -54,32 +56,26 @@ def refreshRecache(conn, cur):
         
 dbinit()
 
-# Schedule event status refresh
+# Schedule event refresh
 logging.basicConfig()
 scheduler = BackgroundScheduler()
 scheduler.start()
 scheduler.add_job(
     refreshRecache, 'interval',
-    seconds=15,
+    seconds=30,
     args=[app.config['DB_CONN'], app.config['DB_CUR']],
     id='refresh_event_statuses',
     replace_existing=True
 )
-        
-# testing function
-@app.route('/')
-@app.route('/indexblah')
-def index():
-    """ Displays the index page accessible at '/'
-    """
-    #return render_template('index.html')
-    return "hi"
 
+# Add new user to database
 @app.route('/post/newuser/', methods=['POST'])
 def postnewuser():
     postedjson = request.data
-    # can use try catch loop for loads
-    usrdict = json.loads(postedjson)
+    try:
+        usrdict = json.loads(postedjson)
+    except:
+        return 'ERROR: could not parse json'
     for attrib in app.config['DB_USERS_REQD_FIELDS']:
         if attrib not in usrdict:
             return 'ERROR: no %s value received' % (attrib)
@@ -94,10 +90,14 @@ def postnewuser():
     dbu.DBAddUser(app.config['DB_CONN'], app.config['DB_CUR'], uid, fname, lname, cyear, netid, email)
     return "Success"
 
+# Edit details of an existing user
 @app.route('/edit/existinguser/', methods=['POST'])
 def editexistinguser():
     postedjson = request.data
-    usrdict = json.loads(postedjson)
+    try:
+        usrdict = json.loads(postedjson)
+    except:
+        return "ERROR: could not parse json"
     for attrib in app.config['DB_USERS_REQD_FIELDS']:
         if attrib not in usrdict:
             return 'ERROR: no %s value received' % (attrib)
@@ -112,12 +112,15 @@ def editexistinguser():
     dbu.DBEditUser(app.config['DB_CONN'], app.config['DB_CUR'], uid, fname, lname, cyear, netid, email)
     return "Success"
 
+# Add new event to the map; send appropriate notifications
 @app.route('/post/newevent/', methods=['POST'])
 def postnewevent():
-    #postedjson = request.get_json()
     print request.url
     postedjson = request.data
-    eventdict = json.loads(postedjson)
+    try:
+        eventdict = json.loads(postedjson)
+    except:
+        return "ERROR: could not parse json"
     for attrib in app.config['DB_EVENTS_REQD_FIELDS']:
         if attrib not in eventdict:
             return 'ERROR: no %s value received' % (attrib)
@@ -134,12 +137,14 @@ def postnewevent():
     dur = eventdict['dur']
     if not app.config['DB_INIT']:
         dbinit()
+    # add event to database
     eventid = dbu.DBAddEvent(app.config['DB_CONN'], app.config['DB_CUR'], lon, lat, title, desc, cat, oid, netid, stime, dur)
-    # update eventlist
+    # get active event list from database
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
+    # update cached eventlist
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
     taglist = [catname]
-    # add res colleges if new event falls under any
+    # add res colleges to taglist if new event falls within any
     for college, coord in coord_to_college_map.iteritems():
         print "dist between", college, "and pin is", vincenty(coord, (lat, lon)).meters
         if vincenty(coord, (lat, lon)).meters < radius_college_map[college]:
@@ -149,15 +154,17 @@ def postnewevent():
     osu.OSPushNotification(app.config['OS_APP_ID'], app.config['OS_AUTH'], oid, lat, lon, title, catdisplayname, dur, taglist)
     return "%s" % (eventid)
 
+# Post preferences to OneSignal
 @app.route('/post/prefs/', methods=['POST'])
 def postprefs():
-    print request.url
     postedjson = request.data
-    infodict = json.loads(postedjson)
+    try:
+        infodict = json.loads(postedjson)
+    except:
+        return "ERROR: could not parse json"
     print postedjson
     for attrib in app.config['OS_TAGS_REQD_FIELDS']:
         if attrib not in infodict:
-            print "errorrrrrrrrr- -------------------------------------------"
             return 'ERROR: no %s value received' % (attrib)
     deviceid = infodict['deviceid']
     userid = infodict['userid']
@@ -171,16 +178,11 @@ def postprefs():
     print "loc prefs", locprefs
     print "cat prefs", catprefs
     locprefs.update(catprefs)
-    print "Posting to ", deviceid, "tags:", tagdict
+    print "Posting to", deviceid, "tags:", tagdict
     osu.OSPutTags(app.config['OS_APP_ID'], app.config['OS_AUTH'], deviceid, userid, locprefs)
     return "Success"
-    
-@app.route('/get/', methods=['GET'])
-def getcall():
-    firstitem = request.args.get('key1','[default]')
-    print firstitem
-    return "you want: " + firstitem
 
+# Get user information of a user given a userid
 @app.route('/get/userinfo/', methods=['GET'])
 def getuserinfo():
     uid = request.args.get('uid','')
@@ -199,6 +201,7 @@ def getuserinfo():
         return "ERROR: %s not a valid uid" % (uid)
     return res
 
+# Get event information given an eventid
 @app.route('/get/eventinfo/', methods=['GET'])
 def geteventinfo():
     eid = request.args.get('eid','')
@@ -217,26 +220,19 @@ def geteventinfo():
         return "ERROR: %s not a valid eid" % (eid)
     return res
 
-@app.route('/get/eventvotes/', methods=['GET'])
-def geteventvotes():
-    eid = request.args.get('eid','')
-    if eid == '':
-        return "ERROR: no eventid provided"
-    print "Getting event vote info for eid", eid
-    upvotes = dbu.DBGetEventField(app.config['DB_CONN'], app.config['DB_CUR'], 'upvotes', eid)
-    downvotes = dbu.DBGetEventField(app.config['DB_CONN'], app.config['DB_CUR'], 'downvotes', eid)
-    votedict = {'upvotes': upvotes, 'downvotes': downvotes}
-    print votedict
-    return json.dumps(votedict)
-
+# Return list of all active events
 @app.route('/get/allactive/', methods=['GET'])
 def getallactiveevents():
     return app.config['EVENTS_LIST']
 
+# Delete event
 @app.route('/post/deleteevent/', methods=['POST'])
 def deleteevent():
     postedjson = request.data
-    deletedict = json.loads(postedjson)
+    try:
+        deletedict = json.loads(postedjson)
+    except:
+        return 'ERROR: could not parse json'
     for attrib in app.config['DB_DELETEEVENT_REQD_FIELDS']:
         if attrib not in deletedict:
             return 'ERROR: no %s value received!' % (attrib)
@@ -247,11 +243,15 @@ def deleteevent():
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
     return "Success"
-    
+
+# Logout user
 @app.route('/logout/', methods=['POST'])
 def loguserout():
     postedjson = request.data
-    logoutdict = json.loads(postedjson)
+    try:
+        logoutdict = json.loads(postedjson)
+    except:
+        return 'ERROR: could not parse json'
     for attrib in app.config['OS_LOGOUT_REQD_FIELDS']:
         if attrib not in logoutdict:
             return 'ERROR: no %s value received' % (attrib)
@@ -260,10 +260,44 @@ def loguserout():
     osu.OSDeactivateStatus(app.config['OS_APP_ID'], app.config['OS_AUTH'], deviceid)
     return "Success"
 
+# Turn on mute notifications mode for user
+@app.route('/muteall/', methods=['POST'])
+def mutenotifs():
+    postedjson = request.data
+    try:
+        mutedict = json.loads(postedjson)
+    except:
+        return 'ERROR: could not parse json'
+    if 'deviceid' not in mutedict:
+        return 'ERROR: no deviceid value received'
+    deviceid = mutedict['deviceid']
+    print "muting notifications for device " + deviceid
+    osu.OSDeactivateStatus(app.config['OS_APP_ID'], app.config['OS_AUTH'], deviceid)
+    return "Success"
+
+# Turn on notifications mode for user
+@app.route('/unmuteall/', methods=['POST'])
+def unmutenotifs():
+    postedjson = request.data
+    try:
+        unmutedict = json.loads(postedjson)
+    except:
+        return 'ERROR: could not parse json'
+    if 'deviceid' not in unmutedict:
+        return 'ERROR: no deviceid value received'
+    deviceid = unmutedict['deviceid']
+    print "unmuting notifications for device " + deviceid
+    osu.OSActivateStatus(app.config['OS_APP_ID'], app.config['OS_AUTH'], deviceid)
+    return "Success"
+
+# Vote for event
 @app.route('/vote/', methods=['POST'])
 def voteevent():
     postedjson = request.data
-    votedict = json.loads(postedjson)
+    try:
+        votedict = json.loads(postedjson)
+    except:
+        return 'ERROR: could not parse json'
     for attrib in app.config['DB_EVENTVOTE_REQD_FIELDS']:
         if attrib not in votedict:
             return 'ERROR: no %s value received' % (attrib)
@@ -271,12 +305,11 @@ def voteevent():
     upvotechange = votedict['upvotechange']
     downvotechange = votedict['downvotechange']
     dbu.DBUpdateVoteStatus(app.config['DB_CONN'], app.config['DB_CUR'], eventid, upvotechange, downvotechange)
-    # is this really necessary? only one thing changes... maybe can just edit that one event?
     eventlst = dbu.DBGetAllActiveEvents(app.config['DB_CONN'], app.config['DB_CUR'])
     app.config['EVENTS_LIST'] = json.dumps(eventlst)
     return "Success"
     
-
+# Configuration adjustments
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == '__main__':
