@@ -20,7 +20,7 @@ render() {
    return (
      <View style={{height : windowHeight*0.07}}>
       <TouchableHighlight
-        style={{paddingHorizontal:8, flex:1, alignItems: 'center', }}
+        style={{paddingHorizontal:10, flex:1, alignItems: 'center', }}
         underlayColor = {Colors.PRIMARY_DARK}
         onPress={this.props.onPress}>
           <View style={{flexDirection: 'row', flex:1, alignItems: 'center'}}>

@@ -24,7 +24,8 @@ render() {
          onChangeText={this.props.onChangeText}
          value={this.props.value}
          placeholder={this.props.placeholder}
-         secureTextEntry = {this.props.secure}/>
+         secureTextEntry = {this.props.secure}
+         maxLength = {this.props.maxLength}/>
       </View>
     );
   }

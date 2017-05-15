@@ -15,6 +15,7 @@ import {
   Button,
   Dimensions,
   Image,
+  AsyncStorage,
 } from 'react-native';
 import React, {Component} from 'react';
 
@@ -29,6 +30,8 @@ import TopBar from '../components/TopBar';
 import SideButton from '../components/SideButton';
 import CategoryButton from '../components/CategoryButton';
 import LocationButton from '../components/LocationButton';
+import SideSwitch from '../components/SideSwitch';
+
 
 // Pages import
 import About from './About';
@@ -37,9 +40,10 @@ import Town from './Town';
 import UserDetails from './UserDetails'
 
 // Style imports
-import BaseStyle from '../styles/BaseStyles.js';
+import BaseStyle from '../styles/BaseStyles';
 import Style from '../styles/Style'
 import Colors from '../styles/Colors';
+import PinInputStyle from '../styles/PinInputStyles';
 
 // Packages imports
 import OneSignal from 'react-native-onesignal';
@@ -113,69 +117,24 @@ var buttonsLocationTest = [
   },
 
 ];
-//
-// var buttonCategories = [
-//   { label: 'Free Food',
-//   id: 'freefood',
-//   index: 0,
-//   selected: false,
-//   icon: 'food',
-//   },
-//
-//   {label: 'Broken Printer',
-//   id: 'brokenfacility',
-//   index: 1,
-//   selected: false,
-//   icon: 'printer-alert',
-//   },
-//
-//   {label: 'Recruiting',
-//   id: 'recruiting',
-//   index: 2,
-//   selected: false,
-//   icon: 'account-multiple',
-//   },
-//
-//   {label: 'Study Break',
-//   id: 'studybreak',
-//   index: 3,
-//   selected: false,
-//   icon: 'pencil-off',
-//   },
-//
-//   {label: 'Performance',
-//   id: 'movie',
-//   index: 4,
-//   selected: false,
-//   icon: 'filmstrip',
-//   },
-//
-//   {label: 'Crowded ',
-//   id: 'busy',
-//   index: 5,
-//   selected: false,
-//   icon: 'do-not-disturb',
-//   },
-//
-//   {label: 'Fire Safety',
-//   id: 'firesafety',
-//   index: 6,
-//   selected: false,
-//   icon: 'fire',
-//   },
-// ];
+
+const helpTextHome = {
+  title: "Home bases",
+  description: "Home bases let you pick locations on campus to always receive notification from.\n\n\
+This means that whenever a pin is dropped at one of your selected Home bases, you will always get a notification, \
+no matter where you are on campus!"
+}
+
+const helpTextCategories = {
+  title: "Category subscriptions",
+  description: "Subscribing to categories lets you always receive notifications for pins dropped across campus.\n\n\
+This means that regardless of where you are on campus, you will always receive notifications from all your category subscriptions!"
+}
+
 
 let windowWidth = Dimensions.get('window').width
 let windowHeight = Dimensions.get('window').height
-// const initialState = {
-//   loading: false,
-//
-//   locations: buttonsLocationTest,
-//
-//   categories: buttonCategories,
-//
-//   userData: null,
-// };
+
 
 // Main App container
 export default class Preferences extends Component{
@@ -189,6 +148,10 @@ export default class Preferences extends Component{
       userData: null,
       aboutVisible: false,
       name: null,
+
+      infoModalVisible: false,
+      infoModalContent: null,
+      mute: false,
     };
     this.defaultState = this.state;
     this.handleCategoryChange = this.handleCategoryChange.bind(this);
@@ -202,6 +165,7 @@ export default class Preferences extends Component{
     this._closeAbout = this._closeAbout.bind(this);
     this._renderCategoryButtons = this._renderCategoryButtons.bind(this);
     this._renderLocationButtons = this._renderLocationButtons.bind(this);
+    this._mute = this._mute.bind(this);
 
   }
 
@@ -234,7 +198,35 @@ export default class Preferences extends Component{
     this.setState({userData: currentUser});
     this.setState({name: userName});
     this.setState({loading: false});
+    AsyncStorage.getItem('mute').then((value) => {
+      if (value != null){
+        var val = (value== "true" ? true: false);
+        this.setState({mute: val });
+        var muteurl = backendUrl;
+        if(val){
+          muteurl = muteurl+ 'muteall/';
+        }
+        else{
+          muteurl = muteurl + 'unmuteall/';
+        }
 
+        console.log(JSON.stringify({deviceid: this.props.deviceInfo.userId}));
+
+        fetch(muteurl,
+          {
+            method: 'POST',
+
+            headers:{
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+
+            body: JSON.stringify({deviceid: this.props.deviceInfo.userId})
+          }
+        ).catch((error) => console.log(error));
+      }
+
+    });
   }
 
   async setPreferences() {
@@ -273,7 +265,7 @@ export default class Preferences extends Component{
           tags: setPreferences,
         };
     var userDatabase = await Firebase.database().ref(userMobilePath);
-    console.log(fireBasePayload);
+    // console.log(fireBasePayload);
     userDatabase.set(fireBasePayload);
 
     var payload = {
@@ -291,7 +283,7 @@ export default class Preferences extends Component{
         body: JSON.stringify(payload),
     }).then().catch( (error)=> console.log('BACKEND POST ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ' + error.message));
 
-    console.log('Done with posting to tim');
+    console.log('Done with posting tobackend');
 
     alert('Your preferences have been set!');
 
@@ -338,15 +330,21 @@ export default class Preferences extends Component{
             onPress = {this._onPressUserButton}
             buttonText = {'User Details'}
           />
-          <SideButton
-            icon= {'logout'}
-            onPress = {this._onPressLogoutButton}
-            buttonText = {'Logout'}
+          <SideSwitch
+            icon= {'bell'}
+            onSwitch = {this._mute}
+            buttonText = {'Mute Notifications'}
+            selected = {this.state.mute}
           />
           <SideButton
             icon= {'information'}
             onPress = {this._openAbout}
             buttonText = {'About Us'}
+          />
+          <SideButton
+            icon= {'logout'}
+            onPress = {this._onPressLogoutButton}
+            buttonText = {'Logout'}
           />
         </View>
       </View>
@@ -358,23 +356,27 @@ export default class Preferences extends Component{
     const content = this.state.loading ? <ActivityIndicator size='large'/> :
       (<ScrollView>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{flex:9}}>
+          <View style={{flex:9, justifyContent: 'center'}}>
             <Text style = {Style.genericText }>Subscribe to one or more home bases:</Text>
           </View>
-          <View style={{paddingTop:20, alignSelf:'flex-end', flex:1}}>
-            <Icon name='help-circle' size={20} color={Colors.WHITE}/>
-          </View>
+          <TouchableWithoutFeedback onPress={() => this.setState({infoModalVisible: true, infoModalContent: helpTextHome})} style={{ alignItems: 'center', justifyContent:'center', flex:2}}>
+            <View style={{ alignItems: 'center', justifyContent:'center', flex:1}}>
+              <Icon name='help-circle' size={20} color={Colors.WHITE}/>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
         <View style = {{padding: 20}}>
           {this._renderLocationButtons(this.state.locations, this.handleHomeLocationChange)}
         </View>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View style={{flex:9}}>
+          <View style={{flex:9, justifyContent: 'center'}}>
             <Text style = {Style.genericText}>Subscribe to categories of events:</Text>
           </View>
-          <View style={{paddingTop:20, alignSelf:'flex-end', flex:1}}>
-            <Icon name='help-circle' size={20} color={Colors.WHITE}/>
-          </View>
+          <TouchableWithoutFeedback onPress={() => this.setState({infoModalVisible: true, infoModalContent: helpTextCategories})} style={{ alignItems: 'center', justifyContent:'center', flex:2}}>
+            <View style={{ alignItems: 'center', justifyContent:'center', flex:1}}>
+              <Icon name='help-circle' size={20} color={Colors.WHITE}/>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
         <View style = {{padding: 20}}>
           {this._renderCategoryButtons(this.state.categories, this.handleCategoryChange)}
@@ -419,6 +421,41 @@ export default class Preferences extends Component{
             >
             <View>
               <About/>
+            </View>
+          </Modal>
+          <Modal
+            animationType = {'slide'}
+            swipeToClose = {true}
+            swipeThreshold = {100}
+            backButtonClose = {true}
+            backdropPressToClose = {true}
+            style={{
+              justifyContent: 'center',
+              alignItems: 'stretch',
+              height: windowHeight*0.60,
+              width: windowWidth*0.8,
+              borderRadius : 5,
+              backgroundColor: Colors.PRIMARY,
+              elevation: 5,
+            }}
+            onClosed = {() => {this.setState({infoModalVisible: false, infoModalContent: null});}}
+            isOpen = {this.state.infoModalVisible}
+          >
+            <View style={PinInputStyle.MainContainer}>
+              <View style={PinInputStyle.topBar}>
+                <View style={{alignItems: 'center', justifyContent: 'center', flex:1, paddingRight: 5}}>
+                  <Icon size={25} color={Colors.PRIMARY_DARK} name="information" />
+                </View>
+                <Text style={PinInputStyle.topBarText}>{this.state.infoModalContent? this.state.infoModalContent.title: ""}</Text>
+                <TouchableWithoutFeedback onPress={() => {this.setState({infoModalVisible: false, infoModalContent: null});}}>
+                  <View style={{alignItems: 'center', justifyContent: 'center', flex:1, paddingRight: 5}}>
+                    <Icon size={20} color={Colors.PRIMARY_DARK} name="close" />
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+              <View style={{flex: 9, paddingTop: 20, }}>
+                <Text style= {{color: Colors.WHITE, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 20, fontSize: 18, textAlign: "center" }}>{this.state.infoModalContent? this.state.infoModalContent.description: ""}</Text>
+              </View>
             </View>
           </Modal>
         </View>
@@ -533,7 +570,7 @@ export default class Preferences extends Component{
       this.props.navigator.replace({
         component: Login
       });
-    }).catch((error)=> console.log('Done with fetching from tim' + error.message));
+    }).catch((error)=> console.log('Done with fetching frombackend' + error.message));
   }
 
   // async _onPressTownButton() {
@@ -556,6 +593,38 @@ export default class Preferences extends Component{
     });
 
   }
+
+  _mute(){
+    var muteurl = backendUrl;
+    if(this.state.mute){
+      muteurl = muteurl+ 'unmuteall/';
+    }
+    else{
+      muteurl = muteurl + 'muteall/';
+    }
+
+    // console.log(JSON.stringify({deviceid: this.props.deviceInfo.userId}));
+
+    // console.log(muteurl);
+    fetch(muteurl,
+      {
+        method: 'POST',
+
+        headers:{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+
+        body: JSON.stringify({deviceid: this.props.deviceInfo.userId})
+      }
+    ).catch((error) => console.log(error));
+    newMute = !this.state.mute;
+
+    AsyncStorage.setItem("mute", newMute.toString());
+
+    this.setState({mute: !this.state.mute});
+  }
+
 
   // on category checked box
   handleCategoryChange(currIndex){

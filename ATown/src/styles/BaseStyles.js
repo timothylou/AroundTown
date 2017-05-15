@@ -22,9 +22,7 @@ var BaseStyle = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    //height: 30,
     fontSize: 8,
-    //width: 200,
     borderWidth: 0
   },
   transparentButton: {

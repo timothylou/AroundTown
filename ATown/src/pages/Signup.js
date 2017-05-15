@@ -12,6 +12,7 @@ import {
   Picker,
   ScrollView,
   KeyboardAvoidingView,
+  Dimensions
 } from 'react-native';
 import React, {Component} from 'react';
 
@@ -25,8 +26,7 @@ import TextInputBox from '../components/TextInputBox';
 import Login from './Login';
 import Town from './Town';
 import Preferences from './Preferences';
-import Tutorial from './Tutorial';
-
+import Verify from './Verify';
 // Styles
 import SignupStyle from '../styles/SignupStyles';
 
@@ -38,6 +38,11 @@ import Colors from '../styles/Colors';
 
 // Backend
 import backendUrl from '../utils/Config';
+
+
+// Screen size
+let windowWidth = Dimensions.get('window').width
+let windowHeight = Dimensions.get('window').height
 
 export default class Signup extends Component {
   constructor(props) {
@@ -57,7 +62,7 @@ export default class Signup extends Component {
   }
 
   // A method to passs the username and password to firebase and make a new user account
-  signup() {
+  async signup() {
     this.setState({
       // When waiting for the firebase server show the loading indicator.
       loading: true
@@ -82,15 +87,20 @@ export default class Signup extends Component {
     }
     else{
       // New user
-      Firebase.auth().createUserWithEmailAndPassword(
-        this.state.email.trim(),
+      await Firebase.auth().createUserWithEmailAndPassword(
+        this.state.email,
         this.state.password).then((userData) => {
-
+          userData.updateProfile({
+            displayName: this.state.fname,
+            email: this.state.email,
+          }).then(() =>{} ).catch(
+            (error) => console.log("User details update error: " + error.message)
+          );
           let userMobilePath = '/users/' + userData.uid + '/details';
 
           // Store user details on Firebase
           Firebase.database().ref(userMobilePath).set({
-            fname: this.state.fname,
+            fname: this.state.fname.trim(),
             lname: this.state.lname,
             cyear: this.state.cyear,
             netid: this.state.netid,
@@ -132,17 +142,13 @@ export default class Signup extends Component {
               headers: {
               },
               body: JSON.stringify({
-                email: this.state.email.trim(),
-                fname: this.state.fname,
+                email: this.state.email,
+                fname: this.state.fname.trim(),
                 lname: this.state.lname,
                 cyear: this.state.cyear,
                 netid: this.state.netid,
                 uid: userData.uid
-                // fname: 'karen',
-                // lname: 'zhang',
-                // cyear: 2019,
-                // netid: 'kz7',
-                // uid: '4m8124kOXAcN5qCpFYY9dtHIrpH2'
+
               })
             }).then().catch( (error)=> console.log('Backend post error: User details failed: ' + error.message));
 
@@ -162,16 +168,15 @@ export default class Signup extends Component {
           }).then().catch( (error)=> console.log('Backend post error: User preferences failed: ' + error.message));
           // console.log('Done with backend');
 
-          alert('Your account was created!');
-
-          Firebase.auth().signInWithEmailAndPassword(this.state.email.trim(), this.state.password
+          Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password
           ).then((userData) =>
             {
               this.setState({
                 loading: false
               });
+              userData.sendEmailVerification().then(() => alert("Your account was created. Welcome to Owl! Check your email to verify yourself!")).catch((error) => console.log("Oops, there was an error " + error.message));
               this.props.navigator.replace({
-                component: Preferences
+                component: Verify
               });
             }
           ).catch((error) =>
@@ -199,24 +204,29 @@ export default class Signup extends Component {
         this.setState({
           loading: false
         });
-        alert('Account creation failed: ' + error.message );
+        alert("Oops, your account wasn't created: " + error.message );
       });
     }
   }
 
   render() {
     // If loading then ActivityIndicator..
-    const content = this.state.loading ? <ActivityIndicator size='large'/> :
+    const content = this.state.loading ?
+      <View style = {{height: windowHeight, width: windowWidth, justifyContent: 'center', alignItems: 'stretch'}}>
+        <ActivityIndicator size='large'/>
+      </View> :
       <View style = {SignupStyle.container}>
           <TextInputBox
             title = {' Email'}
-            onChangeText={(text) => this.setState({email: text})}
+            maxLength = {40}
+            onChangeText={(text) => this.setState({email: text.trim()})}
             value={this.state.email}
             placeholder={' example@princeton.edu'}
             secure = {false}/>
 
           <TextInputBox
             title = {' Password (must be at least 6 characters)'}
+            maxLength={50}
             onChangeText={(text) => this.setState({password: text})}
             value={this.state.password}
             placeholder={' Enter a password'}
@@ -224,6 +234,7 @@ export default class Signup extends Component {
 
           <TextInputBox
             title = {' First Name'}
+            maxLength={20}
             onChangeText={(text) => this.setState({fname: text})}
             value={this.state.fname}
             placeholder={' Your first name'}
@@ -231,14 +242,16 @@ export default class Signup extends Component {
 
           <TextInputBox
             title = {' Last Name'}
-            onChangeText={(text) => this.setState({lname: text})}
+            maxLength={20}
+            onChangeText={(text) => this.setState({lname: text.trim()})}
             value={this.state.lname}
             placeholder={' Your last name'}
             secure = {false}/>
 
           <TextInputBox
             title = {' Net ID'}
-            onChangeText={(text) => this.setState({netid: text})}
+            maxLength ={20}
+            onChangeText={(text) => this.setState({netid: text.trim()})}
             value={this.state.netid}
             placeholder={' Your net ID'}
             secure = {false}/>
