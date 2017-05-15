@@ -52,7 +52,7 @@ var Style = StyleSheet.create({
       fontSize: 18,
       color: Colors.WHITE,
       paddingHorizontal: 20,
-      paddingTop: 20,
+      paddingVertical: 20,
     },
 
     displayContainer: {
@@ -110,7 +110,6 @@ var Style = StyleSheet.create({
     },
 
     sideButtonContainer: {
-      paddingVertical: 15,
       flex: 0.8,
       backgroundColor: Colors.PRIMARY,
     }

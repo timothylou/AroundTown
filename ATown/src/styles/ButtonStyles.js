@@ -150,7 +150,7 @@ var ButtonStyle = StyleSheet.create({
     flex:1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'stretch',
+    alignItems: 'center',
     padding: 8,
   },
 
@@ -160,8 +160,7 @@ var ButtonStyle = StyleSheet.create({
     color: Colors.LIGHTER_GREY,
     justifyContent: 'center',
     alignContent: 'center',
-    paddingLeft: 10,
-    paddingTop: 10,
+    padding: 10,
   },
 
   UserButton: {
@@ -197,22 +196,6 @@ var ButtonStyle = StyleSheet.create({
     alignItems: 'center',
   },
 
-  xButton: {
-    color: "black",
-    padding: 10,
-    flex: 1,
-    width: 50,
-    height: 200,
-    left: windowWidth*0.9,
-  },
-
-  xButtonModal: {
-    // position: "absolute",
-    // top: 50,
-    // right: 50,
-    // width: 50,
-    // height: 50,
-  },
 });
 
 

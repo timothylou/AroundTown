@@ -63,59 +63,6 @@ import buttonCategories from '../utils/ButtonCategories';
 // Backend
 import backendUrl from '../utils/Config';
 
-//
-// const buttonCategories = [
-//   { label: 'Free Food',
-//   id: 'freefood',
-//   index: 0,
-//   selected: true,
-//   icon: 'food',
-// },
-//
-//   {label: 'Broken Printer',
-//   id: 'brokenfacility',
-//   index: 1,
-//   selected: true,
-//   icon: 'printer-alert',
-// },
-//
-//   {label: 'Recruiting',
-//   id: 'recruiting',
-//   index: 2,
-//   selected: true,
-//   icon: 'account-multiple',
-// },
-//
-//   {label: 'Study Break',
-//   id: 'studybreak',
-//   index: 3,
-//   selected: true,
-//   icon: 'pencil-off',
-// },
-//
-//   {label: 'Performance',
-//   id: 'movie',
-//   index: 4,
-//   selected: true,
-//   icon: 'filmstrip',
-// },
-//
-//   {label: 'Crowded',
-//   id: 'busy',
-//   index: 5,
-//   selected: true,
-//   icon: 'do-not-disturb',
-// },
-//
-//   {label: 'Fire Safety',
-//   id: 'firesafety',
-//   index: 6,
-//   selected: true,
-//   icon: 'fire',
-// },
-//
-// ];
-
 const filterTime = 4000;
 const filterDuration = 550;
 
@@ -140,7 +87,7 @@ export default class Town extends Component{
                   checked2:false,
                   markersList: [], // Local list of markers
                   user: '',
-                  name: 'BLAH',
+                  name: '',
                   timer: 60,
                   test: '',
                   netid: '',
@@ -220,7 +167,7 @@ export default class Town extends Component{
 
         var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
         this.setState({markersList: tempmarkersList});
-        console.log('Fetched list of events from backed');
+        console.log('Fetched list of events from backend');
         // console.log(tempmarkersList);
 
       }).catch( (error)=> console.log('Error while fetching from backend: ' + error.message));
@@ -237,21 +184,19 @@ export default class Town extends Component{
               latitudeDelta: 0.0022,
               longitudeDelta: 0.0021,
             },
-
             regionSet: true,
           });
+          // console.log("Set state!" + position.coords.latitude);
         },
-        (error) => {},
+        (error) => {console.log(error.message)},
       );
-    }, 60000);
+    }, 30000);
 
     this.filterTimeout = null;
 
   }
   // Renders the main view
   render() {
-
-    // var xButton = <Button onPress={() => {this.setState({markerInputVisible: false}); this._handleCancelMarker();}} style={[ButtonStyle.xButton, ButtonStyle.xButtonModal]}>X</Button>;
 
     var navigationView = (
       <View style={Style.sideDrawer}>
@@ -327,7 +272,7 @@ export default class Town extends Component{
               swipeToClose = {true}
               swipeThreshold = {150}
               backButtonClose = {true}
-              backdropPressToClose = {false}
+              backdropPressToClose = {true}
               style={{
                 justifyContent: 'center',
                 alignItems: 'stretch',
@@ -440,8 +385,13 @@ export default class Town extends Component{
                         <Icon name={this.state.markerInfo.icon} size={30} color={Colors.WHITE} />
                       </View>
                       <View style={{paddingLeft:10, alignItems: 'stretch', justifyContent:'center', flex: 4,}}>
-                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: 25, fontWeight: '300', color:Colors.WHITE}}>{this.state.markerInfo.title}</Text>
+                        <Text style={{flex:1, textAlignVertical: 'center', fontSize: windowHeight*0.03, fontWeight: '300', color:Colors.WHITE}}>{this.state.markerInfo.title}</Text>
                       </View>
+                      <TouchableWithoutFeedback onPress={() => {this.setState({markerInfoVisbile: false}); this._handleCancelMarker();}}>
+                        <View style={{alignItems: 'center', justifyContent: 'center', flex:0.5, paddingRight: 5}}>
+                          <Icon size={20} color={Colors.PRIMARY_DARK} name="close" />
+                        </View>
+                      </TouchableWithoutFeedback>
                     </View>
                     <View style={{padding: 10, flex:4, alignItems: 'stretch', justifyContent: 'center', padding: 10, backgroundColor: Colors.PRIMARY}}>
                       <Text style={{flex:1, fontSize: 20, fontWeight: '100', color: Colors.LIGHTER_GREY}}>{this.state.markerInfo.description}</Text>
@@ -633,7 +583,7 @@ export default class Town extends Component{
       this.props.navigator.replace({
         component: Login
       });
-    }).catch((error)=> console.log('Done with fetching from tim' + error.message));
+    }).catch((error)=> console.log('Done with fetching frombackend' + error.message));
   }
 
   _onPressTownButton() {
@@ -687,9 +637,7 @@ export default class Town extends Component{
                     ).start()}, filterTime);
     var currentPicked = this.state.filterPicked.slice();
     currentPicked[buttonIdx].selected = ! currentPicked[buttonIdx].selected
-    console.log(' Current filters');
-    // console.log(this.state.filterPicked);
-    // console.log(buttonCategories);
+    // console.log(' Current filters');
 
     this.setState({filterPicked: currentPicked});
 
@@ -997,19 +945,12 @@ export default class Town extends Component{
                     }
                   ).start();
     var vote = '';
-    // await AsyncStorage.getItem(eventid).then((eventVote)=> vote = eventVote).catch((error) => alert(error.message));
-    // console.log('wtf',vote);
-    // if(vote == null){
-    //   vote = '0';
-    // }
-    // this.setState({vote: vote});
-    // AsyncStorage.setItem(eventid, vote);
-    // var votes = '';
-    // // await AsyncStorage.getItem('eventsVoted').then((eventsVoted) => votes = eventsVoted).catch((error) => alert(error.message));
-    // console.log(votes);
-    // votes = votes + eventid + ',';
-    // // AsyncStorage.setItem('eventsVoted',votes);
-    // console.log(votes);
+    await AsyncStorage.getItem(eventid).then((eventVote)=> vote = eventVote).catch((error) => alert(error.message));
+    if(vote == null){
+      vote = '0';
+    }
+    this.setState({vote: vote});
+    AsyncStorage.setItem(eventid, vote);
 
     this.setState({markerInfoVisbile: true,
       markerInfo: markerDescription})
@@ -1026,20 +967,6 @@ export default class Town extends Component{
                     }
                   ).start();
 
-    // await navigator.geolocation.getCurrentPosition(
-    //   (position) => {
-    //     this.setState({
-    //       currRegion:{
-    //         latitude: position.coords.latitude,
-    //         longitude: position.coords.longitude,
-    //         latitudeDelta: 0.0022,
-    //         longitudeDelta: 0.0021,
-    //       }
-    //     });
-    //   },
-    //   (error) => {console.log(error.message)},
-    //   { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 }
-    // );
 
     if (this._getDistanceFromLatLonInKm(this.state.currRegion.latitude,
                                         this.state.currRegion.longitude,
@@ -1111,7 +1038,6 @@ export default class Town extends Component{
         'dur': this.state.timer};
 
       // Add new marker to newMarkersList
-      // eventdict = {'lat': 0.0, 'lon': 1.1, 'title': 'birthday party', 'desc': 'its lit', 'cat': 9, 'oid': uid_tim, 'netid': 'tlou', 'stime': '00:54', 'dur': 60}
       var ret = await fetch(backendUrl+'post/newevent/',
         {
           method: 'POST',
@@ -1125,11 +1051,7 @@ export default class Town extends Component{
         });
 
 
-      // Update state variable markersList
-      // this.setState({markersList: newMarkersList});
 
-      // Update AsyncStorage
-      // await AsyncStorage.setItem('markersList', JSON.stringify(newMarkersList));
       console.log('posted!');
       // Remove modal from view
       this.setState({inputTitle: '', inputDesc: '', selectedCategory: null, timer: 60});
@@ -1149,7 +1071,7 @@ export default class Town extends Component{
 
 
   _mute(){
-    muteurl = backendUrl;
+    var muteurl = backendUrl;
     if(this.state.mute){
       muteurl = muteurl+ 'unmuteall/';
     }
@@ -1157,9 +1079,9 @@ export default class Town extends Component{
       muteurl = muteurl + 'muteall/';
     }
 
-    console.log(JSON.stringify({deviceid: this.props.deviceInfo.userId}));
+    // console.log(JSON.stringify({deviceid: this.props.deviceInfo.userId}));
 
-    console.log(muteurl);
+    // console.log(muteurl);
     fetch(muteurl,
       {
         method: 'POST',
@@ -1180,9 +1102,6 @@ export default class Town extends Component{
   }
   async componentWillMount(){
 
-    // console.log('From Town!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', this.props.deviceInfo);
-    // OneSignal.addEventListener('ids',this.onIds);
-
 
     var fetchedMarkersList = await fetch(backendUrl+'get/allactive', {
       method: 'GET'
@@ -1191,7 +1110,7 @@ export default class Town extends Component{
       if (value != null){
         var val = (value== "true" ? true: false);
         this.setState({mute: val });
-        muteurl = backendUrl;
+        var muteurl = backendUrl;
         if(val){
           muteurl = muteurl+ 'muteall/';
         }
@@ -1220,16 +1139,11 @@ export default class Town extends Component{
     var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
     this.setState({markersList: tempmarkersList});
     // console.log(' ---------------------------fetched Data -------------\n \n \n \n -------------');
-    // await AsyncStorage.getItem('markersList').then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log('VALUE!!');console.log(value)}}).done();
     const userData = await Firebase.auth().currentUser;
     const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
     var userName = snapshot.val().fname;
     var netid = snapshot.val().netid;
-    // var ttext = await fetch(backendUrl+'user/hrishikesh');
 
-    // this.setState({test: ttext});
-    // alert(ttext._bodyText);
-    // alert(userName);
     this.setState({netid: netid});
     this.setState({name: userName});
     this.setState({uid: userData.uid})
@@ -1252,9 +1166,6 @@ export default class Town extends Component{
     this.setState({regionSet: true});
     console.log(this.state.currRegion)
 
-    // var userId = firebaseApp.auth().currentUser.uid;
-
-    // alert(JSON.stringify(this.state.user));
   }
 
   componentWillUnmount() {
@@ -1262,38 +1173,6 @@ export default class Town extends Component{
     clearInterval(this.locTimerId);
 
   }
-
-  //
-  // async componentDidMount(){
-  //   console.log(' ---------------------------starting to fetch -------------\n \n \n \n -------------');
-  //
-  //   var fetchedMarkersList = await fetch(backendUrl+'get/allactive', {
-  //     method: 'GET'
-  //   });
-  //   // console.log(fetchedMarkersList);
-  //   var tempmarkersList = JSON.parse(fetchedMarkersList._bodyText);
-  //   this.setState({markersList: tempmarkersList});
-  //   console.log(' ---------------------------fetched Data -------------\n \n \n \n -------------');
-  //   // await AsyncStorage.getItem('markersList').then((value) => {if(value !== null){this.setState({markersList: JSON.parse(value)}); console.log('VALUE!!');console.log(value)}}).done();
-  //   const userData = await Firebase.auth().currentUser;
-  //   const snapshot = await Firebase.database().ref('/users/' + userData.uid+ '/details').once('value');
-  //   var userName = snapshot.val().fname;
-  //   var netid = snapshot.val().netid;
-  //   // var ttext = await fetch(backendUrl+'user/hrishikesh');
-  //
-  //   // this.setState({test: ttext});
-  //   // alert(ttext._bodyText);
-  //   // alert(userName);
-  //   this.setState({netid: netid});
-  //   this.setState({name: userName});
-  //   this.setState({uid: userData.uid})
-  //   this.setState({
-  //     user: userData,
-  //   });
-  //   // var userId = firebaseApp.auth().currentUser.uid;
-  //
-  //   // alert(JSON.stringify(this.state.user));
-  // }
 }
 
 // Dont forget to register main App!!

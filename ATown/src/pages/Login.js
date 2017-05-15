@@ -27,6 +27,7 @@ import TextInputBox from '../components/TextInputBox';
 import Signup from './Signup';
 import Town from './Town';
 import Preferences from './Preferences';
+import Verify from './Verify';
 
 // Firebase utils
 import Firebase from '../utils/Firebase';
@@ -98,7 +99,7 @@ export default class Login extends Component {
       <KeyboardAwareScrollView style={SignupStyle.containerScrollView}
       contentContainerStyle = {SignupStyle.contentView}
         showsVerticalScrollIndicator = {false}
-        scrollEnabled = {false}
+        scrollEnabled = {true}
         keyboardShouldPersistTaps = "always"
       >
         {content}
@@ -112,7 +113,7 @@ export default class Login extends Component {
       loading: true
     });
     // Log in and display an alert to tell the user what happened.
-    await Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password
+    await Firebase.auth().signInWithEmailAndPassword(this.state.email.trim(), this.state.password
     ).then((userData) => {
       var currUser = userData;
 
@@ -141,15 +142,28 @@ export default class Login extends Component {
         alert('Welcome back, ' + fname+ '!');
       }).catch((error)=> console.log(error.message));
       AsyncStorage.setItem('eventsVoted', ',');
-      this.setState({
-        loading: false
-      });
+
 
 
       // Login was successful so go to Town!
-      this.props.navigator.replace({
-        component: Town
-      });
+      currUser.reload().then();
+      if (currUser.emailVerified){
+        this.setState({
+          loading: false
+        });
+        this.props.navigator.replace({
+          component: Town
+        });
+      }
+      else {
+        this.setState({
+          loading: false
+        });
+        this.props.navigator.replace({
+          component: Verify
+        })
+      }
+
     }).catch((error) =>
     	{
 	      this.setState({

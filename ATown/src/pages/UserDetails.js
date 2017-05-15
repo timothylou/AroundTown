@@ -16,6 +16,7 @@ import {
   Dimensions,
   Image,
   Picker,
+  AsyncStorage,
 } from 'react-native';
 import React, {Component} from 'react';
 
@@ -33,6 +34,7 @@ import LocationButton from '../components/LocationButton';
 import UserDetailButton from '../components/UserDetailButton';
 import TextInputBox from '../components/TextInputBox';
 import ClickButton from '../components/ClickButton';
+import SideSwitch from '../components/SideSwitch';
 
 // Pages import
 import About from './About';
@@ -99,6 +101,8 @@ export default class UserDetails extends Component{
       currentEditidx: null,
       input: null,
       fnameEditVisible: false,
+      currUser: null,
+      mute: false
     };
     this.defaultState = this.state;
     this._setDrawer = this._setDrawer.bind(this);
@@ -113,7 +117,7 @@ export default class UserDetails extends Component{
     this._onPressEdit = this._onPressEdit.bind(this);
 
     this._updateCyear = this._updateCyear.bind(this);
-
+    this._mute = this._mute.bind(this);
   }
 
 
@@ -136,7 +140,36 @@ export default class UserDetails extends Component{
     details[4].value = cyear;
 
 
-    this.setState({loading: false, uid: uid, details: details, name: fname});
+    this.setState({loading: false, uid: uid, details: details, name: fname, currUser: currentUser});
+    AsyncStorage.getItem('mute').then((value) => {
+      if (value != null){
+        var val = (value== "true" ? true: false);
+        this.setState({mute: val });
+        var muteurl = backendUrl;
+        if(val){
+          muteurl = muteurl+ 'muteall/';
+        }
+        else{
+          muteurl = muteurl + 'unmuteall/';
+        }
+
+        console.log(JSON.stringify({deviceid: this.props.deviceInfo.userId}));
+
+        fetch(muteurl,
+          {
+            method: 'POST',
+
+            headers:{
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+
+            body: JSON.stringify({deviceid: this.props.deviceInfo.userId})
+          }
+        ).catch((error) => console.log(error));
+      }
+
+    });
 
   }
 
@@ -171,15 +204,21 @@ export default class UserDetails extends Component{
             onPress = {this._onPressUserButton}
             buttonText = {'User Details'}
           />
-          <SideButton
-            icon= {'logout'}
-            onPress = {this._onPressLogoutButton}
-            buttonText = {'Logout'}
+          <SideSwitch
+            icon= {'bell'}
+            onSwitch = {this._mute}
+            buttonText = {'Mute Notifications'}
+            selected = {this.state.mute}
           />
           <SideButton
             icon= {'information'}
             onPress = {this._openAbout}
             buttonText = {'About Us'}
+          />
+          <SideButton
+            icon= {'logout'}
+            onPress = {this._onPressLogoutButton}
+            buttonText = {'Logout'}
           />
         </View>
       </View>
@@ -357,23 +396,13 @@ export default class UserDetails extends Component{
       var uid = this.state.uid;
       var ref = this.state.details[this.state.currentEditidx].ref;
       Firebase.database().ref('/users/' + uid + '/details/'+ref).set(this.state.input).catch( (error)=> alert(error.message));
-      //
-      // fetch(backendUrl+'post/newuser/', {
-      //     method: 'POST',
-      //     headers: {
-      //     },
-      //     body: JSON.stringify({
-      //       fname: this.state.fname,
-      //       lname: this.state.lname,
-      //       cyear: this.state.cyear,
-      //       netid: this.state.netid,
-      //     })
-      //   }).then().catch( (error)=> console.log('Done with fetching from tim       ' + error.message));
-      console.log('Done with fetching from tim');
+
+      console.log('Done with fetching frombackend');
       var currDetails = this.state.details;
       currDetails[this.state.currentEditidx].value = this.state.input;
       if (this.state.currentEditidx == 1)
       {
+        this.state.currUser.updateProfile({displayName: this.state.input}).then(() => {}).catch((error) => console.log("Firebase user profile update error: " + error.message));
         this.setState({name: this.state.input});
       }
       this.setState({details: currDetails});
@@ -396,6 +425,36 @@ export default class UserDetails extends Component{
     this.setState({aboutVisible: true})
   }
 
+  _mute(){
+    var muteurl = backendUrl;
+    if(this.state.mute){
+      muteurl = muteurl+ 'unmuteall/';
+    }
+    else{
+      muteurl = muteurl + 'muteall/';
+    }
+
+    console.log(JSON.stringify({deviceid: this.props.deviceInfo.userId}));
+
+    console.log(muteurl);
+    fetch(muteurl,
+      {
+        method: 'POST',
+
+        headers:{
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+
+        body: JSON.stringify({deviceid: this.props.deviceInfo.userId})
+      }
+    ).catch((error) => console.log(error));
+    newMute = !this.state.mute;
+
+    AsyncStorage.setItem("mute", newMute.toString());
+
+    this.setState({mute: !this.state.mute});
+  }
 
   _closeAbout() {
     this.setState({aboutVisible: false});
@@ -419,7 +478,7 @@ export default class UserDetails extends Component{
       this.props.navigator.replace({
         component: Login
       });
-    }).catch((error)=> console.log('Done with fetching from tim' + error.message));
+    }).catch((error)=> console.log('Done with fetching frombackend' + error.message));
   }
 }
 

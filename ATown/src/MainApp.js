@@ -21,6 +21,7 @@ import TitleBar from './components/TitleBar'
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Town from './pages/Town';
+import Verify from './pages/Verify';
 
 // Firebase utils
 import Firebase from './utils/Firebase';
@@ -37,7 +38,7 @@ import Colors from './styles/Colors';
 
 
 /* ------------------------------------------------------------------------- */
-/*  Main ATown Component
+/*  Main Owl Component
 /* ------------------------------------------------------------------------- */
 
 
@@ -74,8 +75,12 @@ class ATown extends Component {
     const unsubscribe = Firebase.auth().onAuthStateChanged((user) => {
       // If logged in, then go to main app
       if (user != null) {
-        this.setState({page: Town});
-
+        if (user.emailVerified){
+          this.setState({page: Town});
+        }
+        else{
+          this.setState({page: Verify});
+        }
         return;
       }
       // else go to login page.

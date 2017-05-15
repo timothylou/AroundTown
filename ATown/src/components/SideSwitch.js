@@ -19,7 +19,7 @@ let windowHeight = Dimensions.get('window').height
 export default class SideButton extends Component{
 render() {
    return (
-     <View style={{height : windowHeight*0.07, paddingHorizontal: 8, alignItems: 'center'}}>
+     <View style={{height : windowHeight*0.07, paddingHorizontal: 10, alignItems: 'center'}}>
         <View style={{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
           <Icon name={this.props.icon} size={30} color={Colors.SECONDARY} style={{flex:1}} />
           <View style={{padding: 10,  flex:5,  borderBottomWidth: 1, borderColor: Colors.PRIMARY_LIGHT, flexDirection: 'row'}}>
